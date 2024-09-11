@@ -1,5 +1,4 @@
-#include "physics.h"
-#include "graphics.h"
+#include "engine.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <time.h>
@@ -28,20 +27,22 @@ bool game_over = false;
 
 timespec inittime {0, 0};
 
-void shot_callback(phys_obj *obj, phys_obj *obj2, int collide_axis, int area_x, int area_y)
+void shot_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
-    obj->active = false;
+    obj->phys_active = false;
+    obj->draw_active = false;
 
     if (obj2 != NULL) {
         if (obj2->type_id >= ID_PLAYER_SHOT) {
-            obj2->active = false;
+            obj2->phys_active = false;
+            obj2->draw_active = false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         }
     }
 }
 
-void enemy_callback(phys_obj *obj, phys_obj *obj2, int collide_axis, int area_x, int area_y)
+void enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
         if (obj2->type_id == ID_PLAYER_SHOT) {
@@ -77,140 +78,127 @@ void shooter()
     chdir(base_path);
     free(base_path);
 
-    graphics *window = new graphics("SDL SHOOTER", RES_X, RES_Y, BPP);
+    engine *eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP);
 
     // Game objects
-    graphics_obj *ship = new graphics_obj;
-    phys_obj *ship_phys = new phys_obj;
-    graphics_obj *enemy = new graphics_obj;
-    phys_obj *enemy_phys = new phys_obj;
-    graphics_obj *shots[NUM_SHOTS];
-    phys_obj *shots_phys[NUM_SHOTS];
-    graphics_obj *enemy_shots[NUM_SHOTS_ENEMY];
-    phys_obj *enemy_shots_phys[NUM_SHOTS_ENEMY];
-
-    // Physics
-    phys *physics = new phys(RES_X, RES_Y);
+    engine_obj *ship = new engine_obj;
+    engine_obj *enemy = new engine_obj;
+    engine_obj *shots[NUM_SHOTS];
+    engine_obj *enemy_shots[NUM_SHOTS_ENEMY];
 
     // Ship
-    ship_phys->type_id = ID_PLAYER_SHIP;
-    ship_phys->pos_x = 50;
-    ship_phys->pos_y = 550;
-    ship_phys->size_x = 21;
-    ship_phys->size_y = 21;
-    ship_phys->step_x = 0;
-    ship_phys->step_y = 0;
-    ship_phys->move_x_every = SHIP_MOVE_PHYS_DELAY;
-    ship_phys->move_y_every = SHIP_MOVE_PHYS_DELAY;
-    ship_phys->move_x_last = inittime;
-    ship_phys->move_y_last = inittime;
-    ship_phys->bounce = 0;
-    ship_phys->collided = NULL;
-    ship_phys->callback = NULL;
-    ship_phys->active = true;
+    ship->type_id = ID_PLAYER_SHIP;
+    ship->pos_x = 50;
+    ship->pos_y = 550;
+    ship->size_x = 21;
+    ship->size_y = 21;
+    ship->phys_size_x = 21;
+    ship->phys_size_y = 21;
+    ship->step_x = 0;
+    ship->step_y = 0;
+    ship->move_x_every = SHIP_MOVE_PHYS_DELAY;
+    ship->move_y_every = SHIP_MOVE_PHYS_DELAY;
+    ship->move_x_last = inittime;
+    ship->move_y_last = inittime;
+    ship->bounce = 0;
+    ship->collided = NULL;
+    ship->callback = NULL;
+    ship->phys_active = true;
+    ship->draw_active = true;
     ship->sprite = IMG_Load("ship.png");
-    ship->texture = SDL_CreateTextureFromSurface(window->renderer, ship->sprite);
-    ship->pos_x = &ship_phys->pos_x;
-    ship->pos_y = &ship_phys->pos_y;
-    ship->active = &ship_phys->active;
+    ship->texture = SDL_CreateTextureFromSurface(eng->renderer, ship->sprite);
     ship->size_x = 21;
     ship->size_y = 21;
 
-    physics->add_object(ship_phys);
-    window->add_object(ship);
+    eng->add_object(ship);
 
     // Enemy
-    enemy_phys->type_id = ID_ENEMY_SHIP;
-    enemy_phys->pos_x = 150;
-    enemy_phys->pos_y = 150;
-    enemy_phys->size_x = 20;
-    enemy_phys->size_y = 20;
-    enemy_phys->step_x = 1;
-    enemy_phys->step_y = 1;
-    enemy_phys->move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    enemy_phys->move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    enemy_phys->move_x_last = inittime;
-    enemy_phys->move_y_last = inittime;
-    enemy_phys->bounce = 1;
-    enemy_phys->collided = NULL;
-    enemy_phys->callback = enemy_callback;
-    enemy_phys->active = true;
+    enemy->type_id = ID_ENEMY_SHIP;
+    enemy->pos_x = 150;
+    enemy->pos_y = 150;
+    enemy->size_x = 20;
+    enemy->size_y = 20;
+    enemy->phys_size_x = 20;
+    enemy->phys_size_y = 20;
+    enemy->step_x = 1;
+    enemy->step_y = 1;
+    enemy->move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
+    enemy->move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
+    enemy->move_x_last = inittime;
+    enemy->move_y_last = inittime;
+    enemy->bounce = 1;
+    enemy->collided = NULL;
+    enemy->callback = enemy_callback;
+    enemy->phys_active = true;
+    enemy->draw_active = true;
     enemy->sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
-    enemy->pos_x = &enemy_phys->pos_x;
-    enemy->pos_y = &enemy_phys->pos_y;
-    enemy->active = &enemy_phys->active;
     enemy->size_x = 20;
     enemy->size_y = 20;
     SDL_FillRect(enemy->sprite, NULL, SDL_MapRGB(enemy->sprite->format, 255, 0, 0));
-    enemy->texture = SDL_CreateTextureFromSurface(window->renderer, enemy->sprite);
+    enemy->texture = SDL_CreateTextureFromSurface(eng->renderer, enemy->sprite);
 
-    physics->add_object(enemy_phys);    
-    window->add_object(enemy);
+    eng->add_object(enemy);    
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         // Shots
-        shots[shot_count] = new graphics_obj;
-        shots_phys[shot_count] = new phys_obj;
+        shots[shot_count] = new engine_obj;
 
-        shots_phys[shot_count]->type_id = ID_PLAYER_SHOT;
-        shots_phys[shot_count]->pos_x = ship_phys->pos_x+(ship_phys->size_x/2);
-        shots_phys[shot_count]->pos_y = ship_phys->pos_y-ship_phys->size_y;
-        shots_phys[shot_count]->size_x = 2;
-        shots_phys[shot_count]->size_y = 10;
-        shots_phys[shot_count]->step_x = 0;
-        shots_phys[shot_count]->step_y = -1;
-        shots_phys[shot_count]->move_x_every = SHOT_PHYS_DELAY;
-        shots_phys[shot_count]->move_y_every = SHOT_PHYS_DELAY;
-        shots_phys[shot_count]->move_x_last = inittime;
-        shots_phys[shot_count]->move_y_last = inittime;
-        shots_phys[shot_count]->bounce = -1;
-        shots_phys[shot_count]->collided = NULL;
-        shots_phys[shot_count]->callback = shot_callback;
-        shots_phys[shot_count]->active = false;
+        shots[shot_count]->type_id = ID_PLAYER_SHOT;
+        shots[shot_count]->pos_x = ship->pos_x+(ship->size_x/2);
+        shots[shot_count]->pos_y = ship->pos_y-ship->size_y;
+        shots[shot_count]->size_x = 2;
+        shots[shot_count]->size_y = 10;
+        shots[shot_count]->phys_size_x = 2;
+        shots[shot_count]->phys_size_y = 10;
+        shots[shot_count]->step_x = 0;
+        shots[shot_count]->step_y = -1;
+        shots[shot_count]->move_x_every = SHOT_PHYS_DELAY;
+        shots[shot_count]->move_y_every = SHOT_PHYS_DELAY;
+        shots[shot_count]->move_x_last = inittime;
+        shots[shot_count]->move_y_last = inittime;
+        shots[shot_count]->bounce = -1;
+        shots[shot_count]->collided = NULL;
+        shots[shot_count]->callback = shot_callback;
+        shots[shot_count]->phys_active = false;
+        shots[shot_count]->draw_active = false;
         shots[shot_count]->sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-        shots[shot_count]->pos_x = &shots_phys[shot_count]->pos_x;
-        shots[shot_count]->pos_y = &shots_phys[shot_count]->pos_y;
-        shots[shot_count]->active = &shots_phys[shot_count]->active;
         shots[shot_count]->size_x = 2;
         shots[shot_count]->size_y = 10;
         SDL_FillRect(shots[shot_count]->sprite, NULL, SDL_MapRGB(shots[shot_count]->sprite->format, 0, 255, 0));
-        shots[shot_count]->texture = SDL_CreateTextureFromSurface(window->renderer, shots[shot_count]->sprite);
+        shots[shot_count]->texture = SDL_CreateTextureFromSurface(eng->renderer, shots[shot_count]->sprite);
 
-        physics->add_object(shots_phys[shot_count]);
-        window->add_object(shots[shot_count]);
+        eng->add_object(shots[shot_count]);
     }
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         // Shots
-        enemy_shots[enemy_shot_count] = new graphics_obj;
-        enemy_shots_phys[enemy_shot_count] = new phys_obj;
+        enemy_shots[enemy_shot_count] = new engine_obj;
 
-        enemy_shots_phys[enemy_shot_count]->type_id = ID_ENEMY_SHOT;
-        enemy_shots_phys[enemy_shot_count]->pos_x = enemy_phys->pos_x+(enemy_phys->size_x/2);
-        enemy_shots_phys[enemy_shot_count]->pos_y = enemy_phys->pos_y+enemy_phys->size_y+1;
-        enemy_shots_phys[enemy_shot_count]->size_x = 2;
-        enemy_shots_phys[enemy_shot_count]->size_y = 10;
-        enemy_shots_phys[enemy_shot_count]->step_x = 0;
-        enemy_shots_phys[enemy_shot_count]->step_y = 1;
-        enemy_shots_phys[enemy_shot_count]->move_x_every = SHOT_PHYS_DELAY;
-        enemy_shots_phys[enemy_shot_count]->move_y_every = SHOT_PHYS_DELAY;
-        enemy_shots_phys[enemy_shot_count]->move_x_last = inittime;
-        enemy_shots_phys[enemy_shot_count]->move_y_last = inittime;
-        enemy_shots_phys[enemy_shot_count]->bounce = -1;
-        enemy_shots_phys[enemy_shot_count]->collided = NULL;
-        enemy_shots_phys[enemy_shot_count]->callback = shot_callback;
-        enemy_shots_phys[enemy_shot_count]->active = false;
+        enemy_shots[enemy_shot_count]->type_id = ID_ENEMY_SHOT;
+        enemy_shots[enemy_shot_count]->pos_x = enemy->pos_x+(enemy->size_x/2);
+        enemy_shots[enemy_shot_count]->pos_y = enemy->pos_y+enemy->size_y+1;
+        enemy_shots[enemy_shot_count]->size_x = 2;
+        enemy_shots[enemy_shot_count]->size_y = 10;
+        enemy_shots[enemy_shot_count]->phys_size_x = 2;
+        enemy_shots[enemy_shot_count]->phys_size_y = 10;
+        enemy_shots[enemy_shot_count]->step_x = 0;
+        enemy_shots[enemy_shot_count]->step_y = 1;
+        enemy_shots[enemy_shot_count]->move_x_every = SHOT_PHYS_DELAY;
+        enemy_shots[enemy_shot_count]->move_y_every = SHOT_PHYS_DELAY;
+        enemy_shots[enemy_shot_count]->move_x_last = inittime;
+        enemy_shots[enemy_shot_count]->move_y_last = inittime;
+        enemy_shots[enemy_shot_count]->bounce = -1;
+        enemy_shots[enemy_shot_count]->collided = NULL;
+        enemy_shots[enemy_shot_count]->callback = shot_callback;
+        enemy_shots[enemy_shot_count]->phys_active = false;
+        enemy_shots[enemy_shot_count]->draw_active = false;
         enemy_shots[enemy_shot_count]->sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-        enemy_shots[enemy_shot_count]->pos_x = &enemy_shots_phys[enemy_shot_count]->pos_x;
-        enemy_shots[enemy_shot_count]->pos_y = &enemy_shots_phys[enemy_shot_count]->pos_y;
-        enemy_shots[enemy_shot_count]->active = &enemy_shots_phys[enemy_shot_count]->active;
         enemy_shots[enemy_shot_count]->size_x = 2;
         enemy_shots[enemy_shot_count]->size_y = 10;
         SDL_FillRect(enemy_shots[enemy_shot_count]->sprite, NULL, SDL_MapRGB(enemy_shots[enemy_shot_count]->sprite->format, 180, 0, 0));
-        enemy_shots[enemy_shot_count]->texture = SDL_CreateTextureFromSurface(window->renderer, enemy_shots[enemy_shot_count]->sprite);
+        enemy_shots[enemy_shot_count]->texture = SDL_CreateTextureFromSurface(eng->renderer, enemy_shots[enemy_shot_count]->sprite);
 
-        physics->add_object(enemy_shots_phys[enemy_shot_count]);
-        window->add_object(enemy_shots[enemy_shot_count]);
+        eng->add_object(enemy_shots[enemy_shot_count]);
     }
 
     // Main loop
@@ -267,20 +255,21 @@ void shooter()
         }
 
         if (!game_over) {
-            ship_phys->step_x = 0;
-            if (left) { ship_phys->step_x = -1; }
-            if (right) { ship_phys->step_x = 1; }
+            ship->step_x = 0;
+            if (left) { ship->step_x = -1; }
+            if (right) { ship->step_x = 1; }
 
             if (fire) {
                 if (!fired) {
                     fired = true;
                     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-                        if (!shots_phys[shot_count]->active) {
-                            shots_phys[shot_count]->pos_x = ship_phys->pos_x+(ship_phys->size_x/2);
-                            shots_phys[shot_count]->pos_y = ship_phys->pos_y-ship_phys->size_y;
-                            shots_phys[shot_count]->active = true;
-                            shots_phys[shot_count]->move_x_last = inittime;
-                            shots_phys[shot_count]->move_y_last = inittime;
+                        if (!shots[shot_count]->draw_active) {
+                            shots[shot_count]->pos_x = ship->pos_x+(ship->size_x/2);
+                            shots[shot_count]->pos_y = ship->pos_y-ship->size_y;
+                            shots[shot_count]->phys_active = true;
+                            shots[shot_count]->draw_active = true;
+                            shots[shot_count]->move_x_last = inittime;
+                            shots[shot_count]->move_y_last = inittime;
 
                             break;
                         }
@@ -292,9 +281,9 @@ void shooter()
 
             if (reset_enemy) {
                 reset_enemy = false;
-                enemy_phys->pos_x = 150;
-                enemy_phys->pos_y = 150;
-                enemy_phys->step_x = 1;
+                enemy->pos_x = 150;
+                enemy->pos_y = 150;
+                enemy->step_x = 1;
             }
 
             clock_gettime(CLOCK_MONOTONIC, &now);
@@ -302,12 +291,13 @@ void shooter()
 
             if (timediff > ENEMY_SHOT_DELAY) {
                 for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
-                    if (!enemy_shots_phys[enemy_shot_count]->active) {
-                        enemy_shots_phys[enemy_shot_count]->pos_x = enemy_phys->pos_x+(enemy_phys->size_x/2);
-                        enemy_shots_phys[enemy_shot_count]->pos_y = enemy_phys->pos_y+enemy_phys->size_y+1;
-                        enemy_shots_phys[enemy_shot_count]->active = true;
-                        enemy_shots_phys[enemy_shot_count]->move_x_last = inittime;
-                        enemy_shots_phys[enemy_shot_count]->move_y_last = inittime;
+                    if (!enemy_shots[enemy_shot_count]->draw_active) {
+                        enemy_shots[enemy_shot_count]->pos_x = enemy->pos_x+(enemy->size_x/2);
+                        enemy_shots[enemy_shot_count]->pos_y = enemy->pos_y+enemy->size_y+1;
+                        enemy_shots[enemy_shot_count]->phys_active = true;
+                        enemy_shots[enemy_shot_count]->draw_active = true;
+                        enemy_shots[enemy_shot_count]->move_x_last = inittime;
+                        enemy_shots[enemy_shot_count]->move_y_last = inittime;
 
                         break;
                     }
@@ -316,30 +306,32 @@ void shooter()
                 last_enemy_shot = now;
             }
 
-            // Advance physics
-            physics->advance();
+            // Redraw screen
+            eng->step();
         }
-
-        // Redraw screen
-        window->draw();
     }
 
     SDL_Quit();
 
-    delete physics;
-    delete window;
-    delete ship_phys;
+    delete eng;
+
+    SDL_DestroyTexture(ship->texture);
+    SDL_FreeSurface(ship->sprite);
+    SDL_DestroyTexture(enemy->texture);
+    SDL_FreeSurface(enemy->sprite);
+
     delete ship;
     delete enemy;
-    delete enemy_phys;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-        delete shots_phys[shot_count];
+        SDL_DestroyTexture(shots[shot_count]->texture);
+        SDL_FreeSurface(shots[shot_count]->sprite);
         delete shots[shot_count];
     }
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
-        delete enemy_shots_phys[enemy_shot_count];
+        SDL_DestroyTexture(enemy_shots[enemy_shot_count]->texture);
+        SDL_FreeSurface(enemy_shots[enemy_shot_count]->sprite);
         delete enemy_shots[enemy_shot_count];
     }
 

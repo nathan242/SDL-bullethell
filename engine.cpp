@@ -1,19 +1,24 @@
-#include "physics.h"
+#include "engine.h"
 
-phys::phys(int x, int y)
+engine::engine(const char* caption, int res_x, int res_y, int bpp)
 {
-    area_x = x;
-    area_y = y;
+    area_x = res_x;
+    area_y = res_y;
+
+    // Initialize SDL
+    SDL_Init(SDL_INIT_VIDEO);
+    window = SDL_CreateWindow(caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, res_x, res_y, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     list_len = 0;
     list_head = NULL;
     list_curr = NULL;
 }
 
-int phys::add_object(phys_obj *obj)
+int engine::add_object(engine_obj *obj)
 {
     obj_list *list = new obj_list;
-    list->id = list_len;
     list->obj = obj;
     list->next = NULL;
 
@@ -30,10 +35,10 @@ int phys::add_object(phys_obj *obj)
     return ++list_len;
 }
 
-void phys::advance()
+void engine::phys_advance()
 {
     obj_list *list = NULL;
-    phys_obj *obj = NULL;
+    engine_obj *obj = NULL;
     timespec now;
     uint64_t timediff;
     int iterations;
@@ -50,7 +55,7 @@ void phys::advance()
             // Get object
             obj = list->obj;
 
-            if (obj->active) {
+            if (obj->phys_active) {
                 // Check if object is colliding with another
                 check_collide(obj, list->id);
             }
@@ -65,7 +70,7 @@ void phys::advance()
             // Get object
             obj = list->obj;
 
-            if (obj->active) {
+            if (obj->phys_active) {
                 if (obj->move_x_every == 0) {
                     iterations = 0;
                 } else if (obj->move_x_last.tv_sec == 0) {
@@ -125,7 +130,7 @@ void phys::advance()
     }
 }
 
-void phys::reset_timings()
+void engine::reset_phys_timings()
 {
     obj_list *list = list_head;
     timespec inittime {0, 0};
@@ -139,10 +144,10 @@ void phys::reset_timings()
     }
 }
 
-void phys::check_collide(phys_obj *obj, int id)
+void engine::check_collide(engine_obj *obj, int id)
 {
     obj_list *list = NULL;
-    phys_obj *obj2 = NULL;
+    engine_obj *obj2 = NULL;
 
     int x1;
     int x2;
@@ -156,7 +161,7 @@ void phys::check_collide(phys_obj *obj, int id)
 
     // Check collision with other objects
     while (list != NULL) {
-        if (list->id != id && list->obj->active) {
+        if (list->id != id && list->obj->phys_active) {
             obj2 = list->obj;
 
             // Left side
@@ -238,8 +243,45 @@ void phys::check_collide(phys_obj *obj, int id)
     }
 }
 
-phys::~phys()
+void engine::draw() {
+    obj_list *list = NULL;
+    engine_obj *obj = NULL;
+
+    list = list_head;
+
+    SDL_RenderClear(renderer);
+
+    while (list != NULL) {
+        // Get object
+        obj = list->obj;
+
+        if (obj->draw_active) {
+            offset.x = obj->pos_x;
+            offset.y = obj->pos_y;
+            offset.w = obj->size_x;
+            offset.h = obj->size_y;
+
+            SDL_RenderCopy(renderer, obj->texture, NULL, &offset);
+        }
+
+        // Get next
+        list = list->next;
+    }
+
+    SDL_RenderPresent(renderer);
+}
+
+void engine::step()
 {
+    phys_advance();
+    draw();
+}
+
+engine::~engine()
+{
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+
     if (list_head != NULL) {
         obj_list *list = NULL;
         obj_list *prev = NULL;
