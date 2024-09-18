@@ -70,3 +70,19 @@ void projectile_manager::fire(
         list = list->next;
     }
 }
+
+projectile_manager::~projectile_manager()
+{
+    if (list_head != NULL) {
+        obj_list *list = NULL;
+        obj_list *prev = NULL;
+
+        list = list_head;
+
+        while (list != NULL) {
+            prev = list;
+            list = list->next;
+            delete prev;
+        }
+    }
+}

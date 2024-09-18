@@ -189,15 +189,14 @@ void shooter()
     delete ship_obj;
     delete enemy_obj;
 
+    delete player_shot_mngr;
+    delete enemy_shot_mngr;
+
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-        SDL_DestroyTexture(shots[shot_count]->texture);
-        SDL_FreeSurface(shots[shot_count]->sprite);
         delete shots[shot_count];
     }
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
-        SDL_DestroyTexture(enemy_shots[enemy_shot_count]->texture);
-        SDL_FreeSurface(enemy_shots[enemy_shot_count]->sprite);
         delete enemy_shots[enemy_shot_count];
     }
 

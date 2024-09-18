@@ -32,6 +32,7 @@ class projectile_manager
             int move_x_every,
             int move_y_every
         );
+        ~projectile_manager();
 };
 
 #endif
