@@ -56,6 +56,7 @@ void ship::fire()
 
 ship::~ship()
 {
+    SDL_DestroyTexture(default_shot_texture);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(sprite);
 }

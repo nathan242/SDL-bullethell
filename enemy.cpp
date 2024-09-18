@@ -74,6 +74,7 @@ void enemy::fire()
 
 enemy::~enemy()
 {
+    SDL_DestroyTexture(default_shot_texture);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(sprite);
 }
