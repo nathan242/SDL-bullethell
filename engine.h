@@ -43,7 +43,7 @@ class engine_obj
 
 class engine
 {
-    private:
+    protected:
         SDL_Rect offset;
 
         int list_len;

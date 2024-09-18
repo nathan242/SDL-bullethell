@@ -1,4 +1,9 @@
 #include "engine.h"
+#include "ship.h"
+#include "enemy.h"
+#include "player_projectile.h"
+#include "enemy_projectile.h"
+#include "projectile_manager.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <time.h>
@@ -8,19 +13,16 @@
 #define RES_Y 600
 #define BPP 32
 
-#define ID_PLAYER_SHIP 1
-#define ID_ENEMY_SHIP 2
-#define ID_PLAYER_SHOT 1000
-#define ID_ENEMY_SHOT 1001
+int ID_PLAYER_SHIP = 1;
+int ID_ENEMY_SHIP = 2;
+int ID_PLAYER_SHOT = 1000;
+int ID_ENEMY_SHOT = 1001;
+int SHOT_PHYS_DELAY = 4000000;
 
 #define NUM_SHOTS 40
 #define NUM_SHOTS_ENEMY 40
 
 #define ENEMY_SHOT_DELAY 500000000
-
-#define SHIP_MOVE_PHYS_DELAY 3000000
-#define ENEMY_SHIP_MOVE_PHYS_DELAY 4000000
-#define SHOT_PHYS_DELAY 4000000
 
 bool reset_enemy = false;
 bool game_over = false;
@@ -39,19 +41,6 @@ void shot_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         }
-    }
-}
-
-void enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
-{
-    if (obj2 != NULL) {
-        if (obj2->type_id == ID_PLAYER_SHOT) {
-            reset_enemy = true;
-        } else if (obj2->type_id == ID_PLAYER_SHIP) {
-            game_over = true;
-        }
-    } else if (collide_axis == 2 && obj->pos_y > 0) {
-        game_over = true;
     }
 }
 
@@ -81,124 +70,29 @@ void shooter()
     engine *eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP);
 
     // Game objects
-    engine_obj *ship = new engine_obj;
-    engine_obj *enemy = new engine_obj;
-    engine_obj *shots[NUM_SHOTS];
-    engine_obj *enemy_shots[NUM_SHOTS_ENEMY];
+    projectile_manager *player_shot_mngr = new projectile_manager();
+    projectile_manager *enemy_shot_mngr = new projectile_manager();
+    ship *ship_obj = new ship(eng, player_shot_mngr);
+    enemy *enemy_obj = new enemy(eng, enemy_shot_mngr);
+    player_projectile *shots[NUM_SHOTS];
+    enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
 
-    // Ship
-    ship->type_id = ID_PLAYER_SHIP;
-    ship->pos_x = 50;
-    ship->pos_y = 550;
-    ship->size_x = 21;
-    ship->size_y = 21;
-    ship->phys_size_x = 21;
-    ship->phys_size_y = 21;
-    ship->step_x = 0;
-    ship->step_y = 0;
-    ship->move_x_every = SHIP_MOVE_PHYS_DELAY;
-    ship->move_y_every = SHIP_MOVE_PHYS_DELAY;
-    ship->move_x_last = inittime;
-    ship->move_y_last = inittime;
-    ship->bounce = 0;
-    ship->collided = NULL;
-    ship->callback = NULL;
-    ship->phys_active = true;
-    ship->draw_active = true;
-    ship->sprite = IMG_Load("ship.png");
-    ship->texture = SDL_CreateTextureFromSurface(eng->renderer, ship->sprite);
-    ship->size_x = 21;
-    ship->size_y = 21;
-
-    eng->add_object(ship);
-
-    // Enemy
-    enemy->type_id = ID_ENEMY_SHIP;
-    enemy->pos_x = 150;
-    enemy->pos_y = 150;
-    enemy->size_x = 20;
-    enemy->size_y = 20;
-    enemy->phys_size_x = 20;
-    enemy->phys_size_y = 20;
-    enemy->step_x = 1;
-    enemy->step_y = 1;
-    enemy->move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    enemy->move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    enemy->move_x_last = inittime;
-    enemy->move_y_last = inittime;
-    enemy->bounce = 1;
-    enemy->collided = NULL;
-    enemy->callback = enemy_callback;
-    enemy->phys_active = true;
-    enemy->draw_active = true;
-    enemy->sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
-    enemy->size_x = 20;
-    enemy->size_y = 20;
-    SDL_FillRect(enemy->sprite, NULL, SDL_MapRGB(enemy->sprite->format, 255, 0, 0));
-    enemy->texture = SDL_CreateTextureFromSurface(eng->renderer, enemy->sprite);
-
-    eng->add_object(enemy);    
+    eng->add_object(ship_obj);
+    eng->add_object(enemy_obj);
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-        // Shots
-        shots[shot_count] = new engine_obj;
-
-        shots[shot_count]->type_id = ID_PLAYER_SHOT;
-        shots[shot_count]->pos_x = ship->pos_x+(ship->size_x/2);
-        shots[shot_count]->pos_y = ship->pos_y-ship->size_y;
-        shots[shot_count]->size_x = 2;
-        shots[shot_count]->size_y = 10;
-        shots[shot_count]->phys_size_x = 2;
-        shots[shot_count]->phys_size_y = 10;
-        shots[shot_count]->step_x = 0;
-        shots[shot_count]->step_y = -1;
-        shots[shot_count]->move_x_every = SHOT_PHYS_DELAY;
-        shots[shot_count]->move_y_every = SHOT_PHYS_DELAY;
-        shots[shot_count]->move_x_last = inittime;
-        shots[shot_count]->move_y_last = inittime;
-        shots[shot_count]->bounce = -1;
-        shots[shot_count]->collided = NULL;
-        shots[shot_count]->callback = shot_callback;
-        shots[shot_count]->phys_active = false;
-        shots[shot_count]->draw_active = false;
-        shots[shot_count]->sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-        shots[shot_count]->size_x = 2;
-        shots[shot_count]->size_y = 10;
-        SDL_FillRect(shots[shot_count]->sprite, NULL, SDL_MapRGB(shots[shot_count]->sprite->format, 0, 255, 0));
-        shots[shot_count]->texture = SDL_CreateTextureFromSurface(eng->renderer, shots[shot_count]->sprite);
+        shots[shot_count] = new player_projectile();
 
         eng->add_object(shots[shot_count]);
+        player_shot_mngr->add_object(shots[shot_count]);
     }
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         // Shots
-        enemy_shots[enemy_shot_count] = new engine_obj;
-
-        enemy_shots[enemy_shot_count]->type_id = ID_ENEMY_SHOT;
-        enemy_shots[enemy_shot_count]->pos_x = enemy->pos_x+(enemy->size_x/2);
-        enemy_shots[enemy_shot_count]->pos_y = enemy->pos_y+enemy->size_y+1;
-        enemy_shots[enemy_shot_count]->size_x = 2;
-        enemy_shots[enemy_shot_count]->size_y = 10;
-        enemy_shots[enemy_shot_count]->phys_size_x = 2;
-        enemy_shots[enemy_shot_count]->phys_size_y = 10;
-        enemy_shots[enemy_shot_count]->step_x = 0;
-        enemy_shots[enemy_shot_count]->step_y = 1;
-        enemy_shots[enemy_shot_count]->move_x_every = SHOT_PHYS_DELAY;
-        enemy_shots[enemy_shot_count]->move_y_every = SHOT_PHYS_DELAY;
-        enemy_shots[enemy_shot_count]->move_x_last = inittime;
-        enemy_shots[enemy_shot_count]->move_y_last = inittime;
-        enemy_shots[enemy_shot_count]->bounce = -1;
-        enemy_shots[enemy_shot_count]->collided = NULL;
-        enemy_shots[enemy_shot_count]->callback = shot_callback;
-        enemy_shots[enemy_shot_count]->phys_active = false;
-        enemy_shots[enemy_shot_count]->draw_active = false;
-        enemy_shots[enemy_shot_count]->sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-        enemy_shots[enemy_shot_count]->size_x = 2;
-        enemy_shots[enemy_shot_count]->size_y = 10;
-        SDL_FillRect(enemy_shots[enemy_shot_count]->sprite, NULL, SDL_MapRGB(enemy_shots[enemy_shot_count]->sprite->format, 180, 0, 0));
-        enemy_shots[enemy_shot_count]->texture = SDL_CreateTextureFromSurface(eng->renderer, enemy_shots[enemy_shot_count]->sprite);
+        enemy_shots[enemy_shot_count] = new enemy_projectile();
 
         eng->add_object(enemy_shots[enemy_shot_count]);
+        enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);
     }
 
     // Main loop
@@ -255,25 +149,14 @@ void shooter()
         }
 
         if (!game_over) {
-            ship->step_x = 0;
-            if (left) { ship->step_x = -1; }
-            if (right) { ship->step_x = 1; }
+            ship_obj->step_x = 0;
+            if (left) { ship_obj->step_x = -1; }
+            if (right) { ship_obj->step_x = 1; }
 
             if (fire) {
                 if (!fired) {
                     fired = true;
-                    for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-                        if (!shots[shot_count]->draw_active) {
-                            shots[shot_count]->pos_x = ship->pos_x+(ship->size_x/2);
-                            shots[shot_count]->pos_y = ship->pos_y-ship->size_y;
-                            shots[shot_count]->phys_active = true;
-                            shots[shot_count]->draw_active = true;
-                            shots[shot_count]->move_x_last = inittime;
-                            shots[shot_count]->move_y_last = inittime;
-
-                            break;
-                        }
-                    }
+                    ship_obj->fire();
                 }
             } else {
                 fired = false;
@@ -281,28 +164,16 @@ void shooter()
 
             if (reset_enemy) {
                 reset_enemy = false;
-                enemy->pos_x = 150;
-                enemy->pos_y = 150;
-                enemy->step_x = 1;
+                enemy_obj->pos_x = 150;
+                enemy_obj->pos_y = 150;
+                enemy_obj->step_x = 1;
             }
 
             clock_gettime(CLOCK_MONOTONIC, &now);
             timediff = ((now.tv_sec - last_enemy_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_enemy_shot.tv_nsec);
 
             if (timediff > ENEMY_SHOT_DELAY) {
-                for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
-                    if (!enemy_shots[enemy_shot_count]->draw_active) {
-                        enemy_shots[enemy_shot_count]->pos_x = enemy->pos_x+(enemy->size_x/2);
-                        enemy_shots[enemy_shot_count]->pos_y = enemy->pos_y+enemy->size_y+1;
-                        enemy_shots[enemy_shot_count]->phys_active = true;
-                        enemy_shots[enemy_shot_count]->draw_active = true;
-                        enemy_shots[enemy_shot_count]->move_x_last = inittime;
-                        enemy_shots[enemy_shot_count]->move_y_last = inittime;
-
-                        break;
-                    }
-                }
-
+                enemy_obj->fire();
                 last_enemy_shot = now;
             }
 
@@ -315,13 +186,8 @@ void shooter()
 
     delete eng;
 
-    SDL_DestroyTexture(ship->texture);
-    SDL_FreeSurface(ship->sprite);
-    SDL_DestroyTexture(enemy->texture);
-    SDL_FreeSurface(enemy->sprite);
-
-    delete ship;
-    delete enemy;
+    delete ship_obj;
+    delete enemy_obj;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         SDL_DestroyTexture(shots[shot_count]->texture);
