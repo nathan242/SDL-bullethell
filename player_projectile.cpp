@@ -3,8 +3,6 @@
 extern int ID_PLAYER_SHIP;
 extern int ID_PLAYER_SHOT;
 
-extern bool game_over;
-
 player_projectile::player_projectile()
 {
     type_id = ID_PLAYER_SHOT;
@@ -35,11 +33,9 @@ void player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_a
     obj->draw_active = false;
 
     if (obj2 != NULL) {
-        if (obj2->type_id >= ID_PLAYER_SHOT) {
+        if (obj2->type_id > ID_PLAYER_SHOT) {
             obj2->phys_active = false;
             obj2->draw_active = false;
-        } else if (obj2->type_id == ID_PLAYER_SHIP) {
-            game_over = true;
         }
     }
 }

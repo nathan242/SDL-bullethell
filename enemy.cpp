@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-#define ENEMY_SHIP_MOVE_PHYS_DELAY 4000000
+#define ENEMY_SHIP_MOVE_PHYS_DELAY 5000000
 
 extern int ID_ENEMY_SHIP;
 extern int ID_PLAYER_SHIP;
@@ -22,7 +22,7 @@ enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
     step_x = 1;
     step_y = 1;
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
+    move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
     move_x_last = {0, 0};
     move_y_last = {0, 0};
     bounce = 1;
@@ -51,7 +51,8 @@ void enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int are
             game_over = true;
         }
     } else if (collide_axis == 2 && obj->pos_y > 0) {
-        game_over = true;
+        obj->draw_active = false;
+        obj->phys_active = false;
     }
 }
 

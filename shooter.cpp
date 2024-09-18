@@ -17,7 +17,7 @@ int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
 int ID_PLAYER_SHOT = 1000;
 int ID_ENEMY_SHOT = 1001;
-int SHOT_PHYS_DELAY = 4000000;
+int SHOT_PHYS_DELAY = 2500000;
 
 #define NUM_SHOTS 40
 #define NUM_SHOTS_ENEMY 40
@@ -150,8 +150,11 @@ void shooter()
 
         if (!game_over) {
             ship_obj->step_x = 0;
+            ship_obj->step_y = 0;
             if (left) { ship_obj->step_x = -1; }
             if (right) { ship_obj->step_x = 1; }
+            if (up) { ship_obj->step_y = -1; }
+            if (down) { ship_obj->step_y = 1; }
 
             if (fire) {
                 if (!fired) {
