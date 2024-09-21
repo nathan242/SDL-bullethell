@@ -27,7 +27,7 @@ player_projectile::player_projectile()
     texture = NULL;
 }
 
-void player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     obj->phys_active = false;
     obj->draw_active = false;
@@ -38,6 +38,8 @@ void player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_a
             obj2->draw_active = false;
         }
     }
+
+    return true;
 }
 
 player_projectile::~player_projectile()

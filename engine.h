@@ -10,7 +10,7 @@
 class engine_obj
 {
     public:
-        int type_id; // Needed?
+        int type_id;
 
         SDL_Surface *sprite;
         SDL_Texture *texture;
@@ -35,7 +35,7 @@ class engine_obj
         int bounce;
         engine_obj *collided;
 
-        void (*callback)(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y);
+        bool (*callback)(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y);
 
         bool phys_active;
         bool draw_active;

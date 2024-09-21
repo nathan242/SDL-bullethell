@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "ship.h"
 #include "enemy.h"
+#include "adv_enemy.h"
 #include "player_projectile.h"
 #include "enemy_projectile.h"
 #include "projectile_manager.h"
@@ -28,21 +29,6 @@ bool reset_enemy = false;
 bool game_over = false;
 
 timespec inittime {0, 0};
-
-void shot_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
-{
-    obj->phys_active = false;
-    obj->draw_active = false;
-
-    if (obj2 != NULL) {
-        if (obj2->type_id >= ID_PLAYER_SHOT) {
-            obj2->phys_active = false;
-            obj2->draw_active = false;
-        } else if (obj2->type_id == ID_PLAYER_SHIP) {
-            game_over = true;
-        }
-    }
-}
 
 void shooter()
 {
@@ -74,11 +60,19 @@ void shooter()
     projectile_manager *enemy_shot_mngr = new projectile_manager();
     ship *ship_obj = new ship(eng, player_shot_mngr);
     enemy *enemy_obj = new enemy(eng, enemy_shot_mngr);
+    adv_enemy *adv_enemy_obj = new adv_enemy(eng, enemy_shot_mngr);
     player_projectile *shots[NUM_SHOTS];
     enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
 
     eng->add_object(ship_obj);
     eng->add_object(enemy_obj);
+    eng->add_object(adv_enemy_obj);
+
+    enemy_obj->init();
+    adv_enemy_obj->init();
+
+    adv_enemy_obj->draw_active = false;
+    adv_enemy_obj->phys_active = false;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         shots[shot_count] = new player_projectile();
@@ -163,6 +157,14 @@ void shooter()
                 }
             } else {
                 fired = false;
+            }
+
+            if (!enemy_obj->draw_active) {
+                // TODO
+                enemy_obj = adv_enemy_obj;
+                adv_enemy_obj->draw_active = true;
+                adv_enemy_obj->phys_active = true;
+                reset_enemy = true;
             }
 
             if (reset_enemy) {

@@ -5,12 +5,19 @@
 extern int ID_ENEMY_SHIP;
 extern int ID_PLAYER_SHIP;
 extern int ID_PLAYER_SHOT;
+extern int ID_ENEMY_SHOT;
 extern int SHOT_PHYS_DELAY;
 
 extern bool reset_enemy;
 extern bool game_over;
 
 enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
+{
+    i_eng = eng;
+    p_mngr = projectile_mngr;
+}
+
+void enemy::init()
 {
     type_id = ID_ENEMY_SHIP;
     pos_x = 150;
@@ -32,28 +39,35 @@ enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
     draw_active = true;
     sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
     SDL_FillRect(sprite, NULL, SDL_MapRGB(sprite->format, 255, 0, 0));
-    texture = SDL_CreateTextureFromSurface(eng->renderer, sprite);
+    texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
-    p_mngr = projectile_mngr;
+    init_projectile();
+}
 
+void enemy::init_projectile()
+{
     SDL_Surface *shot_sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
     SDL_FillRect(shot_sprite, NULL, SDL_MapRGB(shot_sprite->format, 180, 0, 0));
-    default_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, shot_sprite);
+    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
 }
 
-void enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
         if (obj2->type_id == ID_PLAYER_SHOT) {
             reset_enemy = true;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
+        } else if (obj2->type_id == ID_ENEMY_SHOT) {
+            return false;
         }
     } else if (collide_axis == 2 && obj->pos_y > 0) {
         obj->draw_active = false;
         obj->phys_active = false;
     }
+
+    return true;
 }
 
 void enemy::fire()

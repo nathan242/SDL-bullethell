@@ -1,6 +1,7 @@
 #include "enemy_projectile.h"
 
 extern int ID_PLAYER_SHIP;
+extern int ID_ENEMY_SHIP;
 extern int ID_PLAYER_SHOT;
 extern int ID_ENEMY_SHOT;
 
@@ -30,19 +31,23 @@ enemy_projectile::enemy_projectile()
     texture = NULL;
 }
 
-void enemy_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool enemy_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
-    obj->phys_active = false;
-    obj->draw_active = false;
-
     if (obj2 != NULL) {
-        if (obj2->type_id >= ID_PLAYER_SHOT) {
+        if (obj2->type_id == ID_PLAYER_SHOT) {
+            obj->phys_active = false;
+            obj->draw_active = false;
             obj2->phys_active = false;
             obj2->draw_active = false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         }
+    } else {
+        obj->phys_active = false;
+        obj->draw_active = false;
     }
+
+    return false;
 }
 
 enemy_projectile::~enemy_projectile()
