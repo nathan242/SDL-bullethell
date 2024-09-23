@@ -19,6 +19,7 @@ engine::engine(const char* caption, int res_x, int res_y, int bpp)
 int engine::add_object(engine_obj *obj)
 {
     obj_list *list = new obj_list;
+    list->id = list_len;
     list->obj = obj;
     list->next = NULL;
 
@@ -32,7 +33,7 @@ int engine::add_object(engine_obj *obj)
         list_curr = list;
     }
 
-    return ++list_len;
+    return list_len++;
 }
 
 void engine::phys_advance()
