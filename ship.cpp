@@ -8,6 +8,13 @@ extern int SHOT_PHYS_DELAY;
 
 ship::ship(engine *eng, projectile_manager *projectile_mngr)
 {
+    initialized = false;
+    i_eng = eng;
+    p_mngr = projectile_mngr;
+}
+
+void ship::init()
+{
     type_id = ID_PLAYER_SHIP;
     pos_x = 50;
     pos_y = 550;
@@ -27,14 +34,14 @@ ship::ship(engine *eng, projectile_manager *projectile_mngr)
     phys_active = true;
     draw_active = true;
     sprite = IMG_Load("ship.png");
-    texture = SDL_CreateTextureFromSurface(eng->renderer, sprite);
-
-    p_mngr = projectile_mngr;
+    texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
     SDL_Surface *shot_sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
     SDL_FillRect(shot_sprite, NULL, SDL_MapRGB(shot_sprite->format, 0, 255, 0));
-    default_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, shot_sprite);
+    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
+
+    initialized = true;
 }
 
 void ship::fire()
@@ -56,7 +63,9 @@ void ship::fire()
 
 ship::~ship()
 {
-    SDL_DestroyTexture(default_shot_texture);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(sprite);
+    if (initialized) {
+        SDL_DestroyTexture(default_shot_texture);
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(sprite);
+    }
 }

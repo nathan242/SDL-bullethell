@@ -7,11 +7,14 @@
 class ship : public engine_obj
 {
     protected:
+        bool initialized;
+        engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
 
     public:
         ship(engine *eng, projectile_manager *projectile_mngr);
+        void init();
         void fire();
         ~ship();
 };

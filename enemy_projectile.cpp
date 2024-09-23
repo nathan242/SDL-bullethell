@@ -7,7 +7,7 @@ extern int ID_ENEMY_SHOT;
 
 extern bool game_over;
 
-enemy_projectile::enemy_projectile()
+void enemy_projectile::init()
 {
     type_id = ID_ENEMY_SHOT;
     pos_x = 0;
@@ -48,10 +48,4 @@ bool enemy_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_ax
     }
 
     return false;
-}
-
-enemy_projectile::~enemy_projectile()
-{
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(sprite);
 }

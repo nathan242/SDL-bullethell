@@ -13,6 +13,7 @@ extern bool game_over;
 
 enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
 {
+    initialized = false;
     i_eng = eng;
     p_mngr = projectile_mngr;
 }
@@ -42,6 +43,8 @@ void enemy::init()
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
     init_projectile();
+
+    initialized = true;
 }
 
 void enemy::init_projectile()
@@ -89,7 +92,9 @@ void enemy::fire()
 
 enemy::~enemy()
 {
-    SDL_DestroyTexture(default_shot_texture);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(sprite);
+    if (initialized) {
+        SDL_DestroyTexture(default_shot_texture);
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(sprite);
+    }
 }

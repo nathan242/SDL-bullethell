@@ -68,6 +68,7 @@ void shooter()
     eng->add_object(enemy_obj);
     eng->add_object(adv_enemy_obj);
 
+    ship_obj->init();
     enemy_obj->init();
     adv_enemy_obj->init();
 
@@ -76,7 +77,7 @@ void shooter()
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         shots[shot_count] = new player_projectile();
-
+        shots[shot_count]->init();
         eng->add_object(shots[shot_count]);
         player_shot_mngr->add_object(shots[shot_count]);
     }
@@ -84,7 +85,7 @@ void shooter()
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         // Shots
         enemy_shots[enemy_shot_count] = new enemy_projectile();
-
+        enemy_shots[enemy_shot_count]->init();
         eng->add_object(enemy_shots[enemy_shot_count]);
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);
     }
@@ -193,6 +194,7 @@ void shooter()
 
     delete ship_obj;
     delete enemy_obj;
+    // delete adv_enemy_obj;
 
     delete player_shot_mngr;
     delete enemy_shot_mngr;

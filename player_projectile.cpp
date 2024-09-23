@@ -3,7 +3,7 @@
 extern int ID_PLAYER_SHIP;
 extern int ID_PLAYER_SHOT;
 
-player_projectile::player_projectile()
+void player_projectile::init()
 {
     type_id = ID_PLAYER_SHOT;
     pos_x = 0;
@@ -40,10 +40,4 @@ bool player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_a
     }
 
     return true;
-}
-
-player_projectile::~player_projectile()
-{
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(sprite);
 }

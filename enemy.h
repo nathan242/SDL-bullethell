@@ -7,6 +7,7 @@
 class enemy : public engine_obj
 {
     protected:
+        bool initialized;
         engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
