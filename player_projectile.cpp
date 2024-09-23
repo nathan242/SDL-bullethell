@@ -20,17 +20,16 @@ void player_projectile::init()
     move_y_last = {0, 0};
     bounce = -1;
     collided = NULL;
-    callback = player_projectile_callback;
     phys_active = false;
     draw_active = false;
     sprite = NULL;
     texture = NULL;
 }
 
-bool player_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool player_projectile::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
-    obj->phys_active = false;
-    obj->draw_active = false;
+    phys_active = false;
+    draw_active = false;
 
     if (obj2 != NULL) {
         if (obj2->type_id > ID_PLAYER_SHOT) {

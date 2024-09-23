@@ -18,9 +18,8 @@ class enemy : public engine_obj
         enemy(engine *eng, projectile_manager *projectile_mngr);
         virtual void init();
         virtual void fire();
+        bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         ~enemy();
 };
-
-bool enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y);
 
 #endif

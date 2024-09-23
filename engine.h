@@ -35,10 +35,10 @@ class engine_obj
         int bounce;
         engine_obj *collided;
 
-        bool (*callback)(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y);
-
         bool phys_active;
         bool draw_active;
+
+        virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
 };
 
 class engine

@@ -35,7 +35,6 @@ void enemy::init()
     move_y_last = {0, 0};
     bounce = 1;
     collided = NULL;
-    callback = enemy_callback;
     phys_active = true;
     draw_active = true;
     sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
@@ -55,7 +54,7 @@ void enemy::init_projectile()
     SDL_FreeSurface(shot_sprite);
 }
 
-bool enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
         if (obj2->type_id == ID_PLAYER_SHOT) {
@@ -65,9 +64,9 @@ bool enemy_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int are
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
             return false;
         }
-    } else if (collide_axis == 2 && obj->pos_y > 0) {
-        obj->draw_active = false;
-        obj->phys_active = false;
+    } else if (collide_axis == 2 && pos_y > 0) {
+        draw_active = false;
+        phys_active = false;
     }
 
     return true;

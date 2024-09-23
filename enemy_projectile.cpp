@@ -24,27 +24,26 @@ void enemy_projectile::init()
     move_y_last = {0, 0};
     bounce = -1;
     collided = NULL;
-    callback = enemy_projectile_callback;
     phys_active = false;
     draw_active = false;
     sprite = NULL;
     texture = NULL;
 }
 
-bool enemy_projectile_callback(engine_obj *obj, engine_obj *obj2, int collide_axis, int area_x, int area_y)
+bool enemy_projectile::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
         if (obj2->type_id == ID_PLAYER_SHOT) {
-            obj->phys_active = false;
-            obj->draw_active = false;
+            phys_active = false;
+            draw_active = false;
             obj2->phys_active = false;
             obj2->draw_active = false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         }
     } else {
-        obj->phys_active = false;
-        obj->draw_active = false;
+        phys_active = false;
+        draw_active = false;
     }
 
     return false;

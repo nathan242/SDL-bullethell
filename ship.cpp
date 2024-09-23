@@ -30,7 +30,6 @@ void ship::init()
     move_y_last = {0, 0};
     bounce = 0;
     collided = NULL;
-    callback = NULL;
     phys_active = true;
     draw_active = true;
     sprite = IMG_Load("ship.png");

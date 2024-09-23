@@ -1,5 +1,10 @@
 #include "engine.h"
 
+bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
+{
+    return true;
+}
+
 engine::engine(const char* caption, int res_x, int res_y, int bpp)
 {
     area_x = res_x;
@@ -166,7 +171,7 @@ void engine::check_collide(engine_obj *obj, int id)
     while (list != NULL) {
         if (list->id != id && list->obj->phys_active) {
             obj2 = list->obj;
-            do_bounce = true;
+            do_bounce;
 
             // Left side
             x1 = obj2->pos_x-obj->size_x;
@@ -196,7 +201,7 @@ void engine::check_collide(engine_obj *obj, int id)
                     }
 
                     if (diff_y > diff_x) {
-                        if (obj->callback != NULL) { do_bounce = obj->callback(obj, obj2, 1, area_x, area_y); }
+                        do_bounce = obj->collision_event(obj2, 1, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_x > 0 && obj->pos_x < obj2->pos_x) || (obj->step_x < 0 && obj->pos_x > obj2->pos_x)) {
@@ -208,7 +213,7 @@ void engine::check_collide(engine_obj *obj, int id)
                             }
                         }
                     } else {
-                        if (obj->callback != NULL) { do_bounce = obj->callback(obj, obj2, 2, area_x, area_y); }
+                        do_bounce = obj->collision_event(obj2, 2, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_y > 0 && obj->pos_y < obj2->pos_y) || (obj->step_y < 0 && obj->pos_y > obj2->pos_y)) {
@@ -232,21 +237,25 @@ void engine::check_collide(engine_obj *obj, int id)
 
     // Check collision with edges
     if ((obj->pos_x >= area_x-obj->size_x && obj->step_x > 0) || (obj->pos_x <= 0 && obj->step_x < 0)) {
-        if (obj->callback != NULL) { obj->callback(obj, NULL, 1, area_x, area_y); }
-        if (obj->bounce > 0) {
-            obj->step_x = obj->step_x*-1;
-        } else if (obj->bounce == 0 && (obj->pos_x >= area_x-obj->size_x && obj->step_x > 0 || obj->pos_x <= 0 && obj->step_x < 0)) {
-            obj->step_x = 0;
-            obj->step_y = 0;
+        do_bounce = obj->collision_event(NULL, 1, area_x, area_y);
+        if (do_bounce) {
+            if (obj->bounce > 0) {
+                obj->step_x = obj->step_x*-1;
+            } else if (obj->bounce == 0 && (obj->pos_x >= area_x-obj->size_x && obj->step_x > 0 || obj->pos_x <= 0 && obj->step_x < 0)) {
+                obj->step_x = 0;
+                obj->step_y = 0;
+            }
         }
     }
     if ((obj->pos_y >= area_y-obj->size_y && obj->step_y > 0) || (obj->pos_y <= 0 && obj->step_y < 0)) {
-        if (obj->callback != NULL) { obj->callback(obj, NULL, 2, area_x, area_y); }
-        if (obj->bounce > 0) {
-            obj->step_y = obj->step_y*-1;
-        } else if (obj->bounce == 0 && (obj->pos_y >= area_y-obj->size_y && obj->step_y > 0 || obj->pos_y <= 0 && obj->step_y < 0)) {
-            obj->step_x = 0;
-            obj->step_y = 0;
+        do_bounce = obj->collision_event(NULL, 2, area_x, area_y);
+        if (do_bounce) {
+            if (obj->bounce > 0) {
+                obj->step_y = obj->step_y*-1;
+            } else if (obj->bounce == 0 && (obj->pos_y >= area_y-obj->size_y && obj->step_y > 0 || obj->pos_y <= 0 && obj->step_y < 0)) {
+                obj->step_x = 0;
+                obj->step_y = 0;
+            }
         }
     }
 }
