@@ -2,6 +2,7 @@
 
 extern int ID_PLAYER_SHIP;
 extern int ID_PLAYER_SHOT;
+extern int ID_ENEMY_SHIP;
 
 void player_projectile::init()
 {
@@ -32,7 +33,7 @@ bool player_projectile::collision_event(engine_obj *obj2, int collide_axis, int 
     draw_active = false;
 
     if (obj2 != NULL) {
-        if (obj2->type_id > ID_PLAYER_SHOT) {
+        if (obj2->type_id == ID_ENEMY_SHIP || obj2->type_id > ID_PLAYER_SHOT) {
             obj2->phys_active = false;
             obj2->draw_active = false;
         }

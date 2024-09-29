@@ -35,8 +35,8 @@ void enemy::init()
     move_y_last = {0, 0};
     bounce = 1;
     collided = NULL;
-    phys_active = true;
-    draw_active = true;
+    phys_active = false;
+    draw_active = false;
     sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
     SDL_FillRect(sprite, NULL, SDL_MapRGB(sprite->format, 255, 0, 0));
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
