@@ -1,6 +1,7 @@
 #include "enemy.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 5000000
+#define ENEMY_SHOT_DELAY 500000000
 
 extern int ID_ENEMY_SHIP;
 extern int ID_PLAYER_SHIP;
@@ -52,6 +53,8 @@ void enemy::init_projectile()
     SDL_FillRect(shot_sprite, NULL, SDL_MapRGB(shot_sprite->format, 180, 0, 0));
     default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
+
+    last_shot = {0, 0};
 }
 
 bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
@@ -70,6 +73,20 @@ bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int 
     }
 
     return true;
+}
+
+void enemy::pre_phys_event()
+{
+    timespec now;
+    uint64_t timediff;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    timediff = ((now.tv_sec - last_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_shot.tv_nsec);
+
+    if (timediff > ENEMY_SHOT_DELAY) {
+        fire();
+        last_shot = now;
+    }
 }
 
 void enemy::fire()

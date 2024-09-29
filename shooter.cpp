@@ -23,8 +23,6 @@ int SHOT_PHYS_DELAY = 2500000;
 #define NUM_SHOTS 40
 #define NUM_SHOTS_ENEMY 40
 
-#define ENEMY_SHOT_DELAY 500000000
-
 #define ENEMY_SET_COUNT 5
 #define ENEMY_SET_SIZE 5
 
@@ -118,10 +116,6 @@ void shooter()
     bool init_enemy_set = false;
 
     SDL_Event input;
-
-    timespec last_enemy_shot {0, 0};
-    timespec now;
-    uint64_t timediff;
 
     char *base_path = SDL_GetBasePath();
 
@@ -246,18 +240,6 @@ void shooter()
 
             if (init_enemy_set) {
                 activate_enemy_set(enemy_sets[active_enemy_set], active_enemy_set);
-            }
-
-            clock_gettime(CLOCK_MONOTONIC, &now);
-            timediff = ((now.tv_sec - last_enemy_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_enemy_shot.tv_nsec);
-
-            if (timediff > ENEMY_SHOT_DELAY) {
-                for (int i = 0; i < ENEMY_SET_SIZE; i++) {
-                    if (enemy_sets[active_enemy_set][i] == NULL || !enemy_sets[active_enemy_set][i]->draw_active) continue;
-
-                    enemy_sets[active_enemy_set][i]->fire();
-                    last_enemy_shot = now;
-                }
             }
 
             // Redraw screen

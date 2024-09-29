@@ -11,6 +11,7 @@ class enemy : public engine_obj
         engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
+        timespec last_shot;
 
         virtual void init_projectile();
 
@@ -19,6 +20,7 @@ class enemy : public engine_obj
         virtual void init();
         virtual void fire();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
+        void pre_phys_event();
         ~enemy();
 };
 

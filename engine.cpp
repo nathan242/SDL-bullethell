@@ -5,6 +5,11 @@ bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x,
     return true;
 }
 
+void engine_obj::pre_phys_event()
+{
+
+}
+
 engine::engine(const char* caption, int res_x, int res_y, int bpp)
 {
     area_x = res_x;
@@ -62,6 +67,7 @@ void engine::phys_advance()
             obj = list->obj;
 
             if (obj->phys_active) {
+                obj->pre_phys_event();
                 // Check if object is colliding with another
                 check_collide(obj, list->id);
             }
