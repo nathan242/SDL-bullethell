@@ -39,8 +39,7 @@ void enemy::init()
     collided = NULL;
     phys_active = false;
     draw_active = false;
-    sprite = SDL_CreateRGBSurface(0, 20, 20, 32, 0, 0, 0, 0);
-    SDL_FillRect(sprite, NULL, SDL_MapRGB(sprite->format, 255, 0, 0));
+    sprite = IMG_Load("enemy_ship_default.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
     init_projectile();

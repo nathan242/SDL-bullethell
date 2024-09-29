@@ -11,6 +11,7 @@ class adv_enemy : public enemy
         void init_projectile();
 
     public:
+        void init();
         void fire();
 };
 
