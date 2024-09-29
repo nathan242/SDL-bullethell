@@ -35,8 +35,7 @@ void ship::init()
     sprite = IMG_Load("ship.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
-    SDL_Surface *shot_sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-    SDL_FillRect(shot_sprite, NULL, SDL_MapRGB(shot_sprite->format, 0, 255, 0));
+    SDL_Surface *shot_sprite = IMG_Load("projectile_player_default.png");
     default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
 
@@ -47,9 +46,9 @@ void ship::fire()
 {
     p_mngr->fire(
         default_shot_texture,
-        2,
+        5,
         10,
-        2,
+        5,
         10,
         pos_x+(size_x/2),
         pos_y-size_y,

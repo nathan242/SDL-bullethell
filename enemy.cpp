@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include <SDL2/SDL_image.h>
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 5000000
 #define ENEMY_SHOT_DELAY 500000000
@@ -49,8 +50,7 @@ void enemy::init()
 
 void enemy::init_projectile()
 {
-    SDL_Surface *shot_sprite = SDL_CreateRGBSurface(0, 2, 10, 32, 0, 0, 0, 0);
-    SDL_FillRect(shot_sprite, NULL, SDL_MapRGB(shot_sprite->format, 180, 0, 0));
+    SDL_Surface *shot_sprite = IMG_Load("projectile_default.png");
     default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
 
@@ -93,9 +93,9 @@ void enemy::fire()
 {
     p_mngr->fire(
         default_shot_texture,
-        2,
+        5,
         10,
-        2,
+        5,
         10,
         pos_x+(size_x/2),
         pos_y+size_y+1,
