@@ -105,7 +105,6 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
 
 void shooter()
 {
-    // bool vars for control directions and quit event
     bool quit = false;
     bool left = false;
     bool right = false;
@@ -135,8 +134,6 @@ void shooter()
     projectile_manager *player_shot_mngr = new projectile_manager();
     projectile_manager *enemy_shot_mngr = new projectile_manager();
     ship *ship_obj = new ship(eng, player_shot_mngr);
-    // enemy *enemy_obj = new enemy(eng, enemy_shot_mngr);
-    // adv_enemy *adv_enemy_obj = new adv_enemy(eng, enemy_shot_mngr);
     player_projectile *shots[NUM_SHOTS];
     enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
 
@@ -147,20 +144,6 @@ void shooter()
 
     init_all_enemy_sets(enemy_sets, eng, enemy_shot_mngr);
     activate_enemy_set(enemy_sets[active_enemy_set], active_enemy_set);
-    // TODO - Setup enemy sets
-    // enemy_sets[0][0] = new enemy(eng, enemy_shot_mngr);
-    // enemy_sets[0][0]->init();
-    // enemy_sets[0][0]->draw_active = true;
-    // enemy_sets[0][0]->phys_active = true;
-    // eng->add_object(enemy_sets[0][0]);
-    // enemy_sets[0][1] = new adv_enemy(eng, enemy_shot_mngr);
-    // enemy_sets[0][1]->init();
-    // enemy_sets[0][1]->pos_x = 300;
-    // enemy_sets[0][1]->pos_y = 100;
-    // enemy_sets[0][1]->step_x = -1;
-    // enemy_sets[0][1]->draw_active = true;
-    // enemy_sets[0][1]->phys_active = true;
-    // eng->add_object(enemy_sets[0][1]);
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         shots[shot_count] = new player_projectile();
@@ -263,18 +246,6 @@ void shooter()
 
             if (init_enemy_set) {
                 activate_enemy_set(enemy_sets[active_enemy_set], active_enemy_set);
-                // TODO - Move to init function
-                // enemy_sets[0][0]->pos_x = 150;
-                // enemy_sets[0][0]->pos_y = 150;
-                // enemy_sets[0][0]->draw_active = true;
-                // enemy_sets[0][0]->phys_active = true;
-                // enemy_sets[0][1]->pos_x = 300;
-                // enemy_sets[0][1]->pos_y = 100;
-                // enemy_sets[0][1]->step_x = -1;
-                // enemy_sets[0][1]->draw_active = true;
-                // enemy_sets[0][1]->phys_active = true;
-
-                init_enemy_set = false;
             }
 
             clock_gettime(CLOCK_MONOTONIC, &now);
@@ -297,11 +268,7 @@ void shooter()
     SDL_Quit();
 
     delete eng;
-
     delete ship_obj;
-    // delete enemy_obj;
-    // delete adv_enemy_obj;
-
     delete player_shot_mngr;
     delete enemy_shot_mngr;
 
@@ -311,6 +278,14 @@ void shooter()
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         delete enemy_shots[enemy_shot_count];
+    }
+
+    for (int s = 0; s < ENEMY_SET_COUNT; s++) {
+        for (int i = 0; i < ENEMY_SET_SIZE; i++) {
+            if (enemy_sets[s][i] == NULL) continue;
+
+            delete enemy_sets[s][i];
+        }
     }
 
     return;
