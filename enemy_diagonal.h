@@ -1,9 +1,9 @@
-#ifndef ADV_ENEMY_H
-#define ADV_ENEMY_H
+#ifndef ENEMY_DIAGONAL_H
+#define ENEMY_DIAGONAL_H
 
 #include "enemy.h"
 
-class adv_enemy : public enemy
+class enemy_diagonal : public enemy
 {
     using enemy::enemy;
     

@@ -1,12 +1,12 @@
-#include "adv_enemy.h"
+#include "enemy_diagonal_stationary.h"
 #include <SDL2/SDL_image.h>
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 5000000
+#define SHOT_PHYS_DELAY 4000000
 
 extern int ID_ENEMY_SHIP;
-extern int SHOT_PHYS_DELAY;
 
-void adv_enemy::init()
+void enemy_diagonal_stationary::init()
 {
     type_id = ID_ENEMY_SHIP;
     pos_x = 150;
@@ -25,7 +25,7 @@ void adv_enemy::init()
     collided = NULL;
     phys_active = false;
     draw_active = false;
-    sprite = IMG_Load("enemy_ship_adv.png");
+    sprite = IMG_Load("enemy_ship_diagonal.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 
     init_projectile();
@@ -33,25 +33,48 @@ void adv_enemy::init()
     initialized = true;
 }
 
-void adv_enemy::init_projectile()
+void enemy_diagonal_stationary::init_projectile()
 {
     SDL_Surface *shot_sprite = IMG_Load("projectile_ball.png");
     default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
 }
 
-void adv_enemy::fire()
+void enemy_diagonal_stationary::pre_phys_event()
 {
-    for (int x = -1; x < 2; x += 2) {
-        for (int y = -1; y < 2; y += 2) {
+    if (pos_y >= 200) {
+        step_y = 0;
+    }
+
+    enemy::pre_phys_event();
+}
+
+void enemy_diagonal_stationary::fire()
+{
+    int fire_pos_x;
+    int fire_pos_y;
+
+    for (int x = -1; x < 2; x++) {
+        for (int y = -1; y < 2; y++) {
+            fire_pos_x = x == 1 ? pos_x+size_x : pos_x-20;
+            fire_pos_y = y == 1 ? pos_y+size_y : pos_y-20;
+
+            if (x == 0 && y == 0) {
+                continue;
+            } else if (x == 0) {
+                fire_pos_x = pos_x+(size_x/2)-10;
+            } else if (y == 0) {
+                fire_pos_y = pos_y+(size_y/2)-10;
+            }
+
             p_mngr->fire(
                 default_shot_texture,
                 20,
                 20,
                 20,
                 20,
-                pos_x+(size_x/2),
-                y == 1 ? pos_y+size_y+1 : pos_y-41,
+                fire_pos_x,
+                fire_pos_y,
                 x,
                 y,
                 SHOT_PHYS_DELAY,

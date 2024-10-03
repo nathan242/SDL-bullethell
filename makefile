@@ -1,5 +1,5 @@
-shooter: shooter.o engine.o ship.o enemy.o adv_enemy.o player_projectile.o enemy_projectile.o projectile_manager.o
-	g++ -g -o shooter shooter.o engine.o ship.o enemy.o adv_enemy.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
+shooter: shooter.o engine.o ship.o enemy.o enemy_diagonal.o enemy_diagonal_stationary.o player_projectile.o enemy_projectile.o projectile_manager.o
+	g++ -g -o shooter shooter.o engine.o ship.o enemy.o enemy_diagonal.o enemy_diagonal_stationary.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
 
 shooter.o: shooter.cpp
 	g++ -g `sdl2-config --cflags` -c shooter.cpp
@@ -13,8 +13,11 @@ ship.o: ship.cpp ship.h
 enemy.o: enemy.cpp enemy.h
 	g++ -g `sdl2-config --cflags` -c enemy.cpp
 
-adv_enemy.o: adv_enemy.cpp adv_enemy.h
-	g++ -g `sdl2-config --cflags` -c adv_enemy.cpp
+enemy_diagonal.o: enemy_diagonal.cpp enemy_diagonal.h
+	g++ -g `sdl2-config --cflags` -c enemy_diagonal.cpp
+
+enemy_diagonal_stationary.o: enemy_diagonal_stationary.cpp enemy_diagonal_stationary.h
+	g++ -g `sdl2-config --cflags` -c enemy_diagonal_stationary.cpp
 
 player_projectile.o: player_projectile.cpp player_projectile.h
 	g++ -g `sdl2-config --cflags` -c player_projectile.cpp
