@@ -13,6 +13,7 @@ void player_projectile::init()
     size_y = 10;
     phys_size_x = 2;
     phys_size_y = 10;
+    area_x_offset = 2;
     area_y_offset = 10;
     step_y = -1;
     bounce = -1;
