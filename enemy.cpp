@@ -22,6 +22,8 @@ enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
 
 void enemy::init()
 {
+    engine_obj::init();
+
     type_id = ID_ENEMY_SHIP;
     pos_x = 150;
     pos_y = 150;
@@ -33,12 +35,7 @@ void enemy::init()
     step_y = 1;
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
-    move_x_last = {0, 0};
-    move_y_last = {0, 0};
     bounce = 1;
-    collided = NULL;
-    phys_active = false;
-    draw_active = false;
     sprite = IMG_Load("enemy_ship_default.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
 

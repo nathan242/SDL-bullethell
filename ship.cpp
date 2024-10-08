@@ -15,6 +15,8 @@ ship::ship(engine *eng, projectile_manager *projectile_mngr)
 
 void ship::init()
 {
+    engine_obj::init();
+
     type_id = ID_PLAYER_SHIP;
     pos_x = 50;
     pos_y = 550;
@@ -22,14 +24,8 @@ void ship::init()
     size_y = 21;
     phys_size_x = 21;
     phys_size_y = 21;
-    step_x = 0;
-    step_y = 0;
     move_x_every = SHIP_MOVE_PHYS_DELAY;
     move_y_every = SHIP_MOVE_PHYS_DELAY;
-    move_x_last = {0, 0};
-    move_y_last = {0, 0};
-    bounce = 0;
-    collided = NULL;
     phys_active = true;
     draw_active = true;
     sprite = IMG_Load("ship.png");

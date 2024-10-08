@@ -1,5 +1,28 @@
 #include "engine.h"
 
+void engine_obj::init()
+{
+    type_id = 0;
+    sprite = NULL;
+    texture = NULL;
+    size_x = 0;
+    size_y = 0;
+    phys_size_x = 0;
+    phys_size_y = 0;
+    pos_x = 0;
+    pos_y = 0;
+    step_x = 0;
+    step_y = 0;
+    move_x_every = 0;
+    move_y_every = 0;
+    move_x_last = {0, 0};
+    move_y_last = {0, 0};
+    bounce = 0;
+    collided = NULL;
+    phys_active = false;
+    draw_active = false;
+}
+
 bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     return true;

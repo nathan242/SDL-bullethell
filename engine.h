@@ -38,6 +38,7 @@ class engine_obj
         bool phys_active;
         bool draw_active;
 
+        virtual void init();
         virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         virtual void pre_phys_event();
 };
