@@ -27,6 +27,9 @@ class engine_obj
         int step_x;
         int step_y;
 
+        int area_x_offset;
+        int area_y_offset;
+
         time_t move_x_every;
         time_t move_y_every;
         timespec move_x_last;

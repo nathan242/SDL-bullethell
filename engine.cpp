@@ -13,6 +13,8 @@ void engine_obj::init()
     pos_y = 0;
     step_x = 0;
     step_y = 0;
+    area_x_offset = 0;
+    area_y_offset = 0;
     move_x_every = 0;
     move_y_every = 0;
     move_x_last = {0, 0};
@@ -265,7 +267,7 @@ void engine::check_collide(engine_obj *obj, int id)
     }
 
     // Check collision with edges
-    if ((obj->pos_x >= area_x-obj->size_x && obj->step_x > 0) || (obj->pos_x <= 0 && obj->step_x < 0)) {
+    if ((obj->pos_x >= (area_x+obj->area_x_offset)-obj->size_x && obj->step_x > 0) || (obj->pos_x <= (obj->area_x_offset*-1) && obj->step_x < 0)) {
         do_bounce = obj->collision_event(NULL, 1, area_x, area_y);
         if (do_bounce) {
             if (obj->bounce > 0) {
@@ -276,7 +278,7 @@ void engine::check_collide(engine_obj *obj, int id)
             }
         }
     }
-    if ((obj->pos_y >= area_y-obj->size_y && obj->step_y > 0) || (obj->pos_y <= 0 && obj->step_y < 0)) {
+    if ((obj->pos_y >= (area_y+obj->area_y_offset)-obj->size_y && obj->step_y > 0) || (obj->pos_y <= (obj->area_y_offset*-1) && obj->step_y < 0)) {
         do_bounce = obj->collision_event(NULL, 2, area_x, area_y);
         if (do_bounce) {
             if (obj->bounce > 0) {

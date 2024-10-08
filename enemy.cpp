@@ -25,14 +25,11 @@ void enemy::init()
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
-    pos_x = 150;
-    pos_y = 150;
     size_x = 20;
     size_y = 20;
     phys_size_x = 20;
     phys_size_y = 20;
-    step_x = 1;
-    step_y = 1;
+    area_y_offset = 20;
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
     bounce = 1;
