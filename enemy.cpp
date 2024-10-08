@@ -1,7 +1,7 @@
 #include "enemy.h"
 #include <SDL2/SDL_image.h>
 
-#define ENEMY_SHIP_MOVE_PHYS_DELAY 5000000
+#define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
 #define ENEMY_SHOT_DELAY 500000000
 
 extern int ID_ENEMY_SHIP;

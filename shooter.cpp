@@ -36,7 +36,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
     {
         case 0:
             enemy_set[0]->pos_x = 150;
-            enemy_set[0]->pos_y = 150;
+            enemy_set[0]->pos_y = enemy_set[0]->size_y*-1;
             enemy_set[0]->step_x = 1;
             enemy_set[0]->step_y = 1;
             enemy_set[0]->draw_active = true;
@@ -44,7 +44,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             enemy_set[0]->move_x_last = {0, 0};
             enemy_set[0]->move_y_last = {0, 0};
             enemy_set[1]->pos_x = 300;
-            enemy_set[1]->pos_y = 100;
+            enemy_set[1]->pos_y = enemy_set[1]->size_y*-2;
             enemy_set[1]->step_x = -1;
             enemy_set[1]->step_y = 1;
             enemy_set[1]->draw_active = true;
@@ -56,7 +56,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
 
         case 1:
             enemy_set[0]->pos_x = 150;
-            enemy_set[0]->pos_y = 150;
+            enemy_set[0]->pos_y = enemy_set[0]->size_y*-1;
             enemy_set[0]->step_x = 1;
             enemy_set[0]->step_y = 1;
             enemy_set[0]->draw_active = true;
@@ -64,7 +64,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             enemy_set[0]->move_x_last = {0, 0};
             enemy_set[0]->move_y_last = {0, 0};
             enemy_set[1]->pos_x = 300;
-            enemy_set[1]->pos_y = 100;
+            enemy_set[1]->pos_y = enemy_set[1]->size_y*-3;
             enemy_set[1]->step_x = -1;
             enemy_set[1]->step_y = 1;
             enemy_set[1]->draw_active = true;
@@ -72,7 +72,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             enemy_set[1]->move_x_last = {0, 0};
             enemy_set[1]->move_y_last = {0, 0};
             enemy_set[2]->pos_x = 100;
-            enemy_set[2]->pos_y = 100;
+            enemy_set[2]->pos_y = enemy_set[2]->size_y*-5;
             enemy_set[2]->step_x = -1;
             enemy_set[2]->step_y = 1;
             enemy_set[2]->draw_active = true;
@@ -83,14 +83,22 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             break;
 
         case 2:
-            enemy_set[0]->pos_x = 380;
-            enemy_set[0]->pos_y = 50;
+            enemy_set[0]->pos_x = 150;
+            enemy_set[0]->pos_y = enemy_set[0]->size_y*-1;
             enemy_set[0]->step_x = 0;
             enemy_set[0]->step_y = 1;
             enemy_set[0]->draw_active = true;
             enemy_set[0]->phys_active = true;
             enemy_set[0]->move_x_last = {0, 0};
             enemy_set[0]->move_y_last = {0, 0};
+            enemy_set[1]->pos_x = 550;
+            enemy_set[1]->pos_y = enemy_set[0]->size_y*-4;
+            enemy_set[1]->step_x = 0;
+            enemy_set[1]->step_y = 1;
+            enemy_set[1]->draw_active = true;
+            enemy_set[1]->phys_active = true;
+            enemy_set[1]->move_x_last = {0, 0};
+            enemy_set[1]->move_y_last = {0, 0};
 
             break;
     }
@@ -118,6 +126,9 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     enemy_sets[2][0] = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
     enemy_sets[2][0]->init();
     eng->add_object(enemy_sets[2][0]);
+    enemy_sets[2][1] = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
+    enemy_sets[2][1]->init();
+    eng->add_object(enemy_sets[2][1]);
 }
 
 void shooter()
