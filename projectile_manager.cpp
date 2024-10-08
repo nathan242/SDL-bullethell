@@ -50,6 +50,7 @@ void projectile_manager::fire(
             obj->texture = texture;
             obj->size_x = size_x;
             obj->size_y = size_y;
+            obj->area_y_offset = size_y;
             obj->phys_size_x = phys_size_x;
             obj->phys_size_y = phys_size_y;
             obj->pos_x = pos_x;
