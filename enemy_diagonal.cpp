@@ -21,6 +21,8 @@ void enemy_diagonal::init()
     bounce = 1;
     sprite = IMG_Load("enemy_ship_diagonal.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_health = 4;
+    current_health = 4;
 
     init_projectile();
 

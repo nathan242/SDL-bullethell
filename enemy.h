@@ -12,6 +12,8 @@ class enemy : public engine_obj
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
         timespec last_shot;
+        int default_health;
+        int current_health;
 
         virtual void init_projectile();
 
@@ -21,6 +23,7 @@ class enemy : public engine_obj
         virtual void fire();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         void pre_phys_event();
+        void damage(int damage_amount);
         ~enemy();
 };
 

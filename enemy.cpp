@@ -34,6 +34,8 @@ void enemy::init()
     bounce = 1;
     sprite = IMG_Load("enemy_ship_default.png");
     texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_health = 2;
+    current_health = 2;
 
     init_projectile();
 
@@ -55,6 +57,10 @@ bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int 
         if (obj2->type_id == ID_PLAYER_SHOT) {
             obj2->phys_active = false;
             obj2->draw_active = false;
+
+            damage(1);
+
+            return false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
@@ -79,6 +85,16 @@ void enemy::pre_phys_event()
     if (timediff > ENEMY_SHOT_DELAY) {
         fire();
         last_shot = now;
+    }
+}
+
+void enemy::damage(int damage_amount)
+{
+    current_health -= damage_amount;
+    if (current_health <= 0) {
+        current_health = default_health;
+        phys_active = false;
+        draw_active = false;
     }
 }
 

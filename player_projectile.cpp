@@ -13,17 +13,10 @@ void player_projectile::init()
 
 bool player_projectile::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
-    if (obj2 != NULL) {
-        if (obj2->type_id == ID_ENEMY_SHIP) {
-            obj2->phys_active = false;
-            obj2->draw_active = false;
-        } else {
-            return false;
-        }
-    } else {
+    if (obj2 == NULL) {
         phys_active = false;
         draw_active = false;
     }
 
-    return true;
+    return false;
 }
