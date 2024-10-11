@@ -51,7 +51,8 @@ void ship::fire()
         0,
         -1,
         SHOT_PHYS_DELAY,
-        SHOT_PHYS_DELAY
+        SHOT_PHYS_DELAY,
+        false
     );
 }
 

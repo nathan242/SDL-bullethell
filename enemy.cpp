@@ -10,7 +10,6 @@ extern int ID_PLAYER_SHOT;
 extern int ID_ENEMY_SHOT;
 extern int SHOT_PHYS_DELAY;
 
-extern bool reset_enemy;
 extern bool game_over;
 
 enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
@@ -54,7 +53,8 @@ bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int 
 {
     if (obj2 != NULL) {
         if (obj2->type_id == ID_PLAYER_SHOT) {
-            reset_enemy = true;
+            obj2->phys_active = false;
+            obj2->draw_active = false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {
             game_over = true;
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
@@ -95,7 +95,8 @@ void enemy::fire()
         0,
         1,
         SHOT_PHYS_DELAY,
-        SHOT_PHYS_DELAY
+        SHOT_PHYS_DELAY,
+        false
     );
 }
 

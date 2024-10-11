@@ -233,6 +233,7 @@ void engine::check_collide(engine_obj *obj, int id)
 
                     if (diff_y > diff_x) {
                         do_bounce = obj->collision_event(obj2, 1, area_x, area_y);
+                        obj2->collision_event(obj, 1, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_x > 0 && obj->pos_x < obj2->pos_x) || (obj->step_x < 0 && obj->pos_x > obj2->pos_x)) {
@@ -245,6 +246,7 @@ void engine::check_collide(engine_obj *obj, int id)
                         }
                     } else {
                         do_bounce = obj->collision_event(obj2, 2, area_x, area_y);
+                        obj2->collision_event(obj, 2, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_y > 0 && obj->pos_y < obj2->pos_y) || (obj->step_y < 0 && obj->pos_y > obj2->pos_y)) {

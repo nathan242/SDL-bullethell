@@ -1,9 +1,9 @@
 #ifndef ENEMY_PROJECTILE_H
 #define ENEMY_PROJECTILE_H
 
-#include "engine.h"
+#include "base_projectile.h"
 
-class enemy_projectile : public engine_obj
+class enemy_projectile : public base_projectile
 {
     public:
         void init();

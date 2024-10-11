@@ -6,7 +6,7 @@ projectile_manager::projectile_manager()
     list_curr = NULL;
 }
 
-void projectile_manager::add_object(engine_obj *obj)
+void projectile_manager::add_object(base_projectile *obj)
 {
     obj_list *list = new obj_list;
     list->obj = obj;
@@ -34,11 +34,12 @@ void projectile_manager::fire(
     int step_x,
     int step_y,
     int move_x_every,
-    int move_y_every
+    int move_y_every,
+    bool invincible
 )
 {
     obj_list *list = NULL;
-    engine_obj *obj = NULL;
+    base_projectile *obj = NULL;
 
     list = list_head;
 
@@ -62,6 +63,7 @@ void projectile_manager::fire(
             obj->move_y_every = move_y_every;
             obj->move_x_last = {0, 0};
             obj->move_y_last = {0, 0};
+            obj->invincible = invincible;
 
             obj->draw_active = true;
             obj->phys_active = true;

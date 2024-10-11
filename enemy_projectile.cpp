@@ -9,23 +9,16 @@ extern bool game_over;
 
 void enemy_projectile::init()
 {
-    engine_obj::init();
+    base_projectile::init();
 
     type_id = ID_ENEMY_SHOT;
-    size_x = 2;
-    size_y = 10;
-    phys_size_x = 2;
-    phys_size_y = 10;
-    area_x_offset = 2;
-    area_y_offset = 10;
-    step_y = 1;
     bounce = -1;
 }
 
 bool enemy_projectile::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
-        if (obj2->type_id == ID_PLAYER_SHOT) {
+        if (obj2->type_id == ID_PLAYER_SHOT && !invincible) {
             phys_active = false;
             draw_active = false;
             obj2->phys_active = false;

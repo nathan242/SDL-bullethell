@@ -1,7 +1,7 @@
 #ifndef PROJECTILE_MANAGER_H
 #define PROJECTILE_MANAGER_H
 
-#include "engine.h"
+#include "base_projectile.h"
 #include <SDL2/SDL.h>
 
 class projectile_manager
@@ -9,7 +9,7 @@ class projectile_manager
     protected:
         struct obj_list
         {
-            engine_obj *obj;
+            base_projectile *obj;
             obj_list *next;
         };
 
@@ -18,7 +18,7 @@ class projectile_manager
     
     public:
         projectile_manager();
-        void add_object(engine_obj *obj);
+        void add_object(base_projectile *obj);
         void fire(
             SDL_Texture *texture,
             int size_x,
@@ -30,7 +30,8 @@ class projectile_manager
             int step_x,
             int step_y,
             int move_x_every,
-            int move_y_every
+            int move_y_every,
+            bool invincible
         );
         ~projectile_manager();
 };

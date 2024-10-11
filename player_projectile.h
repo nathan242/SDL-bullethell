@@ -1,9 +1,9 @@
 #ifndef PLAYER_PROJECTILE_H
 #define PLAYER_PROJECTILE_H
 
-#include "engine.h"
+#include "base_projectile.h"
 
-class player_projectile : public engine_obj
+class player_projectile : public base_projectile
 {
     public:
         void init();

@@ -3,6 +3,7 @@
 #include "enemy.h"
 #include "enemy_diagonal.h"
 #include "enemy_diagonal_stationary.h"
+#include "enemy_diagonal_stationary_fwdsprd.h"
 #include "player_projectile.h"
 #include "enemy_projectile.h"
 #include "projectile_manager.h"
@@ -27,7 +28,6 @@ int SHOT_PHYS_DELAY = 2500000;
 #define ENEMY_SET_COUNT 5
 #define ENEMY_SET_SIZE 5
 
-bool reset_enemy = false;
 bool game_over = false;
 
 void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
@@ -101,6 +101,26 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             enemy_set[1]->move_y_last = {0, 0};
 
             break;
+
+        case 3:
+            enemy_set[0]->pos_x = 150;
+            enemy_set[0]->pos_y = enemy_set[0]->size_y*-1;
+            enemy_set[0]->step_x = 0;
+            enemy_set[0]->step_y = 1;
+            enemy_set[0]->draw_active = true;
+            enemy_set[0]->phys_active = true;
+            enemy_set[0]->move_x_last = {0, 0};
+            enemy_set[0]->move_y_last = {0, 0};
+            enemy_set[1]->pos_x = 550;
+            enemy_set[1]->pos_y = enemy_set[0]->size_y*-4;
+            enemy_set[1]->step_x = 0;
+            enemy_set[1]->step_y = 1;
+            enemy_set[1]->draw_active = true;
+            enemy_set[1]->phys_active = true;
+            enemy_set[1]->move_x_last = {0, 0};
+            enemy_set[1]->move_y_last = {0, 0};
+
+            break;
     }
 }
 
@@ -129,6 +149,13 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     enemy_sets[2][1] = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
     enemy_sets[2][1]->init();
     eng->add_object(enemy_sets[2][1]);
+
+    enemy_sets[3][0] = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr);
+    enemy_sets[3][0]->init();
+    eng->add_object(enemy_sets[3][0]);
+    enemy_sets[3][1] = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr);
+    enemy_sets[3][1]->init();
+    eng->add_object(enemy_sets[3][1]);
 }
 
 void shooter()

@@ -72,7 +72,8 @@ void enemy_diagonal_stationary::fire()
                 x,
                 y,
                 SHOT_PHYS_DELAY,
-                SHOT_PHYS_DELAY
+                SHOT_PHYS_DELAY,
+                false
             );
         }
     }
