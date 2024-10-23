@@ -8,6 +8,8 @@ extern int ID_ENEMY_SHIP;
 
 void enemy_diagonal_stationary::init()
 {
+    SDL_Surface *hit_sprite;
+
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
@@ -19,8 +21,16 @@ void enemy_diagonal_stationary::init()
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
     bounce = 1;
-    sprite = IMG_Load("enemy_ship_diagonal.png");
-    texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    sprite = IMG_Load("enemy_ship_diagonal_6.png");
+    last_shot = {0, 0};
+    default_texture = texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+
+    hit_sprite = IMG_Load("enemy_ship_diagonal_6_hit.png");
+    hit_texture = SDL_CreateTextureFromSurface(i_eng->renderer, hit_sprite);
+    SDL_FreeSurface(hit_sprite);
+
+    last_hit = {0, 0};
+
     default_health = 4;
     current_health = 4;
 

@@ -14,6 +14,9 @@ class enemy : public engine_obj
         timespec last_shot;
         int default_health;
         int current_health;
+        SDL_Texture *default_texture;
+        SDL_Texture *hit_texture;
+        timespec last_hit;
 
         virtual void init_projectile();
 
