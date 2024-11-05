@@ -11,6 +11,7 @@ class enemy : public engine_obj
         engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
+        uint64_t shot_delay;
         timespec last_shot;
         int default_health;
         int current_health;

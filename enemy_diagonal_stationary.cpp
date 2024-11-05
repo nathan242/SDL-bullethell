@@ -34,6 +34,8 @@ void enemy_diagonal_stationary::init()
     default_health = 4;
     current_health = 4;
 
+    shot_delay = 800000000;
+
     init_projectile();
 
     initialized = true;

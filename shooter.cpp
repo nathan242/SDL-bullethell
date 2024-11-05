@@ -4,6 +4,7 @@
 #include "enemy_diagonal.h"
 #include "enemy_diagonal_stationary.h"
 #include "enemy_diagonal_stationary_fwdsprd.h"
+#include "enemy_cargo.h"
 #include "player_projectile.h"
 #include "enemy_projectile.h"
 #include "projectile_manager.h"
@@ -51,6 +52,14 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
             enemy_set[1]->phys_active = true;
             enemy_set[1]->move_x_last = {0, 0};
             enemy_set[1]->move_y_last = {0, 0};
+            enemy_set[2]->pos_x = 650;
+            enemy_set[2]->pos_y = enemy_set[2]->size_y*-3;
+            enemy_set[2]->step_x = 0;
+            enemy_set[2]->step_y = 1;
+            enemy_set[2]->draw_active = true;
+            enemy_set[2]->phys_active = true;
+            enemy_set[2]->move_x_last = {0, 0};
+            enemy_set[2]->move_y_last = {0, 0};
 
             break;
 
@@ -132,6 +141,9 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     enemy_sets[0][1] = new enemy_diagonal(eng, enemy_shot_mngr);
     enemy_sets[0][1]->init();
     eng->add_object(enemy_sets[0][1]);
+    enemy_sets[0][2] = new enemy_cargo(eng, enemy_shot_mngr);
+    enemy_sets[0][2]->init();
+    eng->add_object(enemy_sets[0][2]);
 
     enemy_sets[1][0] = new enemy_diagonal(eng, enemy_shot_mngr);
     enemy_sets[1][0]->init();

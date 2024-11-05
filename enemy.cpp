@@ -2,7 +2,6 @@
 #include <SDL2/SDL_image.h>
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
-#define ENEMY_SHOT_DELAY 800000000
 #define HIT_FLASH_DELAY 100000000
 
 extern int ID_ENEMY_SHIP;
@@ -48,6 +47,8 @@ void enemy::init()
     default_health = 2;
     current_health = 2;
 
+    shot_delay = 800000000;
+
     init_projectile();
 
     initialized = true;
@@ -91,7 +92,7 @@ void enemy::pre_phys_event()
     clock_gettime(CLOCK_MONOTONIC, &now);
     timediff = ((now.tv_sec - last_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_shot.tv_nsec);
 
-    if (timediff > ENEMY_SHOT_DELAY) {
+    if (shot_delay > 0 && timediff > shot_delay) {
         fire();
         last_shot = now;
     }
