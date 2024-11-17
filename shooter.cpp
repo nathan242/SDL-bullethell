@@ -5,6 +5,7 @@
 #include "enemy_diagonal_stationary.h"
 #include "enemy_diagonal_stationary_fwdsprd.h"
 #include "enemy_cargo.h"
+#include "powerup_double_shot.h"
 #include "player_projectile.h"
 #include "enemy_projectile.h"
 #include "projectile_manager.h"
@@ -19,6 +20,7 @@
 
 int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
+int ID_POWERUP_DOUBLE_SHOT = 100;
 int ID_PLAYER_SHOT = 1000;
 int ID_ENEMY_SHOT = 1001;
 int SHOT_PHYS_DELAY = 2500000;
@@ -133,7 +135,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
     }
 }
 
-void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], engine *eng, projectile_manager *enemy_shot_mngr)
+void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], engine *eng, projectile_manager *enemy_shot_mngr, powerup_double_shot *powerup_double_shot_obj)
 {
     enemy_sets[0][0] = new enemy(eng, enemy_shot_mngr);
     enemy_sets[0][0]->init();
@@ -143,6 +145,7 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     eng->add_object(enemy_sets[0][1]);
     enemy_sets[0][2] = new enemy_cargo(eng, enemy_shot_mngr);
     enemy_sets[0][2]->init();
+    ((enemy_cargo*)enemy_sets[0][2])->drop_powerup = powerup_double_shot_obj;
     eng->add_object(enemy_sets[0][2]);
 
     enemy_sets[1][0] = new enemy_diagonal(eng, enemy_shot_mngr);
@@ -199,13 +202,18 @@ void shooter()
     ship *ship_obj = new ship(eng, player_shot_mngr);
     player_projectile *shots[NUM_SHOTS];
     enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
+    powerup_double_shot *powerup_double_shot_obj;
 
     enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE] = {};
+
+    powerup_double_shot_obj = new powerup_double_shot(eng);
+    powerup_double_shot_obj->init();
+    eng->add_object(powerup_double_shot_obj);
 
     eng->add_object(ship_obj);
     ship_obj->init();
 
-    init_all_enemy_sets(enemy_sets, eng, enemy_shot_mngr);
+    init_all_enemy_sets(enemy_sets, eng, enemy_shot_mngr, powerup_double_shot_obj);
     activate_enemy_set(enemy_sets[active_enemy_set], active_enemy_set);
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
@@ -322,6 +330,7 @@ void shooter()
     delete ship_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
+    delete powerup_double_shot_obj;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         delete shots[shot_count];

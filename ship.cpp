@@ -5,6 +5,7 @@
 
 extern int ID_PLAYER_SHIP;
 extern int SHOT_PHYS_DELAY;
+extern int ID_POWERUP_DOUBLE_SHOT;
 
 ship::ship(engine *eng, projectile_manager *projectile_mngr)
 {
@@ -35,25 +36,77 @@ void ship::init()
     default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
     SDL_FreeSurface(shot_sprite);
 
+    active_weapon = 0;
+
     initialized = true;
+}
+
+bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
+{
+    if (obj2 != NULL && obj2->type_id == ID_POWERUP_DOUBLE_SHOT) {
+        obj2->phys_active = false;
+        obj2->draw_active = false;
+
+        active_weapon = 1;
+
+        return false;
+    }
+
+    return true;
 }
 
 void ship::fire()
 {
-    p_mngr->fire(
-        default_shot_texture,
-        5,
-        10,
-        5,
-        10,
-        pos_x+(size_x/2),
-        pos_y-size_y,
-        0,
-        -1,
-        SHOT_PHYS_DELAY,
-        SHOT_PHYS_DELAY,
-        false
-    );
+    switch (active_weapon) {
+        case 1:
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)-6,
+                pos_y-size_y,
+                0,
+                -1,
+                SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)+6,
+                pos_y-size_y,
+                0,
+                -1,
+                SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            break;
+
+        default:
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2),
+                pos_y-size_y,
+                0,
+                -1,
+                SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+    }
 }
 
 ship::~ship()

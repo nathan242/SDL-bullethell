@@ -27,7 +27,7 @@ class enemy : public engine_obj
         virtual void fire();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         void pre_phys_event();
-        void damage(int damage_amount);
+        virtual void damage(int damage_amount);
         ~enemy();
 };
 

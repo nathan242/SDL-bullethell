@@ -23,6 +23,7 @@ void enemy_cargo::init()
     sprite = IMG_Load("enemy_cargo.png");
     last_shot = {0, 0};
     default_texture = texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_shot_texture = NULL;
 
     hit_sprite = IMG_Load("enemy_cargo_hit.png");
     hit_texture = SDL_CreateTextureFromSurface(i_eng->renderer, hit_sprite);
@@ -36,4 +37,16 @@ void enemy_cargo::init()
     shot_delay = 0;
 
     initialized = true;
+}
+
+void enemy_cargo::damage(int damage_amount)
+{
+    enemy::damage(damage_amount);
+
+    if (draw_active == false) {
+        drop_powerup->pos_x = pos_x;
+        drop_powerup->pos_y = pos_y;
+        drop_powerup->phys_active = true;
+        drop_powerup->draw_active = true;
+    }
 }

@@ -138,7 +138,10 @@ void enemy::fire()
 enemy::~enemy()
 {
     if (initialized) {
-        SDL_DestroyTexture(default_shot_texture);
+        if (default_shot_texture != NULL) {
+            SDL_DestroyTexture(default_shot_texture);
+        }
+
         SDL_DestroyTexture(texture);
         SDL_FreeSurface(sprite);
     }
