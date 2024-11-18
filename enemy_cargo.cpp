@@ -36,17 +36,7 @@ void enemy_cargo::init()
 
     shot_delay = 0;
 
+    drop_powerup = NULL;
+
     initialized = true;
-}
-
-void enemy_cargo::damage(int damage_amount)
-{
-    enemy::damage(damage_amount);
-
-    if (draw_active == false) {
-        drop_powerup->pos_x = pos_x;
-        drop_powerup->pos_y = pos_y;
-        drop_powerup->phys_active = true;
-        drop_powerup->draw_active = true;
-    }
 }

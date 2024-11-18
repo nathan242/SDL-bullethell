@@ -49,6 +49,8 @@ void enemy::init()
 
     shot_delay = 800000000;
 
+    drop_powerup = NULL;
+
     init_projectile();
 
     initialized = true;
@@ -69,6 +71,13 @@ bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int 
             obj2->draw_active = false;
 
             damage(1);
+
+            if (draw_active == false && drop_powerup != NULL) {
+                drop_powerup->pos_x = pos_x;
+                drop_powerup->pos_y = pos_y;
+                drop_powerup->phys_active = true;
+                drop_powerup->draw_active = true;
+            }
 
             return false;
         } else if (obj2->type_id == ID_PLAYER_SHIP) {

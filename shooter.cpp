@@ -145,7 +145,7 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     eng->add_object(enemy_sets[0][1]);
     enemy_sets[0][2] = new enemy_cargo(eng, enemy_shot_mngr);
     enemy_sets[0][2]->init();
-    ((enemy_cargo*)enemy_sets[0][2])->drop_powerup = powerup_double_shot_obj;
+    enemy_sets[0][2]->drop_powerup = powerup_double_shot_obj;
     eng->add_object(enemy_sets[0][2]);
 
     enemy_sets[1][0] = new enemy_diagonal(eng, enemy_shot_mngr);

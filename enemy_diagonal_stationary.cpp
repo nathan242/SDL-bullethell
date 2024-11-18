@@ -36,6 +36,8 @@ void enemy_diagonal_stationary::init()
 
     shot_delay = 800000000;
 
+    drop_powerup = NULL;
+
     init_projectile();
 
     initialized = true;

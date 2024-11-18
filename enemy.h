@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "projectile_manager.h"
+#include "powerup.h"
 
 class enemy : public engine_obj
 {
@@ -22,6 +23,8 @@ class enemy : public engine_obj
         virtual void init_projectile();
 
     public:
+        powerup *drop_powerup;
+
         enemy(engine *eng, projectile_manager *projectile_mngr);
         virtual void init();
         virtual void fire();
