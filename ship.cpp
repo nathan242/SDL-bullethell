@@ -5,7 +5,6 @@
 
 extern int ID_PLAYER_SHIP;
 extern int SHOT_PHYS_DELAY;
-extern int ID_POWERUP_DOUBLE_SHOT;
 
 ship::ship(engine *eng, projectile_manager *projectile_mngr)
 {
@@ -43,11 +42,11 @@ void ship::init()
 
 bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
-    if (obj2 != NULL && obj2->type_id == ID_POWERUP_DOUBLE_SHOT) {
+    if (obj2 != NULL && obj2->type_id >= 100 && obj2->type_id <= 199) {
         obj2->phys_active = false;
         obj2->draw_active = false;
 
-        active_weapon = 1;
+        active_weapon = obj2->type_id - 99;
 
         return false;
     }
@@ -85,6 +84,73 @@ void ship::fire()
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            break;
+
+        case 2:
+            // Forward left
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)-6,
+                pos_y-size_y,
+                0,
+                -1,
+                SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            // Forward right
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)+6,
+                pos_y-size_y,
+                0,
+                -1,
+                SHOT_PHYS_DELAY,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            // Angle left
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)-6,
+                pos_y-size_y,
+                -1,
+                -1,
+                SHOT_PHYS_DELAY*8,
+                SHOT_PHYS_DELAY,
+                false
+            );
+
+            // Angle right
+            p_mngr->fire(
+                default_shot_texture,
+                5,
+                10,
+                5,
+                10,
+                pos_x+(size_x/2)+6,
+                pos_y-size_y,
+                1,
+                -1,
+                SHOT_PHYS_DELAY*8,
                 SHOT_PHYS_DELAY,
                 false
             );

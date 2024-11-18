@@ -6,6 +6,7 @@
 #include "enemy_diagonal_stationary_fwdsprd.h"
 #include "enemy_cargo.h"
 #include "powerup_double_shot.h"
+#include "powerup_quad_spread_shot.h"
 #include "player_projectile.h"
 #include "enemy_projectile.h"
 #include "projectile_manager.h"
@@ -21,6 +22,7 @@
 int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
 int ID_POWERUP_DOUBLE_SHOT = 100;
+int ID_POWERUP_QUAD_SPREAD_SHOT = 101;
 int ID_PLAYER_SHOT = 1000;
 int ID_ENEMY_SHOT = 1001;
 int SHOT_PHYS_DELAY = 2500000;
@@ -135,7 +137,7 @@ void activate_enemy_set(enemy *enemy_set[ENEMY_SET_SIZE], int set_id)
     }
 }
 
-void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], engine *eng, projectile_manager *enemy_shot_mngr, powerup_double_shot *powerup_double_shot_obj)
+void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], engine *eng, projectile_manager *enemy_shot_mngr, powerup_double_shot *powerup_double_shot_obj, powerup_quad_spread_shot *powerup_quad_spread_shot_obj)
 {
     enemy_sets[0][0] = new enemy(eng, enemy_shot_mngr);
     enemy_sets[0][0]->init();
@@ -163,6 +165,7 @@ void init_all_enemy_sets(enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE], eng
     eng->add_object(enemy_sets[2][0]);
     enemy_sets[2][1] = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
     enemy_sets[2][1]->init();
+    enemy_sets[2][1]->drop_powerup = powerup_quad_spread_shot_obj;
     eng->add_object(enemy_sets[2][1]);
 
     enemy_sets[3][0] = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr);
@@ -203,6 +206,7 @@ void shooter()
     player_projectile *shots[NUM_SHOTS];
     enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
     powerup_double_shot *powerup_double_shot_obj;
+    powerup_quad_spread_shot *powerup_quad_spread_shot_obj;
 
     enemy *enemy_sets[ENEMY_SET_COUNT][ENEMY_SET_SIZE] = {};
 
@@ -210,10 +214,14 @@ void shooter()
     powerup_double_shot_obj->init();
     eng->add_object(powerup_double_shot_obj);
 
+    powerup_quad_spread_shot_obj = new powerup_quad_spread_shot(eng);
+    powerup_quad_spread_shot_obj->init();
+    eng->add_object(powerup_quad_spread_shot_obj);
+
     eng->add_object(ship_obj);
     ship_obj->init();
 
-    init_all_enemy_sets(enemy_sets, eng, enemy_shot_mngr, powerup_double_shot_obj);
+    init_all_enemy_sets(enemy_sets, eng, enemy_shot_mngr, powerup_double_shot_obj, powerup_quad_spread_shot_obj);
     activate_enemy_set(enemy_sets[active_enemy_set], active_enemy_set);
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
@@ -331,6 +339,7 @@ void shooter()
     delete player_shot_mngr;
     delete enemy_shot_mngr;
     delete powerup_double_shot_obj;
+    delete powerup_quad_spread_shot_obj;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         delete shots[shot_count];
