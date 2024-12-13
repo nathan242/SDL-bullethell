@@ -24,6 +24,7 @@ class enemy : public engine_obj
 
     public:
         powerup *drop_powerup;
+        bool ungroup;
 
         enemy(engine *eng, projectile_manager *projectile_mngr);
         virtual void init();

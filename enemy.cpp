@@ -50,6 +50,7 @@ void enemy::init()
     shot_delay = 800000000;
 
     drop_powerup = NULL;
+    ungroup = false;
 
     init_projectile();
 
@@ -103,7 +104,7 @@ void enemy::pre_phys_event()
     clock_gettime(CLOCK_MONOTONIC, &now);
     timediff = ((now.tv_sec - last_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_shot.tv_nsec);
 
-    if (shot_delay > 0 && timediff > shot_delay) {
+    if (shot_delay > 0 && timediff > shot_delay && pos_y > (size_y * -1)) {
         fire();
         last_shot = now;
     }
