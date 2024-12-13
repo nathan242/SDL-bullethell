@@ -51,10 +51,10 @@ engine::engine(const char* caption, int res_x, int res_y, int bpp)
     list_curr = NULL;
 }
 
-int engine::add_object(engine_obj *obj)
+engine_obj_list* engine::add_object(engine_obj *obj)
 {
-    obj_list *list = new obj_list;
-    list->id = list_len;
+    engine_obj_list *list = new engine_obj_list;
+    list->id = list_len++;
     list->obj = obj;
     list->next = NULL;
 
@@ -68,12 +68,12 @@ int engine::add_object(engine_obj *obj)
         list_curr = list;
     }
 
-    return list_len++;
+    return list;
 }
 
 void engine::phys_advance()
 {
-    obj_list *list = NULL;
+    engine_obj_list *list = NULL;
     engine_obj *obj = NULL;
     timespec now;
     uint64_t timediff;
@@ -169,7 +169,7 @@ void engine::phys_advance()
 
 void engine::reset_phys_timings()
 {
-    obj_list *list = list_head;
+    engine_obj_list *list = list_head;
     timespec inittime {0, 0};
 
     while (list != NULL) {
@@ -183,7 +183,7 @@ void engine::reset_phys_timings()
 
 void engine::check_collide(engine_obj *obj, int id)
 {
-    obj_list *list = NULL;
+    engine_obj_list *list = NULL;
     engine_obj *obj2 = NULL;
 
     int x1;
@@ -233,7 +233,6 @@ void engine::check_collide(engine_obj *obj, int id)
 
                     if (diff_y > diff_x) {
                         do_bounce = obj->collision_event(obj2, 1, area_x, area_y);
-                        obj2->collision_event(obj, 1, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_x > 0 && obj->pos_x < obj2->pos_x) || (obj->step_x < 0 && obj->pos_x > obj2->pos_x)) {
@@ -246,7 +245,6 @@ void engine::check_collide(engine_obj *obj, int id)
                         }
                     } else {
                         do_bounce = obj->collision_event(obj2, 2, area_x, area_y);
-                        obj2->collision_event(obj, 2, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
                                 if ((obj->step_y > 0 && obj->pos_y < obj2->pos_y) || (obj->step_y < 0 && obj->pos_y > obj2->pos_y)) {
@@ -294,7 +292,7 @@ void engine::check_collide(engine_obj *obj, int id)
 }
 
 void engine::draw() {
-    obj_list *list = NULL;
+    engine_obj_list *list = NULL;
     engine_obj *obj = NULL;
 
     list = list_head;
@@ -333,8 +331,8 @@ engine::~engine()
     SDL_DestroyWindow(window);
 
     if (list_head != NULL) {
-        obj_list *list = NULL;
-        obj_list *prev = NULL;
+        engine_obj_list *list = NULL;
+        engine_obj_list *prev = NULL;
 
         list = list_head;
 

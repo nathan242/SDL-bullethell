@@ -46,6 +46,13 @@ class engine_obj
         virtual void pre_phys_event();
 };
 
+struct engine_obj_list
+{
+    int id;
+    engine_obj *obj;
+    engine_obj_list *next;
+};
+
 class engine
 {
     protected:
@@ -53,15 +60,8 @@ class engine
 
         int list_len;
 
-        struct obj_list
-        {
-            int id;
-            engine_obj *obj;
-            obj_list *next;
-        };
-
-        obj_list *list_head;
-        obj_list *list_curr;
+        engine_obj_list *list_head;
+        engine_obj_list *list_curr;
 
         int area_x;
         int area_y;
@@ -72,7 +72,7 @@ class engine
         SDL_Renderer *renderer;
 
         engine(const char* caption, int res_x, int res_y, int bpp);
-        int add_object(engine_obj *obj);
+        engine_obj_list* add_object(engine_obj *obj);
         void step();
         void draw();
         void phys_advance();
