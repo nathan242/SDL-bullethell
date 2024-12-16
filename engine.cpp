@@ -325,6 +325,16 @@ void engine::step()
     draw();
 }
 
+void engine::add_resource(const char *name, void *resource)
+{
+    resource_map[name] = resource;
+}
+
+void *engine::get_resource(const char *name)
+{
+    return resource_map[name];
+}
+
 engine::~engine()
 {
     SDL_DestroyRenderer(renderer);

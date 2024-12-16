@@ -234,6 +234,84 @@ void shooter()
 
     engine *eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP);
 
+    SDL_Surface *temp_surface;
+
+    // Add resources
+    temp_surface = IMG_Load("ship.png");
+    SDL_Texture *ship_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("ship_tex", ship_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("projectile_player_default.png");
+    SDL_Texture *projectile_player_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("projectile_player_default_tex", projectile_player_default_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_default.png");
+    SDL_Texture *enemy_ship_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_default_tex", enemy_ship_default_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_default_hit.png");
+    SDL_Texture *enemy_ship_default_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_default_hit_tex", enemy_ship_default_hit_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("projectile_default.png");
+    SDL_Texture *projectile_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("projectile_default_tex", projectile_default_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_diagonal.png");
+    SDL_Texture *enemy_ship_diagonal_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_diagonal_tex", enemy_ship_diagonal_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_diagonal_hit.png");
+    SDL_Texture *enemy_ship_diagonal_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_diagonal_hit_tex", enemy_ship_diagonal_hit_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("projectile_ball.png");
+    SDL_Texture *projectile_ball_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("projectile_ball_tex", projectile_ball_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_diagonal_6.png");
+    SDL_Texture *enemy_ship_diagonal_6_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_diagonal_6_tex", enemy_ship_diagonal_6_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_ship_diagonal_6_hit.png");
+    SDL_Texture *enemy_ship_diagonal_6_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_ship_diagonal_6_hit_tex", enemy_ship_diagonal_6_hit_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("projectile_ball_invincible.png");
+    SDL_Texture *projectile_ball_invincible_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("projectile_ball_invincible_tex", projectile_ball_invincible_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_cargo.png");
+    SDL_Texture *enemy_cargo_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_cargo_tex", enemy_cargo_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("enemy_cargo_hit.png");
+    SDL_Texture *enemy_cargo_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("enemy_cargo_hit_tex", enemy_cargo_hit_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("powerup_double_shot.png");
+    SDL_Texture *powerup_double_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("powerup_double_shot_tex", powerup_double_shot_texture);
+    SDL_FreeSurface(temp_surface);
+
+    temp_surface = IMG_Load("powerup_quad_spread_shot.png");
+    SDL_Texture *powerup_quad_spread_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("powerup_quad_spread_shot_tex", powerup_quad_spread_shot_texture);
+    SDL_FreeSurface(temp_surface);
+
     // Game objects
     projectile_manager *player_shot_mngr = new projectile_manager();
     projectile_manager *enemy_shot_mngr = new projectile_manager();
@@ -386,6 +464,22 @@ void shooter()
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
         delete enemy_slots[i]->obj;
     }
+
+    SDL_DestroyTexture(ship_texture);
+    SDL_DestroyTexture(projectile_player_default_texture);
+    SDL_DestroyTexture(enemy_ship_default_texture);
+    SDL_DestroyTexture(enemy_ship_default_hit_texture);
+    SDL_DestroyTexture(projectile_default_texture);
+    SDL_DestroyTexture(enemy_ship_diagonal_texture);
+    SDL_DestroyTexture(enemy_ship_diagonal_hit_texture);
+    SDL_DestroyTexture(projectile_ball_texture);
+    SDL_DestroyTexture(enemy_ship_diagonal_6_texture);
+    SDL_DestroyTexture(enemy_ship_diagonal_6_hit_texture);
+    SDL_DestroyTexture(projectile_ball_invincible_texture);
+    SDL_DestroyTexture(enemy_cargo_texture);
+    SDL_DestroyTexture(enemy_cargo_hit_texture);
+    SDL_DestroyTexture(powerup_double_shot_texture);
+    SDL_DestroyTexture(powerup_quad_spread_shot_texture);
 
     delete eng;
 

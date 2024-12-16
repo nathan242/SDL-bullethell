@@ -5,9 +5,7 @@
 
 void enemy_diagonal_stationary_fwdsprd::init_projectile()
 {
-    SDL_Surface *shot_sprite = IMG_Load("projectile_ball_invincible.png");
-    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
-    SDL_FreeSurface(shot_sprite);
+    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_invincible_tex");
 }
 
 void enemy_diagonal_stationary_fwdsprd::fire()

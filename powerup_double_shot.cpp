@@ -9,6 +9,5 @@ void powerup_double_shot::init()
 
     type_id = ID_POWERUP_DOUBLE_SHOT;
 
-    sprite = IMG_Load("powerup_double_shot.png");
-    texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    texture = (SDL_Texture*)i_eng->get_resource("powerup_double_shot_tex");
 }

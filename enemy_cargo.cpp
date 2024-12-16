@@ -20,14 +20,11 @@ void enemy_cargo::init()
     move_x_every = 0;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     bounce = 1;
-    sprite = IMG_Load("enemy_cargo.png");
     last_shot = {0, 0};
-    default_texture = texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_cargo_tex");
     default_shot_texture = NULL;
 
-    hit_sprite = IMG_Load("enemy_cargo_hit.png");
-    hit_texture = SDL_CreateTextureFromSurface(i_eng->renderer, hit_sprite);
-    SDL_FreeSurface(hit_sprite);
+    hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_cargo_hit_tex");
 
     last_hit = {0, 0};
 

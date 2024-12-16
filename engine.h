@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <unordered_map>
+#include <string>
 #include <time.h>
 
 #include <SDL2/SDL.h>
@@ -66,6 +68,8 @@ class engine
         int area_x;
         int area_y;
 
+        std::unordered_map<std::string, void *> resource_map;
+
         void check_collide(engine_obj *obj, int id);
     public:
         SDL_Window *window;
@@ -76,8 +80,9 @@ class engine
         void step();
         void draw();
         void phys_advance();
-        void check_collide();
         void reset_phys_timings();
+        void add_resource(const char *name, void *resource);
+        void *get_resource(const char *name);
         ~engine();
 };
 

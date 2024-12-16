@@ -28,12 +28,9 @@ void ship::init()
     move_y_every = SHIP_MOVE_PHYS_DELAY;
     phys_active = true;
     draw_active = true;
-    sprite = IMG_Load("ship.png");
-    texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
 
-    SDL_Surface *shot_sprite = IMG_Load("projectile_player_default.png");
-    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
-    SDL_FreeSurface(shot_sprite);
+    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
 
     active_weapon = 0;
 
@@ -178,8 +175,6 @@ void ship::fire()
 ship::~ship()
 {
     if (initialized) {
-        SDL_DestroyTexture(default_shot_texture);
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(sprite);
+        
     }
 }

@@ -21,13 +21,10 @@ void enemy_diagonal::init()
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
     bounce = 1;
-    sprite = IMG_Load("enemy_ship_diagonal.png");
     last_shot = {0, 0};
-    default_texture = texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_tex");
 
-    hit_sprite = IMG_Load("enemy_ship_diagonal_hit.png");
-    hit_texture = SDL_CreateTextureFromSurface(i_eng->renderer, hit_sprite);
-    SDL_FreeSurface(hit_sprite);
+    hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_hit_tex");
 
     last_hit = {0, 0};
 
@@ -46,9 +43,7 @@ void enemy_diagonal::init()
 
 void enemy_diagonal::init_projectile()
 {
-    SDL_Surface *shot_sprite = IMG_Load("projectile_ball.png");
-    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
-    SDL_FreeSurface(shot_sprite);
+    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
 }
 
 void enemy_diagonal::fire()

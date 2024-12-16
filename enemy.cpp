@@ -34,13 +34,10 @@ void enemy::init()
     move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
     move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
     bounce = 1;
-    sprite = IMG_Load("enemy_ship_default.png");
     last_shot = {0, 0};
-    default_texture = texture = SDL_CreateTextureFromSurface(i_eng->renderer, sprite);
+    default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_default_tex");
 
-    hit_sprite = IMG_Load("enemy_ship_default_hit.png");
-    hit_texture = SDL_CreateTextureFromSurface(i_eng->renderer, hit_sprite);
-    SDL_FreeSurface(hit_sprite);
+    hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_default_hit_tex");
 
     last_hit = {0, 0};
 
@@ -59,9 +56,7 @@ void enemy::init()
 
 void enemy::init_projectile()
 {
-    SDL_Surface *shot_sprite = IMG_Load("projectile_default.png");
-    default_shot_texture = SDL_CreateTextureFromSurface(i_eng->renderer, shot_sprite);
-    SDL_FreeSurface(shot_sprite);
+    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
 }
 
 bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
@@ -150,11 +145,6 @@ void enemy::fire()
 enemy::~enemy()
 {
     if (initialized) {
-        if (default_shot_texture != NULL) {
-            SDL_DestroyTexture(default_shot_texture);
-        }
-
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(sprite);
+        
     }
 }

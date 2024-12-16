@@ -22,7 +22,6 @@ void powerup::init()
 powerup::~powerup()
 {
     if (initialized) {
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(sprite);
+        
     }
 }
