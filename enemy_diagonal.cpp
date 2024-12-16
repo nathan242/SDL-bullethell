@@ -37,6 +37,7 @@ void enemy_diagonal::init()
     shot_delay = 800000000;
 
     drop_powerup = NULL;
+    ungroup = false;
 
     init_projectile();
 

@@ -37,6 +37,7 @@ void enemy_cargo::init()
     shot_delay = 0;
 
     drop_powerup = NULL;
+    ungroup = false;
 
     initialized = true;
 }
