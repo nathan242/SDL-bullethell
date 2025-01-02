@@ -42,6 +42,7 @@ class engine_obj
 
         bool phys_active;
         bool draw_active;
+        bool phys_collision_active;
 
         virtual void init();
         virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);

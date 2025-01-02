@@ -23,6 +23,7 @@ void engine_obj::init()
     collided = NULL;
     phys_active = false;
     draw_active = false;
+    phys_collision_active = true;
 }
 
 bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
@@ -93,8 +94,11 @@ void engine::phys_advance()
 
             if (obj->phys_active) {
                 obj->pre_phys_event();
-                // Check if object is colliding with another
-                check_collide(obj, list->id);
+
+                if (obj->phys_collision_active) {
+                    // Check if object is colliding with another
+                    check_collide(obj, list->id);
+                }
             }
 
             // Get next
@@ -200,9 +204,8 @@ void engine::check_collide(engine_obj *obj, int id)
 
     // Check collision with other objects
     while (list != NULL) {
-        if (list->id != id && list->obj->phys_active) {
+        if (list->id != id && list->obj->phys_active && list->obj->phys_collision_active) {
             obj2 = list->obj;
-            do_bounce;
 
             // Left side
             x1 = obj2->pos_x-obj->size_x;

@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "background.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_diagonal.h"
@@ -25,6 +26,8 @@ int ID_POWERUP_DOUBLE_SHOT = 100;
 int ID_POWERUP_QUAD_SPREAD_SHOT = 101;
 int ID_PLAYER_SHOT = 1000;
 int ID_ENEMY_SHOT = 1001;
+int ID_BACKGROUND = 2000;
+
 int SHOT_PHYS_DELAY = 2500000;
 
 #define NUM_SHOTS 40
@@ -237,6 +240,11 @@ void shooter()
     SDL_Surface *temp_surface;
 
     // Add resources
+    temp_surface = IMG_Load("background.png");
+    SDL_Texture *background_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    eng->add_resource("background_tex", background_texture);
+    SDL_FreeSurface(temp_surface);
+
     temp_surface = IMG_Load("ship.png");
     SDL_Texture *ship_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
     eng->add_resource("ship_tex", ship_texture);
@@ -315,11 +323,19 @@ void shooter()
     // Game objects
     projectile_manager *player_shot_mngr = new projectile_manager();
     projectile_manager *enemy_shot_mngr = new projectile_manager();
+    background *background_a_obj = new background(eng);
+    background *background_b_obj = new background(eng);
     ship *ship_obj = new ship(eng, player_shot_mngr);
     player_projectile *shots[NUM_SHOTS];
     enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
     powerup_double_shot *powerup_double_shot_obj;
     powerup_quad_spread_shot *powerup_quad_spread_shot_obj;
+
+    eng->add_object(background_a_obj);
+    background_a_obj->init();
+    eng->add_object(background_b_obj);
+    background_b_obj->init();
+    background_b_obj->pos_y = background_b_obj->size_y*-1;
 
     engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS];
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
@@ -447,6 +463,8 @@ void shooter()
 
     SDL_Quit();
 
+    delete background_a_obj;
+    delete background_b_obj;
     delete ship_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
@@ -465,6 +483,7 @@ void shooter()
         delete enemy_slots[i]->obj;
     }
 
+    SDL_DestroyTexture(background_texture);
     SDL_DestroyTexture(ship_texture);
     SDL_DestroyTexture(projectile_player_default_texture);
     SDL_DestroyTexture(enemy_ship_default_texture);
