@@ -30,12 +30,14 @@ int ID_BACKGROUND = 2000;
 
 int SHOT_PHYS_DELAY = 2500000;
 
-#define NUM_SHOTS 40
-#define NUM_SHOTS_ENEMY 40
+#define NUM_SHOTS 80
+#define NUM_SHOTS_ENEMY 80
 
 #define ENEMY_SET_COUNT 5
 
 #define MAX_ENEMY_SLOTS 10
+
+#define AUTO_FIRE_DELAY 100000000
 
 bool game_over = false;
 
@@ -224,6 +226,9 @@ void shooter()
     bool fire = false;
 
     bool fired = false;
+    timespec now;
+    timespec player_last_shot = {0, 0};
+    uint64_t timediff;
 
     int active_enemy_set = 0;
     bool init_enemy_set = false;
@@ -432,9 +437,14 @@ void shooter()
             if (down) { ship_obj->step_y = 1; }
 
             if (fire) {
-                if (!fired) {
+                clock_gettime(CLOCK_MONOTONIC, &now);
+                timediff = ((now.tv_sec - player_last_shot.tv_sec) * 1000000000) + (now.tv_nsec - player_last_shot.tv_nsec);
+
+                if (!fired || timediff > AUTO_FIRE_DELAY) {
                     fired = true;
                     ship_obj->fire();
+
+                    player_last_shot = now;
                 }
             } else {
                 fired = false;
