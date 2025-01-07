@@ -15,6 +15,8 @@
 #include <SDL2/SDL_image.h>
 #include <time.h>
 #include <unistd.h>
+#include <unordered_map>
+#include <string>
 
 #define RES_X 800
 #define RES_Y 600
@@ -40,6 +42,43 @@ int SHOT_PHYS_DELAY = 2500000;
 #define AUTO_FIRE_DELAY 100000000
 
 bool game_over = false;
+
+std::unordered_map<std::string, std::string> texture_map = {
+    {"background_tex", "background.png"},
+    {"ship_tex", "ship.png"},
+    {"projectile_player_default_tex", "projectile_player_default.png"},
+    {"enemy_ship_default_tex", "enemy_ship_default.png"},
+    {"enemy_ship_default_hit_tex", "enemy_ship_default_hit.png"},
+    {"projectile_default_tex", "projectile_default.png"},
+    {"enemy_ship_diagonal_tex", "enemy_ship_diagonal.png"},
+    {"enemy_ship_diagonal_hit_tex", "enemy_ship_diagonal_hit.png"},
+    {"projectile_ball_tex", "projectile_ball.png"},
+    {"enemy_ship_diagonal_6_tex", "enemy_ship_diagonal_6.png"},
+    {"enemy_ship_diagonal_6_hit_tex", "enemy_ship_diagonal_6_hit.png"},
+    {"projectile_ball_invincible_tex", "projectile_ball_invincible.png"},
+    {"enemy_cargo_tex", "enemy_cargo.png"},
+    {"enemy_cargo_hit_tex", "enemy_cargo_hit.png"},
+    {"powerup_double_shot_tex", "powerup_double_shot.png"},
+    {"powerup_quad_spread_shot_tex", "powerup_quad_spread_shot.png"}
+};
+
+void init_resources(engine *eng)
+{
+    SDL_Surface *temp_surface;
+
+    for (const auto& [name, texture] : texture_map) {
+        temp_surface = IMG_Load(texture.c_str());
+        eng->add_resource(name.c_str(), SDL_CreateTextureFromSurface(eng->renderer, temp_surface));
+        SDL_FreeSurface(temp_surface);
+    }
+}
+
+void free_resources(engine *eng)
+{
+    for (const auto& [name, texture] : texture_map) {
+        SDL_DestroyTexture((SDL_Texture*)eng->get_resource(name.c_str()));
+    }
+}
 
 int get_enemy_slot(engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS])
 {
@@ -97,7 +136,6 @@ void activate_enemy_set(engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS], int set_i
             break;
 
         case 1:
-
             slot = get_enemy_slot(enemy_slots);
             enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
@@ -242,88 +280,7 @@ void shooter()
 
     engine *eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP);
 
-    SDL_Surface *temp_surface;
-
-    // Add resources
-    temp_surface = IMG_Load("background.png");
-    SDL_Texture *background_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("background_tex", background_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("ship.png");
-    SDL_Texture *ship_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("ship_tex", ship_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("projectile_player_default.png");
-    SDL_Texture *projectile_player_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("projectile_player_default_tex", projectile_player_default_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_default.png");
-    SDL_Texture *enemy_ship_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_default_tex", enemy_ship_default_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_default_hit.png");
-    SDL_Texture *enemy_ship_default_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_default_hit_tex", enemy_ship_default_hit_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("projectile_default.png");
-    SDL_Texture *projectile_default_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("projectile_default_tex", projectile_default_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_diagonal.png");
-    SDL_Texture *enemy_ship_diagonal_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_diagonal_tex", enemy_ship_diagonal_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_diagonal_hit.png");
-    SDL_Texture *enemy_ship_diagonal_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_diagonal_hit_tex", enemy_ship_diagonal_hit_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("projectile_ball.png");
-    SDL_Texture *projectile_ball_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("projectile_ball_tex", projectile_ball_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_diagonal_6.png");
-    SDL_Texture *enemy_ship_diagonal_6_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_diagonal_6_tex", enemy_ship_diagonal_6_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_ship_diagonal_6_hit.png");
-    SDL_Texture *enemy_ship_diagonal_6_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_ship_diagonal_6_hit_tex", enemy_ship_diagonal_6_hit_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("projectile_ball_invincible.png");
-    SDL_Texture *projectile_ball_invincible_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("projectile_ball_invincible_tex", projectile_ball_invincible_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_cargo.png");
-    SDL_Texture *enemy_cargo_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_cargo_tex", enemy_cargo_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("enemy_cargo_hit.png");
-    SDL_Texture *enemy_cargo_hit_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("enemy_cargo_hit_tex", enemy_cargo_hit_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("powerup_double_shot.png");
-    SDL_Texture *powerup_double_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("powerup_double_shot_tex", powerup_double_shot_texture);
-    SDL_FreeSurface(temp_surface);
-
-    temp_surface = IMG_Load("powerup_quad_spread_shot.png");
-    SDL_Texture *powerup_quad_spread_shot_texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
-    eng->add_resource("powerup_quad_spread_shot_tex", powerup_quad_spread_shot_texture);
-    SDL_FreeSurface(temp_surface);
+    init_resources(eng);
 
     // Game objects
     projectile_manager *player_shot_mngr = new projectile_manager();
@@ -376,55 +333,51 @@ void shooter()
     }
 
     // Main loop
-    while (quit==false)
-    {
+    while (quit==false) {
         // Read inputs
-        while (SDL_PollEvent(&input))
-        {
-            switch (input.type)
-            {
+        while (SDL_PollEvent(&input)) {
+            switch (input.type) {
                 case SDL_KEYDOWN:
-                    switch (input.key.keysym.sym)
-                        {
-                            case SDLK_LEFT:
-                                left = true;
-                                break;
-                            case SDLK_RIGHT:
-                                right = true;
-                                break;
-                            case SDLK_UP:
-                                up = true;
-                                break;
-                            case SDLK_DOWN:
-                                down = true;
-                                break;
-                            case SDLK_SPACE:
-                                fire = true;
-                                break;
-                            case SDLK_q:
-                                quit = true;
-                                break;
-                        }
-                        break;
+                    switch (input.key.keysym.sym) {
+                        case SDLK_LEFT:
+                            left = true;
+                            break;
+                        case SDLK_RIGHT:
+                            right = true;
+                            break;
+                        case SDLK_UP:
+                            up = true;
+                            break;
+                        case SDLK_DOWN:
+                            down = true;
+                            break;
+                        case SDLK_SPACE:
+                            fire = true;
+                            break;
+                        case SDLK_q:
+                            quit = true;
+                            break;
+                    }
+
+                    break;
                 case SDL_KEYUP:
-                    switch (input.key.keysym.sym)
-                        {
-                            case SDLK_LEFT:
-                                left = false;
-                                break;
-                            case SDLK_RIGHT:
-                                right = false;
-                                break;
-                            case SDLK_UP:
-                                up = false;
-                                break;
-                            case SDLK_DOWN:
-                                down = false;
-                                break;
-                            case SDLK_SPACE:
-                                fire = false;
-                                break;
-                        }
+                    switch (input.key.keysym.sym) {
+                        case SDLK_LEFT:
+                            left = false;
+                            break;
+                        case SDLK_RIGHT:
+                            right = false;
+                            break;
+                        case SDLK_UP:
+                            up = false;
+                            break;
+                        case SDLK_DOWN:
+                            down = false;
+                            break;
+                        case SDLK_SPACE:
+                            fire = false;
+                            break;
+                    }
             }
         }
 
@@ -493,22 +446,7 @@ void shooter()
         delete enemy_slots[i]->obj;
     }
 
-    SDL_DestroyTexture(background_texture);
-    SDL_DestroyTexture(ship_texture);
-    SDL_DestroyTexture(projectile_player_default_texture);
-    SDL_DestroyTexture(enemy_ship_default_texture);
-    SDL_DestroyTexture(enemy_ship_default_hit_texture);
-    SDL_DestroyTexture(projectile_default_texture);
-    SDL_DestroyTexture(enemy_ship_diagonal_texture);
-    SDL_DestroyTexture(enemy_ship_diagonal_hit_texture);
-    SDL_DestroyTexture(projectile_ball_texture);
-    SDL_DestroyTexture(enemy_ship_diagonal_6_texture);
-    SDL_DestroyTexture(enemy_ship_diagonal_6_hit_texture);
-    SDL_DestroyTexture(projectile_ball_invincible_texture);
-    SDL_DestroyTexture(enemy_cargo_texture);
-    SDL_DestroyTexture(enemy_cargo_hit_texture);
-    SDL_DestroyTexture(powerup_double_shot_texture);
-    SDL_DestroyTexture(powerup_quad_spread_shot_texture);
+    free_resources(eng);
 
     delete eng;
 
