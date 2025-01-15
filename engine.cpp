@@ -78,6 +78,7 @@ void engine::phys_advance()
     engine_obj *obj = NULL;
     timespec now;
     uint64_t timediff;
+    uint64_t timeremain;
     int iterations;
     bool run_loop = true;
 
@@ -112,6 +113,8 @@ void engine::phys_advance()
             obj = list->obj;
 
             if (obj->phys_active) {
+                timeremain = 0;
+
                 if (obj->move_x_every == 0) {
                     iterations = 0;
                 } else if (obj->move_x_last.tv_sec == 0) {
@@ -119,6 +122,7 @@ void engine::phys_advance()
                 } else {
                     timediff = ((now.tv_sec - obj->move_x_last.tv_sec) * 1000000000) + (now.tv_nsec - obj->move_x_last.tv_nsec);
                     iterations = timediff / obj->move_x_every;
+                    timeremain = timediff % obj->move_x_every;
                 }
 
                 if (iterations > 0) {
@@ -135,8 +139,16 @@ void engine::phys_advance()
                         }
                     } else {
                         obj->move_x_last = now;
+                        if (timeremain > obj->move_x_last.tv_nsec) {
+                            obj->move_x_last.tv_sec--;
+                            obj->move_x_last.tv_nsec = 1000000000 - (timeremain - obj->move_x_last.tv_nsec);
+                        } else {
+                            obj->move_x_last.tv_nsec -= timeremain;
+                        }
                     }
                 }
+
+                timeremain = 0;
 
                 if (obj->move_y_every == 0) {
                     iterations = 0;
@@ -145,6 +157,7 @@ void engine::phys_advance()
                 } else {
                     timediff = ((now.tv_sec - obj->move_y_last.tv_sec) * 1000000000) + (now.tv_nsec - obj->move_y_last.tv_nsec);
                     iterations = timediff / obj->move_y_every;
+                    timeremain = timediff % obj->move_y_every;
                 }
 
                 if (iterations > 0) {
@@ -161,6 +174,12 @@ void engine::phys_advance()
                         }
                     } else {
                         obj->move_y_last = now;
+                        if (timeremain > obj->move_y_last.tv_nsec) {
+                            obj->move_y_last.tv_sec--;
+                            obj->move_y_last.tv_nsec = 1000000000 - (timeremain - obj->move_y_last.tv_nsec);
+                        } else {
+                            obj->move_y_last.tv_nsec -= timeremain;
+                        }
                     }
                 }
             }

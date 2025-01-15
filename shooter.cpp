@@ -6,6 +6,7 @@
 #include "enemy_diagonal_stationary.h"
 #include "enemy_diagonal_stationary_fwdsprd.h"
 #include "enemy_cargo.h"
+#include "enemy_boss_a.h"
 #include "powerup_double_shot.h"
 #include "powerup_quad_spread_shot.h"
 #include "player_projectile.h"
@@ -251,6 +252,19 @@ void activate_enemy_set(engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS], int set_i
             enemy_slots[slot]->obj->phys_active = true;
 
             break;
+
+        case 5:
+            slot = get_enemy_slot(enemy_slots);
+            enemy_slots[slot]->obj = new enemy_boss_a(eng, enemy_shot_mngr);
+            enemy_slots[slot]->obj->init();
+            enemy_slots[slot]->obj->pos_x = 200;
+            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+            enemy_slots[slot]->obj->step_x = 0;
+            enemy_slots[slot]->obj->step_y = 1;
+            enemy_slots[slot]->obj->draw_active = true;
+            enemy_slots[slot]->obj->phys_active = true;
+
+            break;
     }
 }
 
@@ -411,7 +425,7 @@ void shooter()
                 }
             }
 
-            if (init_enemy_set && ++active_enemy_set == ENEMY_SET_COUNT) {
+            if (init_enemy_set && ++active_enemy_set > ENEMY_SET_COUNT) {
                 active_enemy_set = 0;
             }
 
