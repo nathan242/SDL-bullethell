@@ -8,8 +8,6 @@ extern int ID_ENEMY_SHIP;
 
 void enemy_diagonal_stationary::init()
 {
-    SDL_Surface *hit_sprite;
-
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
@@ -28,8 +26,8 @@ void enemy_diagonal_stationary::init()
 
     last_hit = {0, 0};
 
-    default_health = 4;
-    current_health = 4;
+    default_health = 8;
+    current_health = 8;
 
     shot_delay = 800000000;
 
