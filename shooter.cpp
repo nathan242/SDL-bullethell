@@ -220,9 +220,18 @@ void activate_enemy_set(engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS], int set_i
             slot = get_enemy_slot(enemy_slots);
             enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
-            ((enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_quad_spread_shot_obj;
             enemy_slots[slot]->obj->pos_x = 550;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+            enemy_slots[slot]->obj->step_x = 0;
+            enemy_slots[slot]->obj->step_y = 1;
+            enemy_slots[slot]->obj->draw_active = true;
+            enemy_slots[slot]->obj->phys_active = true;
+
+            slot = get_enemy_slot(enemy_slots);
+            enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
+            enemy_slots[slot]->obj->init();
+            enemy_slots[slot]->obj->pos_x = 350;
+            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
             enemy_slots[slot]->obj->step_x = 0;
             enemy_slots[slot]->obj->step_y = 1;
             enemy_slots[slot]->obj->draw_active = true;
@@ -257,10 +266,11 @@ void activate_enemy_set(engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS], int set_i
             slot = get_enemy_slot(enemy_slots);
             enemy_slots[slot]->obj = new enemy_boss_a(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 200;
+            enemy_slots[slot]->obj->pos_x = 350;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
             enemy_slots[slot]->obj->step_x = 0;
             enemy_slots[slot]->obj->step_y = 1;
+            ((enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_quad_spread_shot_obj;
             enemy_slots[slot]->obj->draw_active = true;
             enemy_slots[slot]->obj->phys_active = true;
 
@@ -328,6 +338,8 @@ void shooter()
 
     eng->add_object(ship_obj);
     ship_obj->init();
+
+    eng->add_resource("ship_obj", ship_obj);
 
     activate_enemy_set(enemy_slots, active_enemy_set, eng, enemy_shot_mngr, powerup_double_shot_obj, powerup_quad_spread_shot_obj);
 
