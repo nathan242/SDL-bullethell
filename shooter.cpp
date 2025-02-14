@@ -1,5 +1,7 @@
 #include "engine.h"
 #include "background.h"
+#include "menu_title.h"
+#include "press_key.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_adv.h"
@@ -30,6 +32,9 @@
 #define MAX_ENEMY_SLOTS 10
 #define AUTO_FIRE_DELAY 100000000
 
+#define MENU_QUIT 0
+#define MENU_START 1
+
 int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
 int ID_POWERUP_DOUBLE_SHOT = 100;
@@ -58,6 +63,10 @@ SDL_Event input;
 char *base_path;
 engine *eng;
 
+// Menu objects
+menu_title *title_obj;
+press_key *press_key_obj;
+
 // Game objects
 projectile_manager *player_shot_mngr;
 projectile_manager *enemy_shot_mngr;
@@ -72,6 +81,8 @@ engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS];
 
 std::unordered_map<std::string, std::string> texture_map = {
     {"background_tex", "background.png"},
+    {"menu_title_tex", "title.png"},
+    {"press_key_tex", "press_a_key.png"},
     {"ship_tex", "ship.png"},
     {"projectile_player_default_tex", "projectile_player_default.png"},
     {"enemy_ship_default_tex", "enemy_ship_default.png"},
@@ -493,10 +504,58 @@ void activate_enemy_set(int set_id)
     }
 }
 
+void get_input()
+{
+    while (SDL_PollEvent(&input)) {
+        switch (input.type) {
+            case SDL_KEYDOWN:
+                switch (input.key.keysym.sym) {
+                    case SDLK_LEFT:
+                        left = true;
+                        break;
+                    case SDLK_RIGHT:
+                        right = true;
+                        break;
+                    case SDLK_UP:
+                        up = true;
+                        break;
+                    case SDLK_DOWN:
+                        down = true;
+                        break;
+                    case SDLK_SPACE:
+                        fire = true;
+                        break;
+                    case SDLK_q:
+                        quit = true;
+                        break;
+                }
+
+                break;
+            case SDL_KEYUP:
+                switch (input.key.keysym.sym) {
+                    case SDLK_LEFT:
+                        left = false;
+                        break;
+                    case SDLK_RIGHT:
+                        right = false;
+                        break;
+                    case SDLK_UP:
+                        up = false;
+                        break;
+                    case SDLK_DOWN:
+                        down = false;
+                        break;
+                    case SDLK_SPACE:
+                        fire = false;
+                        break;
+                }
+        }
+    }
+}
+
 void init()
 {
     player_last_shot = {0, 0};
-    active_enemy_set = 0;
 
     base_path = SDL_GetBasePath();
 
@@ -537,8 +596,6 @@ void init()
 
     eng->add_resource("ship_obj", ship_obj);
 
-    activate_enemy_set(active_enemy_set);
-
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         shots[shot_count] = new player_projectile();
         shots[shot_count]->init();
@@ -553,59 +610,50 @@ void init()
         eng->add_object(enemy_shots[enemy_shot_count]);
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);
     }
+
+    // Menu objects
+    title_obj = new menu_title(eng);
+    eng->add_object(title_obj);
+    title_obj->init();
+    press_key_obj = new press_key(eng);
+    eng->add_object(press_key_obj);
+    press_key_obj->init();
 }
 
-void main_loop()
+int menu_loop()
+{
+    ship_obj->phys_active = false;
+    ship_obj->draw_active = false;
+
+    title_obj->draw_active = true;
+    press_key_obj->draw_active = true;
+
+    while (true) {
+        get_input();
+
+        if (left | right | up | down | fire) {
+            title_obj->draw_active = false;
+            press_key_obj->draw_active = false;
+
+            return MENU_START;
+        } else if (quit) {
+            return MENU_QUIT;
+        }
+
+        eng->step();
+    }
+}
+
+void game_loop()
 {
     bool init_enemy_set = false;
+    active_enemy_set = 0;
+    activate_enemy_set(active_enemy_set);
+
+    ship_obj->reset();
 
     while (quit == false) {
-        // Read inputs
-        while (SDL_PollEvent(&input)) {
-            switch (input.type) {
-                case SDL_KEYDOWN:
-                    switch (input.key.keysym.sym) {
-                        case SDLK_LEFT:
-                            left = true;
-                            break;
-                        case SDLK_RIGHT:
-                            right = true;
-                            break;
-                        case SDLK_UP:
-                            up = true;
-                            break;
-                        case SDLK_DOWN:
-                            down = true;
-                            break;
-                        case SDLK_SPACE:
-                            fire = true;
-                            break;
-                        case SDLK_q:
-                            quit = true;
-                            break;
-                    }
-
-                    break;
-                case SDL_KEYUP:
-                    switch (input.key.keysym.sym) {
-                        case SDLK_LEFT:
-                            left = false;
-                            break;
-                        case SDLK_RIGHT:
-                            right = false;
-                            break;
-                        case SDLK_UP:
-                            up = false;
-                            break;
-                        case SDLK_DOWN:
-                            down = false;
-                            break;
-                        case SDLK_SPACE:
-                            fire = false;
-                            break;
-                    }
-            }
-        }
+        get_input();
 
         if (!game_over) {
             ship_obj->step_x = 0;
@@ -637,6 +685,7 @@ void main_loop()
                 }
             }
 
+            // Loop round enemy sets for now
             if (init_enemy_set && ++active_enemy_set > ENEMY_SET_COUNT) {
                 active_enemy_set = 0;
             }
@@ -657,6 +706,7 @@ void deinit()
 
     delete background_a_obj;
     delete background_b_obj;
+    delete title_obj;
     delete ship_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
@@ -683,7 +733,13 @@ void deinit()
 int main (int argc, char *argv[])
 {
     init();
-    main_loop();
+
+    switch(menu_loop()) {
+        case MENU_START:
+            game_loop();
+            break;
+    }
+
     deinit();
 
     return 0;

@@ -1,5 +1,5 @@
-shooter: shooter.o engine.o background.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
-	g++ -g -o shooter shooter.o engine.o background.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
+shooter: shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
+	g++ -g -o shooter shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
 
 shooter.o: shooter.cpp
 	g++ -g `sdl2-config --cflags` -c shooter.cpp
@@ -9,6 +9,12 @@ engine.o: engine.cpp engine.h
 
 background.o: background.cpp background.h
 	g++ -g `sdl2-config --cflags` -c background.cpp
+
+menu_title.o: menu_title.cpp menu_title.h
+	g++ -g `sdl2-config --cflags` -c menu_title.cpp
+
+press_key.o: press_key.cpp press_key.h
+	g++ -g `sdl2-config --cflags` -c press_key.cpp
 
 ship.o: ship.cpp ship.h
 	g++ -g `sdl2-config --cflags` -c ship.cpp

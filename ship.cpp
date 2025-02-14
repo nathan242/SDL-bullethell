@@ -18,23 +18,30 @@ void ship::init()
     engine_obj::init();
 
     type_id = ID_PLAYER_SHIP;
-    pos_x = 50;
-    pos_y = 550;
     size_x = 21;
     size_y = 21;
     phys_size_x = 21;
     phys_size_y = 21;
     move_x_every = SHIP_MOVE_PHYS_DELAY;
     move_y_every = SHIP_MOVE_PHYS_DELAY;
-    phys_active = true;
-    draw_active = true;
     texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
 
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
 
-    active_weapon = 0;
+    reset();
 
     initialized = true;
+}
+
+void ship::reset()
+{
+    pos_x = 390;
+    pos_y = 550;
+
+    active_weapon = 0;
+
+    phys_active = true;
+    draw_active = true;
 }
 
 bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)

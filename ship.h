@@ -16,6 +16,7 @@ class ship : public engine_obj
     public:
         ship(engine *eng, projectile_manager *projectile_mngr);
         void init();
+        void reset();
         void fire();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         ~ship();
