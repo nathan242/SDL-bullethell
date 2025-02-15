@@ -22,6 +22,10 @@
 #include <unordered_map>
 #include <string>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #define RES_X 800
 #define RES_Y 600
 #define BPP 32
@@ -34,6 +38,9 @@
 
 #define MENU_QUIT 0
 #define MENU_START 1
+
+// Emscripten loop handling
+bool em_game_started = false;
 
 int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
@@ -58,7 +65,7 @@ bool fired = false;
 timespec now;
 timespec player_last_shot;
 uint64_t timediff;
-int active_enemy_set;
+int active_enemy_set = -1;
 SDL_Event input;
 char *base_path;
 engine *eng;
@@ -620,7 +627,7 @@ void init()
     press_key_obj->init();
 }
 
-int menu_loop()
+void menu_loop()
 {
     ship_obj->phys_active = false;
     ship_obj->draw_active = false;
@@ -628,31 +635,30 @@ int menu_loop()
     title_obj->draw_active = true;
     press_key_obj->draw_active = true;
 
-    while (true) {
-        get_input();
+    get_input();
 
-        if (left | right | up | down | fire) {
-            title_obj->draw_active = false;
-            press_key_obj->draw_active = false;
+    if (left | right | up | down | fire) {
+        title_obj->draw_active = false;
+        press_key_obj->draw_active = false;
 
-            return MENU_START;
-        } else if (quit) {
-            return MENU_QUIT;
-        }
-
-        eng->step();
+        em_game_started = true;
+        ship_obj->reset();
+    } else if (quit) {
+        em_game_started = true;
+        ship_obj->reset();
     }
+
+    eng->step();
 }
 
 void game_loop()
 {
     bool init_enemy_set = false;
-    active_enemy_set = 0;
-    activate_enemy_set(active_enemy_set);
+    // activate_enemy_set(active_enemy_set);
 
-    ship_obj->reset();
+    // ship_obj->reset();
 
-    while (quit == false) {
+    if (quit == false) {
         get_input();
 
         if (!game_over) {
@@ -697,6 +703,8 @@ void game_loop()
             // Redraw screen
             eng->step();
         }
+    } else {
+        emscripten_cancel_main_loop();
     }
 }
 
@@ -730,15 +738,28 @@ void deinit()
     delete eng;
 }
 
+void em_loop()
+{
+    if (em_game_started) {
+        game_loop();
+    } else {
+        menu_loop();
+    }
+}
+
 int main (int argc, char *argv[])
 {
     init();
 
-    switch(menu_loop()) {
-        case MENU_START:
-            game_loop();
-            break;
-    }
+    // emscripten_set_main_loop_timing(EM_TIMING_RAF, 1);
+    emscripten_set_main_loop(em_loop, 0, 1);
+    // emscripten_set_main_loop(game_loop, 0, 1);
+
+    // switch(menu_loop()) {
+    //     case MENU_START:
+    //         game_loop();
+    //         break;
+    // }
 
     deinit();
 
