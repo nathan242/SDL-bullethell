@@ -46,6 +46,7 @@ void enemy::init()
 
     drop_powerup = NULL;
     ungroup = false;
+    ungroup_at_y = 0;
 
     init_projectile();
 
@@ -93,6 +94,12 @@ void enemy::pre_phys_event()
 {
     timespec now;
     uint64_t timediff;
+
+    if (ungroup_at_y > 0) {
+        if (pos_y >= ungroup_at_y) {
+            ungroup = true;
+        }
+    }
 
     clock_gettime(CLOCK_MONOTONIC, &now);
     timediff = ((now.tv_sec - last_shot.tv_sec) * 1000000000) + (now.tv_nsec - last_shot.tv_nsec);

@@ -39,6 +39,7 @@ void enemy_boss_a::init()
 
     drop_powerup = NULL;
     ungroup = false;
+    ungroup_at_y = 0;
 
     ship_obj = (engine_obj*)i_eng->get_resource("ship_obj");
 

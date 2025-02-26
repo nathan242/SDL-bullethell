@@ -33,6 +33,7 @@ void enemy_cargo::init()
 
     drop_powerup = NULL;
     ungroup = false;
+    ungroup_at_y = 0;
 
     initialized = true;
 }

@@ -33,6 +33,7 @@ void enemy_diagonal_stationary::init()
 
     drop_powerup = NULL;
     ungroup = false;
+    ungroup_at_y = 0;
 
     init_projectile();
 

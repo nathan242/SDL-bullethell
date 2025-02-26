@@ -1,5 +1,5 @@
-shooter: shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
-	g++ -Wall -g -o shooter shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
+shooter: shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
+	g++ -Wall -g -o shooter shooter.o engine.o background.o menu_title.o press_key.o ship.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
 
 shooter.o: shooter.cpp
 	g++ -Wall -g `sdl2-config --cflags` -c shooter.cpp
@@ -30,6 +30,12 @@ enemy_diagonal.o: enemy_diagonal.cpp enemy_diagonal.h
 
 enemy_diagonal_stationary.o: enemy_diagonal_stationary.cpp enemy_diagonal_stationary.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_diagonal_stationary.cpp
+
+enemy_diagonal_stationary_spiral.o: enemy_diagonal_stationary_spiral.cpp enemy_diagonal_stationary_spiral.h
+	g++ -Wall -g `sdl2-config --cflags` -c enemy_diagonal_stationary_spiral.cpp
+
+enemy_diagonal_stationary_allsprd.o: enemy_diagonal_stationary_allsprd.cpp enemy_diagonal_stationary_allsprd.h
+	g++ -Wall -g `sdl2-config --cflags` -c enemy_diagonal_stationary_allsprd.cpp
 
 enemy_diagonal_stationary_fwdsprd.o: enemy_diagonal_stationary_fwdsprd.cpp enemy_diagonal_stationary_fwdsprd.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_diagonal_stationary_fwdsprd.cpp
