@@ -12,8 +12,8 @@ class enemy_diagonal_stationary : public enemy
         void pre_phys_event();
 
     public:
-        void init();
-        void fire();
+        virtual void init();
+        virtual void fire();
 };
 
 #endif
