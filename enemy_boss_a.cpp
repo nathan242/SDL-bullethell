@@ -1,5 +1,6 @@
 #include "enemy_boss_a.h"
 #include <SDL2/SDL_image.h>
+#include <cmath>
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
 #define SHOT_PHYS_DELAY_DEF 10000000
@@ -11,8 +12,6 @@ extern int SHOT_PHYS_DELAY;
 
 void enemy_boss_a::init()
 {
-    SDL_Surface *hit_sprite;
-
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
@@ -55,13 +54,10 @@ void enemy_boss_a::init_projectile()
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
     ball_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
     ball_invincible_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_invincible_tex");
-    move_shot_a = &move_shot_x_every;
-    move_shot_b = &move_shot_y_every;
-    *move_shot_a = SHOT_PHYS_DELAY_DIFF_START;
-    *move_shot_b = SHOT_PHYS_DELAY;
-    diff_shot_direction = 0;
-    fire_step_x = 1;
-    fire_step_y = 1;
+    ball_fire_step_x = 1;
+    ball_fire_step_y = 1;
+    ball_shot_angle = 0;
+    ball_shot_angle_diff = 10;
     shot_invincible = false;
 }
 
@@ -95,19 +91,14 @@ void enemy_boss_a::pre_phys_event()
 
 void enemy_boss_a::ball_fire()
 {
-    if (diff_shot_direction == 0) {
-        *move_shot_a -= SHOT_PHYS_DELAY_DIFF;
-    } else {
-        *move_shot_b += SHOT_PHYS_DELAY_DIFF;
-    }
+    int move_shot_x_every = 5/cos(ball_shot_angle*(M_PI/180))*1000000;
+    int move_shot_y_every = 5/sin(ball_shot_angle*(M_PI/180))*1000000;
 
-    if (diff_shot_direction == 0 && *move_shot_a <= SHOT_PHYS_DELAY_DEF) {
-        *move_shot_a = SHOT_PHYS_DELAY_DEF;
-        diff_shot_direction = 1;
-    } else if (diff_shot_direction == 1 && *move_shot_b >= SHOT_PHYS_DELAY_DIFF_START) {
-        *move_shot_b = SHOT_PHYS_DELAY_DEF;
-        *move_shot_a = SHOT_PHYS_DELAY_DIFF_START;
-        diff_shot_direction = 0;
+    ball_shot_angle += ball_shot_angle_diff;
+
+    if (ball_shot_angle > 90 || ball_shot_angle < 0) {
+        ball_shot_angle_diff *= -1;
+        ball_shot_angle += ball_shot_angle_diff*2;
         update_fire_step();
     }
 
@@ -119,8 +110,8 @@ void enemy_boss_a::ball_fire()
         20,
         pos_x+(size_x/2)-10,
         pos_y+(size_y/2)-10,
-        fire_step_x,
-        fire_step_y,
+        ball_fire_step_x,
+        ball_fire_step_y,
         move_shot_x_every,
         move_shot_y_every,
         shot_invincible
@@ -194,24 +185,13 @@ void enemy_boss_a::fire()
 
 void enemy_boss_a::update_fire_step()
 {
-    if (fire_step_x == 1 && fire_step_y == 1) {
-        fire_step_y *= -1;
-        move_shot_a = &move_shot_y_every;
-        move_shot_b = &move_shot_x_every;
-    } else if (fire_step_x == 1 && fire_step_y == -1) {
-        fire_step_x *= -1;
-        move_shot_a = &move_shot_x_every;
-        move_shot_b = &move_shot_y_every;
-    } else if (fire_step_x == -1 && fire_step_y == -1) {
-        fire_step_y *= -1;
-        move_shot_a = &move_shot_y_every;
-        move_shot_b = &move_shot_x_every;
-    } else if (fire_step_x == -1 && fire_step_y == 1) {
-        fire_step_x *= -1;
-        move_shot_a = &move_shot_x_every;
-        move_shot_b = &move_shot_y_every;
+    if (ball_fire_step_x == 1 && ball_fire_step_y == 1) {
+        ball_fire_step_x *= -1;
+    } else if (ball_fire_step_x == -1 && ball_fire_step_y == 1) {
+        ball_fire_step_y *= -1;
+    } else if (ball_fire_step_x == -1 && ball_fire_step_y == -1) {
+        ball_fire_step_x *= -1;
+    } else if (ball_fire_step_x == 1 && ball_fire_step_y == -1) {
+        ball_fire_step_y *= -1;
     }
-
-    *move_shot_a = SHOT_PHYS_DELAY_DIFF_START;
-    *move_shot_b = SHOT_PHYS_DELAY_DEF;
 }

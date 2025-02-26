@@ -7,8 +7,6 @@ extern int ID_ENEMY_SHIP;
 
 void enemy_cargo::init()
 {
-    SDL_Surface *hit_sprite;
-
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
