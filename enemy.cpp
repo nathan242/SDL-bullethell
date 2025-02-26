@@ -21,8 +21,6 @@ enemy::enemy(engine *eng, projectile_manager *projectile_mngr)
 
 void enemy::init()
 {
-    SDL_Surface *hit_sprite;
-
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;

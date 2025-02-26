@@ -36,6 +36,11 @@ void engine_obj::pre_phys_event()
 
 }
 
+engine_obj::~engine_obj()
+{
+
+}
+
 engine::engine(const char* caption, int res_x, int res_y, int bpp)
 {
     area_x = res_x;
@@ -78,7 +83,7 @@ void engine::phys_advance()
     engine_obj *obj = NULL;
     timespec now;
     uint64_t timediff;
-    uint64_t timeremain;
+    int64_t timeremain;
     int iterations;
     bool run_loop = true;
 
@@ -294,7 +299,7 @@ void engine::check_collide(engine_obj *obj, int id)
         if (do_bounce) {
             if (obj->bounce > 0) {
                 obj->step_x = obj->step_x*-1;
-            } else if (obj->bounce == 0 && (obj->pos_x >= area_x-obj->size_x && obj->step_x > 0 || obj->pos_x <= 0 && obj->step_x < 0)) {
+            } else if (obj->bounce == 0 && ((obj->pos_x >= area_x-obj->size_x && obj->step_x > 0) || (obj->pos_x <= 0 && obj->step_x < 0))) {
                 obj->step_x = 0;
                 obj->step_y = 0;
             }
@@ -305,7 +310,7 @@ void engine::check_collide(engine_obj *obj, int id)
         if (do_bounce) {
             if (obj->bounce > 0) {
                 obj->step_y = obj->step_y*-1;
-            } else if (obj->bounce == 0 && (obj->pos_y >= area_y-obj->size_y && obj->step_y > 0 || obj->pos_y <= 0 && obj->step_y < 0)) {
+            } else if (obj->bounce == 0 && ((obj->pos_y >= area_y-obj->size_y && obj->step_y > 0) || (obj->pos_y <= 0 && obj->step_y < 0))) {
                 obj->step_x = 0;
                 obj->step_y = 0;
             }

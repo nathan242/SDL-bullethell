@@ -12,8 +12,6 @@ extern int SHOT_PHYS_DELAY;
 
 void enemy_boss_a::init()
 {
-    SDL_Surface *hit_sprite;
-
     engine_obj::init();
 
     type_id = ID_ENEMY_SHIP;
