@@ -77,7 +77,7 @@ class engine
         SDL_Window *window;
         SDL_Renderer *renderer;
 
-        engine(const char* caption, int res_x, int res_y, int bpp);
+        engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen = false);
         engine_obj_list* add_object(engine_obj *obj);
         void step();
         void draw();

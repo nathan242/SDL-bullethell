@@ -41,15 +41,22 @@ engine_obj::~engine_obj()
 
 }
 
-engine::engine(const char* caption, int res_x, int res_y, int bpp)
+engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen)
 {
+    Uint32 window_flags = fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+
     area_x = res_x;
     area_y = res_y;
 
     // Initialize SDL
     SDL_Init(SDL_INIT_VIDEO);
-    window = SDL_CreateWindow(caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, res_x, res_y, 0);
+    window = SDL_CreateWindow(caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, res_x, res_y, window_flags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+
+    if (fullscreen) {
+        SDL_RenderSetLogicalSize(renderer, res_x, res_y);
+    }
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     list_len = 0;

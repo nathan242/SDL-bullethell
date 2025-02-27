@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <string>
+#include <stdio.h>
+#include <unistd.h>
 
 #define RES_X 800
 #define RES_Y 600
@@ -569,7 +571,7 @@ void get_input()
     }
 }
 
-void init()
+void init(bool fullscreen)
 {
     player_last_shot = {0, 0};
 
@@ -578,7 +580,7 @@ void init()
     chdir(base_path);
     free(base_path);
 
-    eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP);
+    eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP, fullscreen);
 
     init_resources();
 
@@ -746,9 +748,33 @@ void deinit()
     delete eng;
 }
 
+void help(char *name)
+{
+    puts("SDL-Bullethell");
+    printf("Usage: %s [OPTIONS]\n", name);
+    puts(" -h - Show help");
+    puts(" -f - Fullscreen mode");
+}
+
 int main (int argc, char *argv[])
 {
-    init();
+    int opt;
+    bool fullscreen = false;
+
+    while ((opt = getopt(argc, argv, "hf")) != -1) {
+        switch (opt) {
+            default:
+            case 'h':
+                help(argv[0]);
+                return 0;
+
+            case 'f':
+                fullscreen = true;
+                break;
+        }
+    }
+
+    init(fullscreen);
 
     switch(menu_loop()) {
         case MENU_START:
