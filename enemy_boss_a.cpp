@@ -31,8 +31,8 @@ void enemy_boss_a::init()
 
     last_hit = {0, 0};
 
-    default_health = 400;
-    current_health = 400;
+    default_health = 200;
+    current_health = 200;
 
     shot_delay = 400000000;
     ball_shot_delay = 50000000;
