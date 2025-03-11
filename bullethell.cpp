@@ -2,6 +2,7 @@
 #include "background.h"
 #include "menu_title.h"
 #include "press_key.h"
+#include "game_over.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_adv.h"
@@ -79,6 +80,7 @@ engine *eng;
 // Menu objects
 menu_title *title_obj;
 press_key *press_key_obj;
+class game_over *game_over_obj;
 
 // Game objects
 projectile_manager *player_shot_mngr;
@@ -96,6 +98,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"background_tex", "background.png"},
     {"menu_title_tex", "title.png"},
     {"press_key_tex", "press_a_key.png"},
+    {"game_over_tex", "game_over.png"},
     {"ship_tex", "ship.png"},
     {"projectile_player_default_tex", "projectile_player_default.png"},
     {"enemy_ship_default_tex", "enemy_ship_default.png"},
@@ -745,6 +748,9 @@ void init(bool fullscreen)
     press_key_obj = new press_key(eng);
     eng->add_object(press_key_obj);
     press_key_obj->init();
+    game_over_obj = new class game_over(eng);
+    eng->add_object(game_over_obj);
+    game_over_obj->init();
 }
 
 #ifdef __EMSCRIPTEN__
@@ -844,10 +850,12 @@ void game_loop()
             if (init_enemy_set) {
                 activate_enemy_set(active_enemy_set);
             }
-
-            // Redraw screen
-            eng->step();
+        } else {
+            game_over_obj->draw_active = true;
         }
+
+        // Redraw screen
+        eng->step();
 #ifndef __EMSCRIPTEN__
     }
 #else
@@ -864,6 +872,8 @@ void deinit()
     delete background_a_obj;
     delete background_b_obj;
     delete title_obj;
+    delete press_key_obj;
+    delete game_over_obj;
     delete ship_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
