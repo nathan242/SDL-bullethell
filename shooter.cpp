@@ -26,6 +26,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #define RES_X 800
 #define RES_Y 600
 #define BPP 32
@@ -38,6 +42,11 @@
 
 #define MENU_QUIT 0
 #define MENU_START 1
+
+#ifdef __EMSCRIPTEN__
+// Emscripten loop handling
+bool em_game_started = false;
+#endif
 
 int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
@@ -673,6 +682,10 @@ void init(bool fullscreen)
 
     base_path = SDL_GetBasePath();
 
+#ifdef __EMSCRIPTEN__
+    active_enemy_set = -1;
+#endif
+
     chdir(base_path);
     free(base_path);
 
@@ -734,7 +747,11 @@ void init(bool fullscreen)
     press_key_obj->init();
 }
 
+#ifdef __EMSCRIPTEN__
+void menu_loop()
+#else
 int menu_loop()
+#endif
 {
     ship_obj->phys_active = false;
     ship_obj->draw_active = false;
@@ -742,31 +759,51 @@ int menu_loop()
     title_obj->draw_active = true;
     press_key_obj->draw_active = true;
 
+#ifndef __EMSCRIPTEN__
     while (true) {
+#endif
         get_input();
 
         if (left | right | up | down | fire) {
             title_obj->draw_active = false;
             press_key_obj->draw_active = false;
 
+#ifdef __EMSCRIPTEN__
+            em_game_started = true;
+            ship_obj->reset();
+#else
+
             return MENU_START;
+#endif
         } else if (quit) {
+#ifdef __EMSCRIPTEN__
+            em_game_started = true;
+            ship_obj->reset();
+#else
             return MENU_QUIT;
+#endif
         }
 
         eng->step();
+#ifndef __EMSCRIPTEN__
     }
+#endif
 }
 
 void game_loop()
 {
     bool init_enemy_set = false;
+
+#ifndef __EMSCRIPTEN__
     active_enemy_set = 0;
     activate_enemy_set(active_enemy_set);
 
     ship_obj->reset();
 
     while (quit == false) {
+#else
+    if (quit == false) {
+#endif
         get_input();
 
         if (!game_over) {
@@ -811,7 +848,13 @@ void game_loop()
             // Redraw screen
             eng->step();
         }
+#ifndef __EMSCRIPTEN__
     }
+#else
+    } else {
+        emscripten_cancel_main_loop();
+    }
+#endif
 }
 
 void deinit()
@@ -852,7 +895,18 @@ void help(char *name)
     puts(" -f - Fullscreen mode");
 }
 
-int main (int argc, char *argv[])
+#ifdef __EMSCRIPTEN__
+void em_loop()
+{
+    if (em_game_started) {
+        game_loop();
+    } else {
+        menu_loop();
+    }
+}
+#endif
+
+int main(int argc, char *argv[])
 {
     int opt;
     bool fullscreen = false;
@@ -872,11 +926,15 @@ int main (int argc, char *argv[])
 
     init(fullscreen);
 
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(em_loop, 0, 1);
+#else
     switch(menu_loop()) {
         case MENU_START:
             game_loop();
             break;
     }
+#endif
 
     deinit();
 
