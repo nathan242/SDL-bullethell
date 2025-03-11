@@ -689,7 +689,7 @@ void init(bool fullscreen)
     chdir(base_path);
     free(base_path);
 
-    eng = new engine("SDL SHOOTER", RES_X, RES_Y, BPP, fullscreen);
+    eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen);
 
     init_resources();
 
