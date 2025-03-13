@@ -693,6 +693,7 @@ void init(bool fullscreen)
     free(base_path);
 
     eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen);
+    eng->phys_max_iterations = 20;
 
     init_resources();
 

@@ -62,6 +62,8 @@ engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscre
     list_len = 0;
     list_head = NULL;
     list_curr = NULL;
+
+    phys_max_iterations = 0;
 }
 
 engine_obj_list* engine::add_object(engine_obj *obj)
@@ -93,6 +95,7 @@ void engine::phys_advance()
     int64_t timeremain;
     int iterations;
     bool run_loop = true;
+    int loop_iterations = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &now);
 
@@ -198,6 +201,10 @@ void engine::phys_advance()
 
             // Get next
             list = list->next;
+        }
+
+        if (phys_max_iterations > 0 && ++loop_iterations >= phys_max_iterations) {
+            run_loop = false;
         }
     }
 }
