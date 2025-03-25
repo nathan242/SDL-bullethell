@@ -14,10 +14,14 @@ class timer_obj
     public:
         time_t every;
         timespec last;
+        bool suspended;
+        timespec suspend_time;
 
         timer_obj(time_t init_every);
         bool check(timespec now);
         bool tick(timespec now);
+        void suspend(timespec now);
+        void resume(timespec now);
 };
 
 struct timer_obj_list
@@ -107,6 +111,8 @@ class engine
         void update_timer();
         void add_resource(const char *name, void *resource);
         void *get_resource(const char *name);
+        void suspend_timers();
+        void resume_timers();
         ~engine();
 };
 

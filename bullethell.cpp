@@ -67,9 +67,12 @@ bool right = false;
 bool up = false;
 bool down = false;
 bool fire = false;
+bool pause_btn = false;
 
 bool game_over = false;
 bool fired = false;
+bool pause_pressed = false;
+bool paused = false;
 int active_enemy_set;
 SDL_Event input;
 char *base_path;
@@ -650,6 +653,9 @@ void get_input()
                     case SDLK_SPACE:
                         fire = true;
                         break;
+                    case SDLK_p:
+                        pause_btn = true;
+                        break;
                     case SDLK_q:
                         quit = true;
                         break;
@@ -672,6 +678,9 @@ void get_input()
                         break;
                     case SDLK_SPACE:
                         fire = false;
+                        break;
+                    case SDLK_p:
+                        pause_btn = false;
                         break;
                 }
         }
@@ -820,8 +829,24 @@ void game_loop()
             if (up) { ship_obj->step_y = -1; }
             if (down) { ship_obj->step_y = 1; }
 
+            if (pause_btn) {
+                if (!pause_pressed) {
+                    pause_pressed = true;
+
+                    paused = !paused;
+
+                    if (paused) {
+                        eng->suspend_timers();
+                    } else {
+                        eng->resume_timers();
+                    }
+                }
+            } else {
+                pause_pressed = false;
+            }
+
             if (fire) {
-                if (!fired || ship_fire_timer->tick(eng->timer_now)) {
+                if (!paused && (!fired || ship_fire_timer->tick(eng->timer_now))) {
                     fired = true;
                     ship_obj->fire();
                 }

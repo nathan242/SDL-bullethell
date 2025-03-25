@@ -4,13 +4,15 @@ timer_obj::timer_obj(time_t init_every)
 {
     every = init_every;
     last = {0, 0};
+    suspended = false;
+    suspend_time = {0, 0};
 }
 
 bool timer_obj::check(timespec now)
 {
     int64_t timediff;
 
-    if (every == 0) {
+    if (suspended || every == 0) {
         return false;
     }
 
@@ -27,6 +29,25 @@ bool timer_obj::tick(timespec now)
     }
 
     return false;
+}
+
+void timer_obj::suspend(timespec now)
+{
+    suspended = true;
+    suspend_time = now;
+}
+
+void timer_obj::resume(timespec now)
+{
+    suspended = false;
+
+    last.tv_nsec += (now.tv_nsec - suspend_time.tv_nsec);
+    last.tv_sec += (now.tv_sec - suspend_time.tv_sec);
+
+    if (last.tv_nsec > 1000000000) {
+        last.tv_sec++;
+        last.tv_nsec -= 1000000000;
+    }
 }
 
 void engine_obj::init()
@@ -89,10 +110,10 @@ void engine_obj::pre_phys_event()
 
 engine_obj::~engine_obj()
 {
-    if (timer_list != NULL) {
-        timer_obj_list *list = NULL;
-        timer_obj_list *prev = NULL;
+    timer_obj_list *list = NULL;
+    timer_obj_list *prev = NULL;
 
+    if (timer_list != NULL) {
         list = timer_list;
 
         while (list != NULL) {
@@ -192,7 +213,7 @@ void engine::phys_advance()
             if (obj->phys_active) {
                 timeremain = 0;
 
-                if (obj->move_x == NULL || obj->move_x->every == 0) {
+                if (obj->move_x == NULL || obj->move_x->every == 0 || obj->move_x->suspended) {
                     iterations = 0;
                 } else if (obj->move_x->last.tv_sec == 0) {
                     iterations = 1;
@@ -227,7 +248,7 @@ void engine::phys_advance()
 
                 timeremain = 0;
 
-                if (obj->move_y == NULL || obj->move_y->every == 0) {
+                if (obj->move_y == NULL || obj->move_y->every == 0 || obj->move_y->suspended) {
                     iterations = 0;
                 } else if (obj->move_y->last.tv_sec == 0) {
                     iterations = 1;
@@ -429,6 +450,46 @@ void engine::add_resource(const char *name, void *resource)
 void *engine::get_resource(const char *name)
 {
     return resource_map[name];
+}
+
+void engine::suspend_timers()
+{
+    engine_obj_list *obj_list = list_head;
+    timer_obj_list *timer_list = NULL;
+
+    while (obj_list != NULL) {
+        if (obj_list->obj->timer_list != NULL) {
+            timer_list = obj_list->obj->timer_list;
+
+            while (timer_list != NULL) {
+                timer_list->obj->suspend(timer_now);
+                timer_list = timer_list->next;
+            }
+        }
+
+        // Get next
+        obj_list = obj_list->next;
+    }
+}
+
+void engine::resume_timers()
+{
+    engine_obj_list *obj_list = list_head;
+    timer_obj_list *timer_list = NULL;
+
+    while (obj_list != NULL) {
+        if (obj_list->obj->timer_list != NULL) {
+            timer_list = obj_list->obj->timer_list;
+
+            while (timer_list != NULL) {
+                timer_list->obj->resume(timer_now);
+                timer_list = timer_list->next;
+            }
+        }
+
+        // Get next
+        obj_list = obj_list->next;
+    }
 }
 
 engine::~engine()
