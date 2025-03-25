@@ -9,6 +9,23 @@
 
 #include <SDL2/SDL.h>
 
+class timer_obj
+{
+    public:
+        time_t every;
+        timespec last;
+
+        timer_obj(time_t init_every);
+        bool check(timespec now);
+        bool tick(timespec now);
+};
+
+struct timer_obj_list
+{
+    timer_obj *obj;
+    timer_obj_list *next;
+};
+
 class engine_obj
 {
     public:
@@ -32,10 +49,8 @@ class engine_obj
         int area_x_offset;
         int area_y_offset;
 
-        time_t move_x_every;
-        time_t move_y_every;
-        timespec move_x_last;
-        timespec move_y_last;
+        timer_obj *move_x;
+        timer_obj *move_y;
 
         int bounce;
         engine_obj *collided;
@@ -44,7 +59,10 @@ class engine_obj
         bool draw_active;
         bool phys_collision_active;
 
+        timer_obj_list *timer_list;
+
         virtual void init();
+        virtual timer_obj* add_timer(time_t init_every);
         virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         virtual void pre_phys_event();
         virtual ~engine_obj();
@@ -79,12 +97,14 @@ class engine
 
         int phys_max_iterations;
 
+        timespec timer_now;
+
         engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen = false);
         engine_obj_list* add_object(engine_obj *obj);
         void step();
         void draw();
         void phys_advance();
-        void reset_phys_timings();
+        void update_timer();
         void add_resource(const char *name, void *resource);
         void *get_resource(const char *name);
         ~engine();

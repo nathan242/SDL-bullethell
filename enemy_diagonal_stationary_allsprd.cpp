@@ -8,7 +8,7 @@ void enemy_diagonal_stationary_allsprd::init()
 {
     enemy_diagonal_stationary::init();
 
-    shot_delay = 1000000000;
+    shot_timer = add_timer(1000000000);
 
     default_health = 40;
     current_health = 40;

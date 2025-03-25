@@ -20,8 +20,8 @@ void background::init()
     phys_size_y = 2048;
     area_y_offset = 0;
     step_y = 1;
-    move_x_every = 0;
-    move_y_every = 20000000;
+    move_x = add_timer(0);
+    move_y = add_timer(20000000);
     bounce = 0;
     texture = (SDL_Texture*)i_eng->get_resource("background_tex");
     phys_active = true;

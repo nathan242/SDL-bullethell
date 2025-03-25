@@ -9,6 +9,7 @@
 
 extern int ID_ENEMY_SHIP;
 extern int SHOT_PHYS_DELAY;
+extern int HIT_FLASH_DELAY;
 
 void enemy_boss_a::init()
 {
@@ -20,22 +21,20 @@ void enemy_boss_a::init()
     phys_size_x = 100;
     phys_size_y = 100;
     area_y_offset = 100;
-    move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
+    move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
+    move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY*2);
     bounce = 1;
-    last_shot = {0, 0};
-    ball_last_shot = {0, 0};
     default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_tex");
 
     hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_hit_tex");
 
-    last_hit = {0, 0};
+    last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
     default_health = 200;
     current_health = 200;
 
-    shot_delay = 400000000;
-    ball_shot_delay = 50000000;
+    shot_timer = add_timer(400000000);
+    ball_shot_timer = add_timer(50000000);
 
     drop_powerup = NULL;
     ungroup = false;
@@ -64,9 +63,6 @@ void enemy_boss_a::init_projectile()
 
 void enemy_boss_a::pre_phys_event()
 {
-    timespec now;
-    uint64_t timediff;
-
     if (pos_y >= 200) {
         step_y = 0;
     }
@@ -79,12 +75,8 @@ void enemy_boss_a::pre_phys_event()
         step_x = -1;
     }
 
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    timediff = ((now.tv_sec - ball_last_shot.tv_sec) * 1000000000) + (now.tv_nsec - ball_last_shot.tv_nsec);
-
-    if (ball_shot_delay > 0 && timediff > ball_shot_delay && pos_y > (size_y * -1)) {
+    if (pos_y > (size_y * -1) && ball_shot_timer->tick(i_eng->timer_now)) {
         ball_fire();
-        ball_last_shot = now;
     }
 
     enemy::pre_phys_event();

@@ -1,5 +1,34 @@
 #include "engine.h"
 
+timer_obj::timer_obj(time_t init_every)
+{
+    every = init_every;
+    last = {0, 0};
+}
+
+bool timer_obj::check(timespec now)
+{
+    int64_t timediff;
+
+    if (every == 0) {
+        return false;
+    }
+
+    timediff = ((now.tv_sec - last.tv_sec) * 1000000000) + (now.tv_nsec - last.tv_nsec);
+
+    return timediff >= every;
+}
+
+bool timer_obj::tick(timespec now)
+{
+    if (check(now)) {
+        last = now;
+        return true;
+    }
+
+    return false;
+}
+
 void engine_obj::init()
 {
     type_id = 0;
@@ -15,15 +44,37 @@ void engine_obj::init()
     step_y = 0;
     area_x_offset = 0;
     area_y_offset = 0;
-    move_x_every = 0;
-    move_y_every = 0;
-    move_x_last = {0, 0};
-    move_y_last = {0, 0};
+    move_x = NULL;
+    move_y = NULL;
     bounce = 0;
     collided = NULL;
     phys_active = false;
     draw_active = false;
     phys_collision_active = true;
+    timer_list = NULL;
+}
+
+timer_obj* engine_obj::add_timer(time_t init_every)
+{
+    timer_obj_list *new_entry = new timer_obj_list;
+    timer_obj_list *list;
+    timer_obj *timer = new timer_obj(init_every);
+
+    new_entry->obj = timer;
+    new_entry->next = NULL;
+
+    if (timer_list == NULL) {
+        timer_list = new_entry;
+    } else {
+        list = timer_list;
+        while (list->next != NULL) {
+            list = list->next;
+        }
+
+        list->next = new_entry;
+    }
+
+    return timer;
 }
 
 bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
@@ -38,7 +89,19 @@ void engine_obj::pre_phys_event()
 
 engine_obj::~engine_obj()
 {
+    if (timer_list != NULL) {
+        timer_obj_list *list = NULL;
+        timer_obj_list *prev = NULL;
 
+        list = timer_list;
+
+        while (list != NULL) {
+            prev = list;
+            list = list->next;
+            delete prev->obj;
+            delete prev;
+        }
+    }
 }
 
 engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen)
@@ -64,6 +127,8 @@ engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscre
     list_curr = NULL;
 
     phys_max_iterations = 0;
+
+    update_timer();
 }
 
 engine_obj_list* engine::add_object(engine_obj *obj)
@@ -90,14 +155,11 @@ void engine::phys_advance()
 {
     engine_obj_list *list = NULL;
     engine_obj *obj = NULL;
-    timespec now;
     uint64_t timediff;
     int64_t timeremain;
     int iterations;
     bool run_loop = true;
     int loop_iterations = 0;
-
-    clock_gettime(CLOCK_MONOTONIC, &now);
 
     while (run_loop) {
         run_loop = false;
@@ -130,14 +192,14 @@ void engine::phys_advance()
             if (obj->phys_active) {
                 timeremain = 0;
 
-                if (obj->move_x_every == 0) {
+                if (obj->move_x == NULL || obj->move_x->every == 0) {
                     iterations = 0;
-                } else if (obj->move_x_last.tv_sec == 0) {
+                } else if (obj->move_x->last.tv_sec == 0) {
                     iterations = 1;
                 } else {
-                    timediff = ((now.tv_sec - obj->move_x_last.tv_sec) * 1000000000) + (now.tv_nsec - obj->move_x_last.tv_nsec);
-                    iterations = timediff / obj->move_x_every;
-                    timeremain = timediff % obj->move_x_every;
+                    timediff = ((timer_now.tv_sec - obj->move_x->last.tv_sec) * 1000000000) + (timer_now.tv_nsec - obj->move_x->last.tv_nsec);
+                    iterations = timediff / obj->move_x->every;
+                    timeremain = timediff % obj->move_x->every;
                 }
 
                 if (iterations > 0) {
@@ -146,33 +208,33 @@ void engine::phys_advance()
                     if (iterations > 1) {
                         run_loop = true;
 
-                        obj->move_x_last.tv_nsec += obj->move_x_every;
+                        obj->move_x->last.tv_nsec += obj->move_x->every;
 
-                        if (obj->move_x_last.tv_nsec > 1000000000) {
-                            obj->move_x_last.tv_sec++;
-                            obj->move_x_last.tv_nsec -= 1000000000;
+                        if (obj->move_x->last.tv_nsec > 1000000000) {
+                            obj->move_x->last.tv_sec++;
+                            obj->move_x->last.tv_nsec -= 1000000000;
                         }
                     } else {
-                        obj->move_x_last = now;
-                        if (timeremain > obj->move_x_last.tv_nsec) {
-                            obj->move_x_last.tv_sec--;
-                            obj->move_x_last.tv_nsec = 1000000000 - (timeremain - obj->move_x_last.tv_nsec);
+                        obj->move_x->last = timer_now;
+                        if (timeremain > obj->move_x->last.tv_nsec) {
+                            obj->move_x->last.tv_sec--;
+                            obj->move_x->last.tv_nsec = 1000000000 - (timeremain - obj->move_x->last.tv_nsec);
                         } else {
-                            obj->move_x_last.tv_nsec -= timeremain;
+                            obj->move_x->last.tv_nsec -= timeremain;
                         }
                     }
                 }
 
                 timeremain = 0;
 
-                if (obj->move_y_every == 0) {
+                if (obj->move_y == NULL || obj->move_y->every == 0) {
                     iterations = 0;
-                } else if (obj->move_y_last.tv_sec == 0) {
+                } else if (obj->move_y->last.tv_sec == 0) {
                     iterations = 1;
                 } else {
-                    timediff = ((now.tv_sec - obj->move_y_last.tv_sec) * 1000000000) + (now.tv_nsec - obj->move_y_last.tv_nsec);
-                    iterations = timediff / obj->move_y_every;
-                    timeremain = timediff % obj->move_y_every;
+                    timediff = ((timer_now.tv_sec - obj->move_y->last.tv_sec) * 1000000000) + (timer_now.tv_nsec - obj->move_y->last.tv_nsec);
+                    iterations = timediff / obj->move_y->every;
+                    timeremain = timediff % obj->move_y->every;
                 }
 
                 if (iterations > 0) {
@@ -181,19 +243,19 @@ void engine::phys_advance()
                     if (iterations > 1) {
                         run_loop = true;
 
-                        obj->move_y_last.tv_nsec += obj->move_y_every;
+                        obj->move_y->last.tv_nsec += obj->move_y->every;
 
-                        if (obj->move_y_last.tv_nsec > 1000000000) {
-                            obj->move_y_last.tv_sec++;
-                            obj->move_y_last.tv_nsec -= 1000000000;
+                        if (obj->move_y->last.tv_nsec > 1000000000) {
+                            obj->move_y->last.tv_sec++;
+                            obj->move_y->last.tv_nsec -= 1000000000;
                         }
                     } else {
-                        obj->move_y_last = now;
-                        if (timeremain > obj->move_y_last.tv_nsec) {
-                            obj->move_y_last.tv_sec--;
-                            obj->move_y_last.tv_nsec = 1000000000 - (timeremain - obj->move_y_last.tv_nsec);
+                        obj->move_y->last = timer_now;
+                        if (timeremain > obj->move_y->last.tv_nsec) {
+                            obj->move_y->last.tv_sec--;
+                            obj->move_y->last.tv_nsec = 1000000000 - (timeremain - obj->move_y->last.tv_nsec);
                         } else {
-                            obj->move_y_last.tv_nsec -= timeremain;
+                            obj->move_y->last.tv_nsec -= timeremain;
                         }
                     }
                 }
@@ -206,20 +268,6 @@ void engine::phys_advance()
         if (phys_max_iterations > 0 && ++loop_iterations >= phys_max_iterations) {
             run_loop = false;
         }
-    }
-}
-
-void engine::reset_phys_timings()
-{
-    engine_obj_list *list = list_head;
-    timespec inittime {0, 0};
-
-    while (list != NULL) {
-        list->obj->move_x_last = inittime;
-        list->obj->move_y_last = inittime;
-
-        // Get next
-        list = list->next;
     }
 }
 
@@ -332,7 +380,8 @@ void engine::check_collide(engine_obj *obj, int id)
     }
 }
 
-void engine::draw() {
+void engine::draw()
+{
     engine_obj_list *list = NULL;
     engine_obj *obj = NULL;
 
@@ -360,8 +409,14 @@ void engine::draw() {
     SDL_RenderPresent(renderer);
 }
 
+void engine::update_timer()
+{
+    clock_gettime(CLOCK_MONOTONIC, &timer_now);
+}
+
 void engine::step()
 {
+    update_timer();
     phys_advance();
     draw();
 }

@@ -59,10 +59,10 @@ void projectile_manager::fire(
             obj->pos_y = pos_y;
             obj->step_x = step_x;
             obj->step_y = step_y;
-            obj->move_x_every = move_x_every;
-            obj->move_y_every = move_y_every;
-            obj->move_x_last = {0, 0};
-            obj->move_y_last = {0, 0};
+            obj->move_x->every = move_x_every;
+            obj->move_y->every = move_y_every;
+            obj->move_x->last = {0, 0};
+            obj->move_y->last = {0, 0};
             obj->invincible = invincible;
 
             obj->draw_active = true;

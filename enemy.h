@@ -12,13 +12,12 @@ class enemy : public engine_obj
         engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
-        uint64_t shot_delay;
-        timespec last_shot;
+        timer_obj *shot_timer;
         int default_health;
         int current_health;
         SDL_Texture *default_texture;
         SDL_Texture *hit_texture;
-        timespec last_hit;
+        timer_obj *last_hit_timer;
 
         virtual void init_projectile();
 

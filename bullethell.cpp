@@ -58,6 +58,7 @@ int ID_ENEMY_SHOT = 1001;
 int ID_BACKGROUND = 2000;
 
 int SHOT_PHYS_DELAY = 2500000;
+int HIT_FLASH_DELAY = 100000000;
 
 // Inputs
 bool quit = false;
@@ -69,9 +70,6 @@ bool fire = false;
 
 bool game_over = false;
 bool fired = false;
-timespec now;
-timespec player_last_shot;
-uint64_t timediff;
 int active_enemy_set;
 SDL_Event input;
 char *base_path;
@@ -88,6 +86,7 @@ projectile_manager *enemy_shot_mngr;
 background *background_a_obj;
 background *background_b_obj;
 ship *ship_obj;
+timer_obj *ship_fire_timer;
 player_projectile *shots[NUM_SHOTS];
 enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
 powerup_double_shot *powerup_double_shot_obj;
@@ -681,8 +680,6 @@ void get_input()
 
 void init(bool fullscreen)
 {
-    player_last_shot = {0, 0};
-
     base_path = SDL_GetBasePath();
 
 #ifdef __EMSCRIPTEN__
@@ -724,6 +721,8 @@ void init(bool fullscreen)
 
     eng->add_object(ship_obj);
     ship_obj->init();
+
+    ship_fire_timer = ship_obj->add_timer(AUTO_FIRE_DELAY);
 
     eng->add_resource("ship_obj", ship_obj);
 
@@ -822,14 +821,9 @@ void game_loop()
             if (down) { ship_obj->step_y = 1; }
 
             if (fire) {
-                clock_gettime(CLOCK_MONOTONIC, &now);
-                timediff = ((now.tv_sec - player_last_shot.tv_sec) * 1000000000) + (now.tv_nsec - player_last_shot.tv_nsec);
-
-                if (!fired || timediff > AUTO_FIRE_DELAY) {
+                if (!fired || ship_fire_timer->tick(eng->timer_now)) {
                     fired = true;
                     ship_obj->fire();
-
-                    player_last_shot = now;
                 }
             } else {
                 fired = false;

@@ -14,8 +14,7 @@ class enemy_boss_a : public enemy
         int ball_shot_angle_diff;
         int pos_mid;
         bool shot_invincible;
-        uint64_t ball_shot_delay;
-        timespec ball_last_shot;
+        timer_obj *ball_shot_timer;
         engine_obj *ship_obj;
         SDL_Texture *ball_shot_texture;
         SDL_Texture *ball_invincible_shot_texture;

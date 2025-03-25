@@ -5,6 +5,7 @@
 
 extern int ID_ENEMY_SHIP;
 extern int SHOT_PHYS_DELAY;
+extern int HIT_FLASH_DELAY;
 
 void enemy_adv::init()
 {
@@ -16,20 +17,20 @@ void enemy_adv::init()
     phys_size_x = 41;
     phys_size_y = 41;
     area_y_offset = 41;
-    move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
+    move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
+    move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     bounce = 1;
-    last_shot = {0, 0};
     default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_adv_tex");
 
     hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_adv_hit_tex");
 
-    last_hit = {0, 0};
+    last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
     default_health = 12;
     current_health = 12;
 
-    shot_delay = 400000000;
+    // shot_delay = 400000000;
+    shot_timer = add_timer(400000000);
 
     drop_powerup = NULL;
     ungroup = false;

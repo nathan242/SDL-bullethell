@@ -5,6 +5,7 @@
 #define SHOT_PHYS_DELAY 5000000
 
 extern int ID_ENEMY_SHIP;
+extern int HIT_FLASH_DELAY;
 
 void enemy_diagonal_stationary::init()
 {
@@ -16,20 +17,19 @@ void enemy_diagonal_stationary::init()
     phys_size_x = 40;
     phys_size_y = 40;
     area_y_offset = 40;
-    move_x_every = ENEMY_SHIP_MOVE_PHYS_DELAY;
-    move_y_every = ENEMY_SHIP_MOVE_PHYS_DELAY*2;
+    move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
+    move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY*2);
     bounce = 1;
-    last_shot = {0, 0};
     default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_6_tex");
 
     hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_6_hit_tex");
 
-    last_hit = {0, 0};
+    last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
     default_health = 8;
     current_health = 8;
 
-    shot_delay = 800000000;
+    shot_timer = add_timer(800000000);
 
     drop_powerup = NULL;
     ungroup = false;

@@ -8,7 +8,7 @@ void enemy_diagonal_stationary_spiral::init()
 {
     enemy_diagonal_stationary::init();
 
-    shot_delay = 50000000;
+    shot_timer = add_timer(50000000);
 
     default_health = 30;
     current_health = 30;

@@ -22,8 +22,8 @@ void ship::init()
     size_y = 21;
     phys_size_x = 21;
     phys_size_y = 21;
-    move_x_every = SHIP_MOVE_PHYS_DELAY;
-    move_y_every = SHIP_MOVE_PHYS_DELAY;
+    move_x = add_timer(SHIP_MOVE_PHYS_DELAY);
+    move_y = add_timer(SHIP_MOVE_PHYS_DELAY);
     texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
 
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
@@ -182,6 +182,6 @@ void ship::fire()
 ship::~ship()
 {
     if (initialized) {
-        
+
     }
 }

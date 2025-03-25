@@ -11,6 +11,9 @@ void enemy_projectile::init()
 {
     base_projectile::init();
 
+    move_x = add_timer(0);
+    move_y = add_timer(0);
+
     type_id = ID_ENEMY_SHOT;
     bounce = -1;
 }
