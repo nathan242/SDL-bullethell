@@ -3,6 +3,7 @@
 #include "menu_title.h"
 #include "press_key.h"
 #include "game_over.h"
+#include "paused_img.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_adv.h"
@@ -82,6 +83,7 @@ engine *eng;
 menu_title *title_obj;
 press_key *press_key_obj;
 class game_over *game_over_obj;
+paused_img *paused_img_obj;
 
 // Game objects
 projectile_manager *player_shot_mngr;
@@ -101,6 +103,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"menu_title_tex", "title.png"},
     {"press_key_tex", "press_a_key.png"},
     {"game_over_tex", "game_over.png"},
+    {"paused_tex", "paused.png"},
     {"ship_tex", "ship.png"},
     {"projectile_player_default_tex", "projectile_player_default.png"},
     {"enemy_ship_default_tex", "enemy_ship_default.png"},
@@ -760,6 +763,9 @@ void init(bool fullscreen)
     game_over_obj = new class game_over(eng);
     eng->add_object(game_over_obj);
     game_over_obj->init();
+    paused_img_obj = new paused_img(eng);
+    paused_img_obj->init();
+    eng->add_object(paused_img_obj);
 }
 
 #ifdef __EMSCRIPTEN__
@@ -836,8 +842,10 @@ void game_loop()
                     paused = !paused;
 
                     if (paused) {
+                        paused_img_obj->draw_active = true;
                         eng->suspend_timers();
                     } else {
+                        paused_img_obj->draw_active = false;
                         eng->resume_timers();
                     }
                 }
@@ -894,6 +902,7 @@ void deinit()
     delete title_obj;
     delete press_key_obj;
     delete game_over_obj;
+    delete paused_img_obj;
     delete ship_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
