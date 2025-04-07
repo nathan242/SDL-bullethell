@@ -36,7 +36,7 @@ class animation_obj
     public:
         timer_obj *timer;
         std::vector<SDL_Texture*> frames;
-        int curr;
+        int unsigned curr;
 
         SDL_Texture* next(timespec now);
         ~animation_obj();
