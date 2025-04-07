@@ -16,8 +16,8 @@ class enemy_boss_a : public enemy
         bool shot_invincible;
         timer_obj *ball_shot_timer;
         engine_obj *ship_obj;
-        SDL_Texture *ball_shot_texture;
-        SDL_Texture *ball_invincible_shot_texture;
+        animation_obj *ball_shot_animation;
+        animation_obj *ball_invincible_shot_animation;
         void update_fire_step();
         void init_projectile();
         void pre_phys_event();

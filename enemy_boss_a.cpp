@@ -52,8 +52,9 @@ void enemy_boss_a::init()
 void enemy_boss_a::init_projectile()
 {
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
-    ball_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
-    ball_invincible_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_invincible_tex");
+    default_shot_animation = NULL;
+    ball_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
+    ball_invincible_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_invincible_anim");
     ball_fire_step_x = 1;
     ball_fire_step_y = 1;
     ball_shot_angle = 0;
@@ -96,7 +97,7 @@ void enemy_boss_a::ball_fire()
     }
 
     p_mngr->fire(
-        shot_invincible ? ball_invincible_shot_texture : ball_shot_texture,
+        shot_invincible ? ball_invincible_shot_animation : ball_shot_animation,
         20,
         20,
         20,

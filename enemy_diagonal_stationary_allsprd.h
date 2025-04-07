@@ -13,7 +13,7 @@ class enemy_diagonal_stationary_allsprd : public enemy_diagonal_stationary
         int ball_shot_angle;
         int ball_shot_angle_diff;
         bool shot_invincible;
-        SDL_Texture *default_shot_texture_invincible;
+        animation_obj *default_shot_invincible_animation;
         void init_projectile();
         bool update_fire_step();
 

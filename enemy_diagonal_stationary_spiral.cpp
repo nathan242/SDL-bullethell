@@ -16,8 +16,9 @@ void enemy_diagonal_stationary_spiral::init()
 
 void enemy_diagonal_stationary_spiral::init_projectile()
 {
-    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
-    default_shot_texture_invincible = (SDL_Texture*)i_eng->get_resource("projectile_ball_invincible_tex");
+    default_shot_texture = NULL;
+    default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
+    default_shot_invincible_animation = (animation_obj*)i_eng->get_resource("projectile_ball_invincible_anim");
     ball_fire_step_x = 1;
     ball_fire_step_y = 1;
     ball_shot_angle = 0;
@@ -39,7 +40,7 @@ void enemy_diagonal_stationary_spiral::fire()
     }
 
     p_mngr->fire(
-        shot_invincible ? default_shot_texture_invincible : default_shot_texture,
+        shot_invincible ? default_shot_invincible_animation : default_shot_animation,
         20,
         20,
         20,

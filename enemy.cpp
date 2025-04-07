@@ -56,6 +56,7 @@ void enemy::init()
 void enemy::init_projectile()
 {
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
+    default_shot_animation = NULL;
 }
 
 bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)

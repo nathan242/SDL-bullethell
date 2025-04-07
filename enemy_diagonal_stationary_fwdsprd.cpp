@@ -6,6 +6,7 @@
 void enemy_diagonal_stationary_fwdsprd::init_projectile()
 {
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_invincible_tex");
+    default_shot_animation = NULL;
 }
 
 void enemy_diagonal_stationary_fwdsprd::fire()

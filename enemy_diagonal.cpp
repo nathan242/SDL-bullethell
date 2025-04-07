@@ -42,7 +42,8 @@ void enemy_diagonal::init()
 
 void enemy_diagonal::init_projectile()
 {
-    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
+    default_shot_texture = NULL;
+    default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
 }
 
 void enemy_diagonal::fire()
@@ -50,7 +51,7 @@ void enemy_diagonal::fire()
     for (int x = -1; x < 2; x += 2) {
         for (int y = -1; y < 2; y += 2) {
             p_mngr->fire(
-                default_shot_texture,
+                default_shot_animation,
                 20,
                 20,
                 20,

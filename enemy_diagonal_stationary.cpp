@@ -42,7 +42,8 @@ void enemy_diagonal_stationary::init()
 
 void enemy_diagonal_stationary::init_projectile()
 {
-    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_ball_tex");
+    default_shot_texture = NULL;
+    default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
 }
 
 void enemy_diagonal_stationary::pre_phys_event()
@@ -73,7 +74,7 @@ void enemy_diagonal_stationary::fire()
             }
 
             p_mngr->fire(
-                default_shot_texture,
+                default_shot_animation,
                 20,
                 20,
                 20,

@@ -33,6 +33,20 @@ class projectile_manager
             int move_y_every,
             bool invincible
         );
+        void fire(
+            animation_obj *animation,
+            int size_x,
+            int size_y,
+            int phys_size_x,
+            int phys_size_y,
+            int pos_x,
+            int pos_y,
+            int step_x,
+            int step_y,
+            int move_x_every,
+            int move_y_every,
+            bool invincible
+        );
         ~projectile_manager();
 };
 

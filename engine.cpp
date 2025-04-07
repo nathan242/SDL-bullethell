@@ -50,11 +50,29 @@ void timer_obj::resume(timespec now)
     }
 }
 
+SDL_Texture* animation_obj::next(timespec now)
+{
+    if (timer->tick(now)) {
+        if (++curr == frames.size()) {
+            curr = 0;
+        }
+    }
+
+    return frames[curr];
+}
+
+animation_obj::~animation_obj()
+{
+    if (timer != NULL) {
+        delete timer;
+    }
+}
+
 void engine_obj::init()
 {
     type_id = 0;
-    sprite = NULL;
     texture = NULL;
+    animation = NULL;
     size_x = 0;
     size_y = 0;
     phys_size_x = 0;
@@ -415,6 +433,10 @@ void engine::draw()
         obj = list->obj;
 
         if (obj->draw_active) {
+            if (obj->animation != NULL) {
+                obj->texture = obj->animation->next(timer_now);
+            }
+
             offset.x = obj->pos_x;
             offset.y = obj->pos_y;
             offset.w = obj->size_x;

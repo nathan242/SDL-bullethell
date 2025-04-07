@@ -21,6 +21,7 @@ void enemy_cargo::init()
     bounce = 1;
     default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_cargo_tex");
     default_shot_texture = NULL;
+    default_shot_animation = NULL;
 
     hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_cargo_hit_tex");
 

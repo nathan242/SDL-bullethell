@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <string>
+#include <vector>
 #include <time.h>
 
 #include <SDL2/SDL.h>
@@ -30,13 +31,24 @@ struct timer_obj_list
     timer_obj_list *next;
 };
 
+class animation_obj
+{
+    public:
+        timer_obj *timer;
+        std::vector<SDL_Texture*> frames;
+        int curr;
+
+        SDL_Texture* next(timespec now);
+        ~animation_obj();
+};
+
 class engine_obj
 {
     public:
         int type_id;
 
-        SDL_Surface *sprite;
         SDL_Texture *texture;
+        animation_obj *animation;
 
         int size_x;
         int size_y;

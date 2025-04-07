@@ -4,6 +4,8 @@
 #include "press_key.h"
 #include "game_over.h"
 #include "paused_img.h"
+#include "anim_projectile_ball.h"
+#include "anim_projectile_ball_invincible.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_adv.h"
@@ -114,9 +116,19 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"enemy_ship_diagonal_tex", "enemy_ship_diagonal.png"},
     {"enemy_ship_diagonal_hit_tex", "enemy_ship_diagonal_hit.png"},
     {"projectile_ball_tex", "projectile_ball.png"},
+    {"projectile_ball_frame_1_tex", "projectile_ball_1.png"},
+    {"projectile_ball_frame_2_tex", "projectile_ball_2.png"},
+    {"projectile_ball_frame_3_tex", "projectile_ball_3.png"},
+    {"projectile_ball_frame_4_tex", "projectile_ball_4.png"},
+    {"projectile_ball_frame_5_tex", "projectile_ball_5.png"},
     {"enemy_ship_diagonal_6_tex", "enemy_ship_diagonal_6.png"},
     {"enemy_ship_diagonal_6_hit_tex", "enemy_ship_diagonal_6_hit.png"},
     {"projectile_ball_invincible_tex", "projectile_ball_invincible.png"},
+    {"projectile_ball_invincible_frame_1_tex", "projectile_ball_invincible_1.png"},
+    {"projectile_ball_invincible_frame_2_tex", "projectile_ball_invincible_2.png"},
+    {"projectile_ball_invincible_frame_3_tex", "projectile_ball_invincible_3.png"},
+    {"projectile_ball_invincible_frame_4_tex", "projectile_ball_invincible_4.png"},
+    {"projectile_ball_invincible_frame_5_tex", "projectile_ball_invincible_5.png"},
     {"enemy_cargo_tex", "enemy_cargo.png"},
     {"enemy_cargo_hit_tex", "enemy_cargo_hit.png"},
     {"powerup_double_shot_tex", "powerup_double_shot.png"},
@@ -132,6 +144,9 @@ void init_resources()
         eng->add_resource(name.c_str(), SDL_CreateTextureFromSurface(eng->renderer, temp_surface));
         SDL_FreeSurface(temp_surface);
     }
+
+    eng->add_resource("projectile_ball_anim", new anim_projectile_ball(new timer_obj(0), eng));
+    eng->add_resource("projectile_ball_invincible_anim", new anim_projectile_ball_invincible(new timer_obj(0), eng));
 }
 
 void free_resources()
@@ -139,6 +154,9 @@ void free_resources()
     for (const auto& [name, texture] : texture_map) {
         SDL_DestroyTexture((SDL_Texture*)eng->get_resource(name.c_str()));
     }
+
+    delete (animation_obj*)eng->get_resource("projectile_ball_anim");
+    delete (animation_obj*)eng->get_resource("projectile_ball_invincible_anim");
 }
 
 int get_enemy_slot()
