@@ -413,7 +413,7 @@ void activate_enemy_set(int set_id)
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 350;
+            enemy_slots[slot]->obj->pos_x = 380;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
             enemy_slots[slot]->obj->step_x = 0;
             enemy_slots[slot]->obj->step_y = 1;
@@ -423,7 +423,7 @@ void activate_enemy_set(int set_id)
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
+            enemy_slots[slot]->obj->pos_x = 130;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
             enemy_slots[slot]->obj->step_x = 0;
             enemy_slots[slot]->obj->step_y = 1;
@@ -433,7 +433,7 @@ void activate_enemy_set(int set_id)
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr);
             enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 550;
+            enemy_slots[slot]->obj->pos_x = 630;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
             enemy_slots[slot]->obj->step_x = 0;
             enemy_slots[slot]->obj->step_y = 1;
