@@ -1,0 +1,8 @@
+*.o
+bullethell
+bullethell.html
+bullethell.js
+bullethell.data
+bullethell.wasm
+.vscode
+

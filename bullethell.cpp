@@ -6,6 +6,8 @@
 #include "paused_img.h"
 #include "anim_projectile_ball.h"
 #include "anim_projectile_ball_invincible.h"
+#include "anim_powerup_double_shot.h"
+#include "anim_powerup_quad_spread_shot.h"
 #include "ship.h"
 #include "enemy.h"
 #include "enemy_adv.h"
@@ -132,7 +134,11 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"enemy_cargo_tex", "enemy_cargo.png"},
     {"enemy_cargo_hit_tex", "enemy_cargo_hit.png"},
     {"powerup_double_shot_tex", "powerup_double_shot.png"},
-    {"powerup_quad_spread_shot_tex", "powerup_quad_spread_shot.png"}
+    {"powerup_double_shot_frame_1_tex", "powerup_double_shot_1.png"},
+    {"powerup_double_shot_frame_2_tex", "powerup_double_shot_2.png"},
+    {"powerup_quad_spread_shot_tex", "powerup_quad_spread_shot.png"},
+    {"powerup_quad_spread_shot_frame_1_tex", "powerup_quad_spread_shot_1.png"},
+    {"powerup_quad_spread_shot_frame_2_tex", "powerup_quad_spread_shot_2.png"}
 };
 
 void init_resources()
@@ -147,6 +153,8 @@ void init_resources()
 
     eng->add_resource("projectile_ball_anim", new anim_projectile_ball(new timer_obj(0), eng));
     eng->add_resource("projectile_ball_invincible_anim", new anim_projectile_ball_invincible(new timer_obj(0), eng));
+    eng->add_resource("powerup_double_shot_anim", new anim_powerup_double_shot(new timer_obj(0), eng));
+    eng->add_resource("powerup_quad_spread_shot_anim", new anim_powerup_quad_spread_shot(new timer_obj(0), eng));
 }
 
 void free_resources()
@@ -157,6 +165,8 @@ void free_resources()
 
     delete (animation_obj*)eng->get_resource("projectile_ball_anim");
     delete (animation_obj*)eng->get_resource("projectile_ball_invincible_anim");
+    delete (animation_obj*)eng->get_resource("powerup_double_shot_anim");
+    delete (animation_obj*)eng->get_resource("powerup_quad_spread_shot_anim");
 }
 
 int get_enemy_slot()
