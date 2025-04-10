@@ -33,12 +33,20 @@ bool timer_obj::tick(timespec now)
 
 void timer_obj::suspend(timespec now)
 {
+    if (suspended) {
+        return;
+    }
+
     suspended = true;
     suspend_time = now;
 }
 
 void timer_obj::resume(timespec now)
 {
+    if (!suspended) {
+        return;
+    }
+
     suspended = false;
 
     last.tv_nsec += (now.tv_nsec - suspend_time.tv_nsec);
@@ -489,6 +497,10 @@ void engine::suspend_timers()
             }
         }
 
+        if (obj_list->obj->animation != NULL) {
+            obj_list->obj->animation->timer->suspend(timer_now);
+        }
+
         // Get next
         obj_list = obj_list->next;
     }
@@ -507,6 +519,10 @@ void engine::resume_timers()
                 timer_list->obj->resume(timer_now);
                 timer_list = timer_list->next;
             }
+        }
+
+        if (obj_list->obj->animation != NULL) {
+            obj_list->obj->animation->timer->resume(timer_now);
         }
 
         // Get next
