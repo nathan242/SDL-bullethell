@@ -131,7 +131,7 @@ void enemy::fire()
         10,
         5,
         10,
-        pos_x+(size_x/2),
+        pos_x+(size_x/2)-2,
         pos_y+size_y+1,
         0,
         1,
