@@ -7,6 +7,7 @@ extern int ID_ENEMY_SHIP;
 extern int ID_PLAYER_SHIP;
 extern int ID_PLAYER_SHOT;
 extern int ID_ENEMY_SHOT;
+extern int ID_PLAYER_SHIELD;
 extern int SHOT_PHYS_DELAY;
 extern int HIT_FLASH_DELAY;
 
@@ -83,6 +84,8 @@ bool enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int 
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
             return false;
         } else if (obj2->type_id >= 100 && obj2->type_id <= 199) {
+            return false;
+        } else if (obj2->type_id == ID_PLAYER_SHIELD) {
             return false;
         }
     } else if (collide_axis == 2 && pos_y > 0) {

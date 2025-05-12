@@ -85,6 +85,8 @@ void engine_obj::init()
     size_y = 0;
     phys_size_x = 0;
     phys_size_y = 0;
+    phys_offset_x = 0;
+    phys_offset_y = 0;
     pos_x = 0;
     pos_y = 0;
     step_x = 0;
@@ -174,6 +176,10 @@ engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscre
     list_curr = NULL;
 
     phys_max_iterations = 0;
+    debug_draw_phys_area = false;
+
+    debug_surface = NULL;
+    debug_texture = NULL;
 
     update_timer();
 }
@@ -323,6 +329,11 @@ void engine::check_collide(engine_obj *obj, int id)
     engine_obj_list *list = NULL;
     engine_obj *obj2 = NULL;
 
+    int obj_pos_x = obj->pos_x+obj->phys_offset_x;
+    int obj_pos_y = obj->pos_y+obj->phys_offset_y;
+    int obj2_pos_x;
+    int obj2_pos_y;
+
     int x1;
     int x2;
     int y1;
@@ -340,38 +351,41 @@ void engine::check_collide(engine_obj *obj, int id)
         if (list->id != id && list->obj->phys_active && list->obj->phys_collision_active) {
             obj2 = list->obj;
 
-            // Left side
-            x1 = obj2->pos_x-obj->size_x;
-            // Right side
-            x2 = obj2->pos_x+obj2->size_x;
-            // Top side
-            y1 = obj2->pos_y-obj->size_y;
-            // Bottom side
-            y2 = obj2->pos_y+obj2->size_y;
+            obj2_pos_x = obj2->pos_x+obj2->phys_offset_x;
+            obj2_pos_y = obj2->pos_y+obj2->phys_offset_y;
 
-            if (obj->pos_x >= x1 && obj->pos_x <= x2 && obj->pos_y >= y1 && obj->pos_y <= y2) {
+            // Left side
+            x1 = obj2_pos_x-obj->phys_size_x;
+            // Right side
+            x2 = obj2_pos_x+obj2->phys_size_x;
+            // Top side
+            y1 = obj2_pos_y-obj->phys_size_y;
+            // Bottom side
+            y2 = obj2_pos_y+obj2->phys_size_y;
+
+            if (obj_pos_x >= x1 && obj_pos_x <= x2 && obj_pos_y >= y1 && obj_pos_y <= y2) {
                 if (obj->collided != obj2) {
-                    if (obj->pos_x-x1 > x2-obj->pos_x) {
+                    if (obj_pos_x-x1 > x2-obj_pos_x) {
                         // Collided on right side
-                        diff_x = x2-obj->pos_x;
+                        diff_x = x2-obj_pos_x;
                     } else {
                         // Collided on left side
-                        diff_x = obj->pos_x-x1;
+                        diff_x = obj_pos_x-x1;
                     }
 
-                    if (obj->pos_y-y1 > y2-obj->pos_y) {
+                    if (obj_pos_y-y1 > y2-obj_pos_y) {
                         // Collided on bottom side
-                        diff_y = y2-obj->pos_y;
+                        diff_y = y2-obj_pos_y;
                     } else {
                         // Collided on top side
-                        diff_y = obj->pos_y-y1;
+                        diff_y = obj_pos_y-y1;
                     }
 
                     if (diff_y > diff_x) {
                         do_bounce = obj->collision_event(obj2, 1, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
-                                if ((obj->step_x > 0 && obj->pos_x < obj2->pos_x) || (obj->step_x < 0 && obj->pos_x > obj2->pos_x)) {
+                                if ((obj->step_x > 0 && obj_pos_x < obj2_pos_x) || (obj->step_x < 0 && obj_pos_x > obj2_pos_x)) {
                                     obj->step_x = obj->step_x*-1;
                                 }
                             } else if (obj->bounce == 0) {
@@ -383,7 +397,7 @@ void engine::check_collide(engine_obj *obj, int id)
                         do_bounce = obj->collision_event(obj2, 2, area_x, area_y);
                         if (do_bounce) {
                             if (obj->bounce > 0) {
-                                if ((obj->step_y > 0 && obj->pos_y < obj2->pos_y) || (obj->step_y < 0 && obj->pos_y > obj2->pos_y)) {
+                                if ((obj->step_y > 0 && obj_pos_y < obj2_pos_y) || (obj->step_y < 0 && obj_pos_y > obj2_pos_y)) {
                                     obj->step_y = obj->step_y*-1;
                                 }
                             } else if (obj->bounce == 0) {
@@ -403,23 +417,23 @@ void engine::check_collide(engine_obj *obj, int id)
     }
 
     // Check collision with edges
-    if ((obj->pos_x >= (area_x+obj->area_x_offset)-obj->size_x && obj->step_x > 0) || (obj->pos_x <= (obj->area_x_offset*-1) && obj->step_x < 0)) {
+    if ((obj_pos_x >= (area_x+obj->area_x_offset)-obj->phys_size_x && obj->step_x > 0) || (obj_pos_x <= (obj->area_x_offset*-1) && obj->step_x < 0)) {
         do_bounce = obj->collision_event(NULL, 1, area_x, area_y);
         if (do_bounce) {
             if (obj->bounce > 0) {
                 obj->step_x = obj->step_x*-1;
-            } else if (obj->bounce == 0 && ((obj->pos_x >= area_x-obj->size_x && obj->step_x > 0) || (obj->pos_x <= 0 && obj->step_x < 0))) {
+            } else if (obj->bounce == 0 && ((obj_pos_x >= area_x-obj->phys_size_x && obj->step_x > 0) || (obj_pos_x <= 0 && obj->step_x < 0))) {
                 obj->step_x = 0;
                 obj->step_y = 0;
             }
         }
     }
-    if ((obj->pos_y >= (area_y+obj->area_y_offset)-obj->size_y && obj->step_y > 0) || (obj->pos_y <= (obj->area_y_offset*-1) && obj->step_y < 0)) {
+    if ((obj_pos_y >= (area_y+obj->area_y_offset)-obj->phys_size_y && obj->step_y > 0) || (obj_pos_y <= (obj->area_y_offset*-1) && obj->step_y < 0)) {
         do_bounce = obj->collision_event(NULL, 2, area_x, area_y);
         if (do_bounce) {
             if (obj->bounce > 0) {
                 obj->step_y = obj->step_y*-1;
-            } else if (obj->bounce == 0 && ((obj->pos_y >= area_y-obj->size_y && obj->step_y > 0) || (obj->pos_y <= 0 && obj->step_y < 0))) {
+            } else if (obj->bounce == 0 && ((obj_pos_y >= area_y-obj->phys_size_y && obj->step_y > 0) || (obj_pos_y <= 0 && obj->step_y < 0))) {
                 obj->step_x = 0;
                 obj->step_y = 0;
             }
@@ -455,6 +469,10 @@ void engine::draw()
 
         // Get next
         list = list->next;
+    }
+
+    if (debug_draw_phys_area) {
+        debug_draw();
     }
 
     SDL_RenderPresent(renderer);
@@ -530,10 +548,46 @@ void engine::resume_timers()
     }
 }
 
+void engine::debug_draw()
+{
+    if (debug_texture == NULL) {
+        debug_surface = SDL_CreateRGBSurfaceWithFormat(0, 100, 100, 32, SDL_PIXELFORMAT_RGBA32);
+        SDL_FillRect(debug_surface, NULL, SDL_MapRGBA(debug_surface->format, 255, 0, 0, 90));
+        debug_texture = SDL_CreateTextureFromSurface(renderer, debug_surface);
+        SDL_FreeSurface(debug_surface);
+    }
+
+    engine_obj_list *list = NULL;
+    engine_obj *obj = NULL;
+
+    list = list_head;
+
+    while (list != NULL) {
+        // Get object
+        obj = list->obj;
+
+        if (obj->phys_active && obj->phys_collision_active) {
+            offset.x = obj->pos_x+obj->phys_offset_x;
+            offset.y = obj->pos_y+obj->phys_offset_y;
+            offset.w = obj->phys_size_x;
+            offset.h = obj->phys_size_y;
+
+            SDL_RenderCopy(renderer, debug_texture, NULL, &offset);
+        }
+
+        // Get next
+        list = list->next;
+    }
+}
+
 engine::~engine()
 {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+
+    if (debug_texture != NULL) {
+        SDL_DestroyTexture(debug_texture);
+    }
 
     if (list_head != NULL) {
         engine_obj_list *list = NULL;

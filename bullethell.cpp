@@ -9,6 +9,7 @@
 #include "anim_powerup_double_shot.h"
 #include "anim_powerup_quad_spread_shot.h"
 #include "ship.h"
+#include "shield.h"
 #include "enemy.h"
 #include "enemy_adv.h"
 #include "enemy_diagonal.h"
@@ -58,6 +59,7 @@ int ID_PLAYER_SHIP = 1;
 int ID_ENEMY_SHIP = 2;
 int ID_POWERUP_DOUBLE_SHOT = 100;
 int ID_POWERUP_QUAD_SPREAD_SHOT = 101;
+int ID_PLAYER_SHIELD = 200;
 int ID_PLAYER_SHOT = 1000;
 int ID_ENEMY_SHOT = 1001;
 int ID_BACKGROUND = 2000;
@@ -72,6 +74,7 @@ bool right = false;
 bool up = false;
 bool down = false;
 bool fire = false;
+bool shield_btn = false;
 bool pause_btn = false;
 
 bool game_over = false;
@@ -95,6 +98,7 @@ projectile_manager *enemy_shot_mngr;
 background *background_a_obj;
 background *background_b_obj;
 ship *ship_obj;
+shield *shield_obj;
 timer_obj *ship_fire_timer;
 player_projectile *shots[NUM_SHOTS];
 enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
@@ -109,6 +113,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"game_over_tex", "game_over.png"},
     {"paused_tex", "paused.png"},
     {"ship_tex", "ship.png"},
+    {"shield_tex", "shield.png"},
     {"projectile_player_default_tex", "projectile_player_default.png"},
     {"enemy_ship_default_tex", "enemy_ship_default.png"},
     {"enemy_ship_default_hit_tex", "enemy_ship_default_hit.png"},
@@ -684,6 +689,9 @@ void get_input()
                     case SDLK_SPACE:
                         fire = true;
                         break;
+                    case SDLK_RSHIFT:
+                        shield_btn = true;
+                        break;
                     case SDLK_p:
                         pause_btn = true;
                         break;
@@ -710,6 +718,9 @@ void get_input()
                     case SDLK_SPACE:
                         fire = false;
                         break;
+                    case SDLK_RSHIFT:
+                        shield_btn = false;
+                        break;
                     case SDLK_p:
                         pause_btn = false;
                         break;
@@ -731,6 +742,7 @@ void init(bool fullscreen)
 
     eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen);
     eng->phys_max_iterations = 20;
+    // eng->debug_draw_phys_area = true;
 
     init_resources();
 
@@ -739,6 +751,7 @@ void init(bool fullscreen)
     enemy_shot_mngr = new projectile_manager();
     background_a_obj = new background(eng);
     background_b_obj = new background(eng);
+    shield_obj = new shield(eng);
     ship_obj = new ship(eng, player_shot_mngr);
 
     eng->add_object(background_a_obj);
@@ -759,8 +772,11 @@ void init(bool fullscreen)
     powerup_quad_spread_shot_obj->init();
     eng->add_object(powerup_quad_spread_shot_obj);
 
+    shield_obj->init();
+    eng->add_resource("shield_obj", shield_obj);
     eng->add_object(ship_obj);
     ship_obj->init();
+    eng->add_object(shield_obj);
 
     ship_fire_timer = ship_obj->add_timer(AUTO_FIRE_DELAY);
 
@@ -888,6 +904,10 @@ void game_loop()
                 }
             } else {
                 fired = false;
+            }
+
+            if (!paused && shield_btn) {
+                ship_obj->activate_shield();
             }
 
             init_enemy_set = true;

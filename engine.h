@@ -56,6 +56,9 @@ class engine_obj
         int phys_size_x;
         int phys_size_y;
 
+        int phys_offset_x;
+        int phys_offset_y;
+
         int pos_x;
         int pos_y;
 
@@ -112,6 +115,10 @@ class engine
         SDL_Renderer *renderer;
 
         int phys_max_iterations;
+        bool debug_draw_phys_area;
+
+        SDL_Surface *debug_surface;
+        SDL_Texture *debug_texture;
 
         timespec timer_now;
 
@@ -125,6 +132,7 @@ class engine
         void *get_resource(const char *name);
         void suspend_timers();
         void resume_timers();
+        void debug_draw();
         ~engine();
 };
 

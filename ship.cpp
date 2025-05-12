@@ -28,6 +28,8 @@ void ship::init()
 
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
 
+    shield_obj = (shield*)i_eng->get_resource("shield_obj");
+
     reset();
 
     initialized = true;
@@ -177,6 +179,11 @@ void ship::fire()
                 false
             );
     }
+}
+
+void ship::activate_shield()
+{
+    shield_obj->activate(this);
 }
 
 ship::~ship()
