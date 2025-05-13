@@ -136,6 +136,11 @@ void engine_obj::pre_phys_event()
 
 }
 
+void engine_obj::post_draw_event()
+{
+
+}
+
 engine_obj::~engine_obj()
 {
     timer_obj_list *list = NULL;
@@ -459,12 +464,16 @@ void engine::draw()
                 obj->texture = obj->animation->next(timer_now);
             }
 
-            offset.x = obj->pos_x;
-            offset.y = obj->pos_y;
-            offset.w = obj->size_x;
-            offset.h = obj->size_y;
+            if (obj->texture != NULL) {
+                offset.x = obj->pos_x;
+                offset.y = obj->pos_y;
+                offset.w = obj->size_x;
+                offset.h = obj->size_y;
 
-            SDL_RenderCopy(renderer, obj->texture, NULL, &offset);
+                SDL_RenderCopy(renderer, obj->texture, NULL, &offset);
+            }
+
+            obj->post_draw_event();
         }
 
         // Get next

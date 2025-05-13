@@ -1,5 +1,5 @@
-bullethell: bullethell.o engine.o background.o menu_title.o press_key.o game_over.o paused_img.o anim_projectile_ball.o anim_projectile_ball_invincible.o anim_powerup_double_shot.o anim_powerup_quad_spread_shot.o ship.o shield.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
-	g++ -Wall -g -o bullethell bullethell.o engine.o background.o menu_title.o press_key.o game_over.o paused_img.o anim_projectile_ball.o anim_projectile_ball_invincible.o anim_powerup_double_shot.o anim_powerup_quad_spread_shot.o ship.o shield.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
+bullethell: bullethell.o engine.o background.o menu_title.o press_key.o game_over.o paused_img.o game_ui.o anim_projectile_ball.o anim_projectile_ball_invincible.o anim_powerup_double_shot.o anim_powerup_quad_spread_shot.o ship.o shield.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o
+	g++ -Wall -g -o bullethell bullethell.o engine.o background.o menu_title.o press_key.o game_over.o paused_img.o game_ui.o anim_projectile_ball.o anim_projectile_ball_invincible.o anim_powerup_double_shot.o anim_powerup_quad_spread_shot.o ship.o shield.o enemy.o enemy_adv.o enemy_diagonal.o enemy_diagonal_stationary.o enemy_diagonal_stationary_spiral.o enemy_diagonal_stationary_allsprd.o enemy_diagonal_stationary_fwdsprd.o enemy_cargo.o enemy_boss_a.o powerup.o powerup_double_shot.o powerup_quad_spread_shot.o base_projectile.o player_projectile.o enemy_projectile.o projectile_manager.o `sdl2-config --libs` -lSDL2_image
 
 bullethell.o: bullethell.cpp
 	g++ -Wall -g `sdl2-config --cflags` -c bullethell.cpp
@@ -21,6 +21,9 @@ game_over.o: game_over.cpp game_over.h
 
 paused_img.o: paused_img.cpp paused_img.h
 	g++ -Wall -g `sdl2-config --cflags` -c paused_img.cpp
+
+game_ui.o: game_ui.cpp game_ui.h
+	g++ -Wall -g `sdl2-config --cflags` -c game_ui.cpp
 
 anim_projectile_ball.o: anim_projectile_ball.cpp anim_projectile_ball.h
 	g++ -Wall -g `sdl2-config --cflags` -c anim_projectile_ball.cpp

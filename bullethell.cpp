@@ -4,6 +4,7 @@
 #include "press_key.h"
 #include "game_over.h"
 #include "paused_img.h"
+#include "game_ui.h"
 #include "anim_projectile_ball.h"
 #include "anim_projectile_ball_invincible.h"
 #include "anim_powerup_double_shot.h"
@@ -91,6 +92,7 @@ menu_title *title_obj;
 press_key *press_key_obj;
 class game_over *game_over_obj;
 paused_img *paused_img_obj;
+game_ui *game_ui_obj;
 
 // Game objects
 projectile_manager *player_shot_mngr;
@@ -112,6 +114,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"press_key_tex", "press_a_key.png"},
     {"game_over_tex", "game_over.png"},
     {"paused_tex", "paused.png"},
+    {"game_ui_bar_tex", "game_ui_bar.png"},
     {"ship_tex", "ship.png"},
     {"shield_tex", "shield.png"},
     {"projectile_player_default_tex", "projectile_player_default.png"},
@@ -138,6 +141,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"projectile_ball_invincible_frame_5_tex", "projectile_ball_invincible_5.png"},
     {"enemy_cargo_tex", "enemy_cargo.png"},
     {"enemy_cargo_hit_tex", "enemy_cargo_hit.png"},
+    {"powerup_single_shot_tex", "powerup_single_shot.png"},
     {"powerup_double_shot_tex", "powerup_double_shot.png"},
     {"powerup_double_shot_frame_1_tex", "powerup_double_shot_1.png"},
     {"powerup_double_shot_frame_2_tex", "powerup_double_shot_2.png"},
@@ -810,6 +814,9 @@ void init(bool fullscreen)
     paused_img_obj = new paused_img(eng);
     paused_img_obj->init();
     eng->add_object(paused_img_obj);
+    game_ui_obj = new game_ui(eng);
+    game_ui_obj->init();
+    eng->add_object(game_ui_obj);
 }
 
 #ifdef __EMSCRIPTEN__
@@ -836,6 +843,7 @@ int menu_loop()
 #ifdef __EMSCRIPTEN__
             em_game_started = true;
             ship_obj->reset();
+            game_ui_obj->draw_active = true;
 #else
 
             return MENU_START;
@@ -864,6 +872,7 @@ void game_loop()
     activate_enemy_set(active_enemy_set);
 
     ship_obj->reset();
+    game_ui_obj->draw_active = true;
 
     while (quit == false) {
 #else

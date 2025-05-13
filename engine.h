@@ -84,6 +84,7 @@ class engine_obj
         virtual timer_obj* add_timer(time_t init_every);
         virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         virtual void pre_phys_event();
+        virtual void post_draw_event();
         virtual ~engine_obj();
 };
 
