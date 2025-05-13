@@ -46,6 +46,14 @@ bool shield::collision_event(engine_obj *obj2, int collide_axis, int area_x, int
 void shield::pre_phys_event()
 {
     if (draw_active) {
+        if (!target->draw_active) {
+            target = NULL;
+            phys_active = false;
+            draw_active = false;
+
+            return;
+        }
+
         pos_x = target->pos_x-(size_x/2)+(target->size_x/2)+target_offset_x;
         pos_y = target->pos_y-(size_y/2)+(target->size_y/2)+target_offset_y;
 
