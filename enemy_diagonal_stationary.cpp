@@ -9,7 +9,7 @@ extern int HIT_FLASH_DELAY;
 
 void enemy_diagonal_stationary::init()
 {
-    engine_obj::init();
+    base_enemy::init();
 
     type_id = ID_ENEMY_SHIP;
     size_x = 40;
@@ -31,12 +31,6 @@ void enemy_diagonal_stationary::init()
 
     shot_timer = add_timer(800000000);
 
-    drop_powerup = NULL;
-    ungroup = false;
-    ungroup_at_y = 0;
-
-    init_projectile();
-
     initialized = true;
 }
 
@@ -52,7 +46,7 @@ void enemy_diagonal_stationary::pre_phys_event()
         step_y = 0;
     }
 
-    enemy::pre_phys_event();
+    base_enemy::pre_phys_event();
 }
 
 void enemy_diagonal_stationary::fire()

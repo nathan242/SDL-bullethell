@@ -961,10 +961,12 @@ void deinit()
     delete game_over_obj;
     delete paused_img_obj;
     delete ship_obj;
+    delete shield_obj;
     delete player_shot_mngr;
     delete enemy_shot_mngr;
     delete powerup_double_shot_obj;
     delete powerup_quad_spread_shot_obj;
+    delete game_ui_obj;
 
     for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
         delete shots[shot_count];

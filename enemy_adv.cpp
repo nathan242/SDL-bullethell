@@ -9,7 +9,7 @@ extern int HIT_FLASH_DELAY;
 
 void enemy_adv::init()
 {
-    engine_obj::init();
+    base_enemy::init();
 
     type_id = ID_ENEMY_SHIP;
     size_x = 41;
@@ -32,16 +32,13 @@ void enemy_adv::init()
     // shot_delay = 400000000;
     shot_timer = add_timer(400000000);
 
-    drop_powerup = NULL;
-    ungroup = false;
-    ungroup_at_y = 0;
-
-    ship_obj = (engine_obj*)i_eng->get_resource("ship_obj");
-    pos_mid = (size_x/2)-(ship_obj->size_x/2);
-
-    init_projectile();
-
     initialized = true;
+}
+
+void enemy_adv::init_projectile()
+{
+    default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
+    default_shot_animation = NULL;
 }
 
 void enemy_adv::pre_phys_event()
@@ -54,7 +51,7 @@ void enemy_adv::pre_phys_event()
         step_x = -1;
     }
 
-    enemy::pre_phys_event();
+    base_enemy::pre_phys_event();
 }
 
 void enemy_adv::fire()

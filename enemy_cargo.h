@@ -1,12 +1,12 @@
 #ifndef ENEMY_CARGO_H
 #define ENEMY_CARGO_H
 
-#include "enemy.h"
+#include "base_enemy.h"
 #include "powerup.h"
 
-class enemy_cargo : public enemy
+class enemy_cargo : public base_enemy
 {
-    using enemy::enemy;
+    using base_enemy::base_enemy;
 
     public:
         void init();

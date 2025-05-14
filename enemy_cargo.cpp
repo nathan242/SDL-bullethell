@@ -8,7 +8,7 @@ extern int HIT_FLASH_DELAY;
 
 void enemy_cargo::init()
 {
-    engine_obj::init();
+    base_enemy::init();
 
     type_id = ID_ENEMY_SHIP;
     size_x = 30;
@@ -31,10 +31,6 @@ void enemy_cargo::init()
     current_health = 8;
 
     shot_timer = add_timer(0);
-
-    drop_powerup = NULL;
-    ungroup = false;
-    ungroup_at_y = 0;
 
     initialized = true;
 }

@@ -9,7 +9,7 @@ extern int HIT_FLASH_DELAY;
 
 void enemy_diagonal::init()
 {
-    engine_obj::init();
+    base_enemy::init();
 
     type_id = ID_ENEMY_SHIP;
     size_x = 40;
@@ -30,12 +30,6 @@ void enemy_diagonal::init()
     current_health = 4;
 
     shot_timer = add_timer(800000000);
-
-    drop_powerup = NULL;
-    ungroup = false;
-    ungroup_at_y = 0;
-
-    init_projectile();
 
     initialized = true;
 }

@@ -1,16 +1,15 @@
 #ifndef ENEMY_ADV_H
 #define ENEMY_ADV_H
 
-#include "enemy.h"
+#include "base_enemy.h"
 
-class enemy_adv : public enemy
+class enemy_adv : public base_enemy
 {
-    using enemy::enemy;
+    using base_enemy::base_enemy;
 
     protected:
-        int pos_mid;
-        engine_obj *ship_obj;
         void pre_phys_event();
+        void init_projectile();
 
     public:
         void init();
