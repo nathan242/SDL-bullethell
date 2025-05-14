@@ -10,6 +10,7 @@ class enemy_adv : public base_enemy
     protected:
         void pre_phys_event();
         void init_projectile();
+        int pos_mid;
 
     public:
         void init();

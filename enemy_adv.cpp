@@ -32,6 +32,8 @@ void enemy_adv::init()
     // shot_delay = 400000000;
     shot_timer = add_timer(400000000);
 
+    pos_mid = (size_x/2)-(ship_obj->size_x/2);
+
     initialized = true;
 }
 

@@ -20,7 +20,6 @@ class base_enemy : public engine_obj
         SDL_Texture *default_texture;
         SDL_Texture *hit_texture;
         timer_obj *last_hit_timer;
-        int pos_mid;
         ship *ship_obj;
 
         virtual void init_projectile();

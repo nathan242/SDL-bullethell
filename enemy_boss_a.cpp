@@ -30,11 +30,13 @@ void enemy_boss_a::init()
 
     last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
-    default_health = 200;
-    current_health = 200;
+    default_health = 150;
+    current_health = 150;
 
     shot_timer = add_timer(400000000);
     ball_shot_timer = add_timer(50000000);
+
+    pos_mid = (size_x/2)-(ship_obj->size_x/2);
 
     initialized = true;
 }

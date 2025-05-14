@@ -26,7 +26,6 @@ void base_enemy::init()
     ungroup_at_y = 0;
 
     ship_obj = (ship*)i_eng->get_resource("ship_obj");
-    pos_mid = (size_x/2)-(ship_obj->size_x/2);
 
     init_projectile();
 }

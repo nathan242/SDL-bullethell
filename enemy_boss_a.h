@@ -12,6 +12,7 @@ class enemy_boss_a : public base_enemy
         int ball_fire_step_y;
         int ball_shot_angle;
         int ball_shot_angle_diff;
+        int pos_mid;
         bool shot_invincible;
         timer_obj *ball_shot_timer;
         animation_obj *ball_shot_animation;
