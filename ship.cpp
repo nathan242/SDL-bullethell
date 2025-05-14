@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 
 #define SHIP_MOVE_PHYS_DELAY 3000000
+#define SHIELD_CHARGE_MAX 10
 
 extern int ID_PLAYER_SHIP;
 extern int SHOT_PHYS_DELAY;
@@ -29,6 +30,7 @@ void ship::init()
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
 
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
+    shield_charge_timer = add_timer(1000000000);
 
     reset();
 
@@ -41,6 +43,8 @@ void ship::reset()
     pos_y = 550;
 
     active_weapon = 0;
+    shield_charge_level = 0;
+    shield_charge_timer->last = i_eng->timer_now;
 
     phys_active = true;
     draw_active = true;
@@ -58,6 +62,13 @@ bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int a
     }
 
     return true;
+}
+
+void ship::pre_phys_event()
+{
+    if (shield_charge_level != SHIELD_CHARGE_MAX && shield_charge_timer->tick(i_eng->timer_now) && !shield_obj->draw_active) {
+        shield_charge_level++;
+    }
 }
 
 void ship::fire()
@@ -183,7 +194,11 @@ void ship::fire()
 
 void ship::activate_shield()
 {
-    shield_obj->activate(this);
+    if (shield_charge_level == SHIELD_CHARGE_MAX) {
+        shield_obj->activate(this);
+        shield_charge_level = 0;
+        shield_charge_timer->last = i_eng->timer_now;
+    }
 }
 
 ship::~ship()

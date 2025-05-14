@@ -74,8 +74,7 @@ void shield::activate(engine_obj *target_obj, int offset_x, int offset_y)
         phys_active = true;
         draw_active = true;
 
-        activation_timer->last = {0, 0};
-        activation_timer->tick(i_eng->timer_now);
+        activation_timer->last = i_eng->timer_now;
     }
 }
 

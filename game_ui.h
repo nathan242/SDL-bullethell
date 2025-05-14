@@ -13,6 +13,8 @@ class game_ui : public engine_obj
         ship *ship_obj;
         std::vector<SDL_Texture*> weapons;
         SDL_Rect offset;
+        SDL_Texture *green_bar;
+        SDL_Texture *red_bar;
 
     public:
         game_ui(engine *eng);
