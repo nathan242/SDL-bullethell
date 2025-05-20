@@ -98,7 +98,7 @@ void base_enemy::damage(int damage_amount)
     }
 
     texture = hit_texture;
-    clock_gettime(CLOCK_MONOTONIC, &last_hit_timer->last);
+    last_hit_timer->last = i_eng->timer_now;
 }
 
 void base_enemy::fire()
