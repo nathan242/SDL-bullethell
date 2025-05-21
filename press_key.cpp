@@ -12,7 +12,7 @@ void press_key::init()
 
     size_x = 212;
     size_y = 20;
-    pos_y = 300;
+    pos_y = 500;
     pos_x = 294;
     texture = (SDL_Texture*)i_eng->get_resource("press_key_tex");
 }
