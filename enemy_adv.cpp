@@ -12,11 +12,11 @@ void enemy_adv::init()
     base_enemy::init();
 
     type_id = ID_ENEMY_SHIP;
-    size_x = 41;
-    size_y = 41;
-    phys_size_x = 41;
-    phys_size_y = 41;
-    area_y_offset = 41;
+    size_x = 42;
+    size_y = 43;
+    phys_size_x = 42;
+    phys_size_y = 43;
+    area_y_offset = 43;
     move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     bounce = 1;
@@ -64,7 +64,7 @@ void enemy_adv::fire()
         10,
         5,
         10,
-        pos_x+(size_x/2)-6,
+        pos_x+(size_x/2)-12,
         pos_y+size_y+1,
         0,
         1,
@@ -79,7 +79,7 @@ void enemy_adv::fire()
         10,
         5,
         10,
-        pos_x+(size_x/2)+6,
+        pos_x+(size_x/2)+7,
         pos_y+size_y+1,
         0,
         1,

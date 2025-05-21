@@ -24,9 +24,9 @@ void enemy_boss_a::init()
     move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY*2);
     bounce = 1;
-    default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_tex");
+    default_texture = texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_boss_a_tex");
 
-    hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_diagonal_hit_tex");
+    hit_texture = (SDL_Texture*)i_eng->get_resource("enemy_ship_boss_a_hit_tex");
 
     last_hit_timer = add_timer(HIT_FLASH_DELAY);
 

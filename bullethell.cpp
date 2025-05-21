@@ -127,6 +127,8 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"projectile_default_tex", "projectile_default.png"},
     {"enemy_ship_diagonal_tex", "enemy_ship_diagonal.png"},
     {"enemy_ship_diagonal_hit_tex", "enemy_ship_diagonal_hit.png"},
+    {"enemy_ship_boss_a_tex", "enemy_ship_boss_a.png"},
+    {"enemy_ship_boss_a_hit_tex", "enemy_ship_boss_a_hit.png"},
     {"projectile_ball_tex", "projectile_ball.png"},
     {"projectile_ball_frame_1_tex", "projectile_ball_1.png"},
     {"projectile_ball_frame_2_tex", "projectile_ball_2.png"},

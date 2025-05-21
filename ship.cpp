@@ -20,9 +20,9 @@ void ship::init()
 
     type_id = ID_PLAYER_SHIP;
     size_x = 21;
-    size_y = 21;
+    size_y = 24;
     phys_size_x = 21;
-    phys_size_y = 21;
+    phys_size_y = 24;
     move_x = add_timer(SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(SHIP_MOVE_PHYS_DELAY);
     texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
@@ -82,7 +82,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)-10,
-                pos_y-size_y,
+                pos_y-11,
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
@@ -97,7 +97,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)+6,
-                pos_y-size_y,
+                pos_y-11,
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
@@ -116,7 +116,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)-10,
-                pos_y-size_y,
+                pos_y-11,
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
@@ -132,7 +132,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)+6,
-                pos_y-size_y,
+                pos_y-11,
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
@@ -148,7 +148,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)-10,
-                pos_y-size_y,
+                pos_y-11,
                 -1,
                 -1,
                 SHOT_PHYS_DELAY*8,
@@ -164,7 +164,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)+6,
-                pos_y-size_y,
+                pos_y-11,
                 1,
                 -1,
                 SHOT_PHYS_DELAY*8,
@@ -182,7 +182,7 @@ void ship::fire()
                 5,
                 10,
                 pos_x+(size_x/2)-2,
-                pos_y-size_y,
+                pos_y-11,
                 0,
                 -1,
                 SHOT_PHYS_DELAY,
