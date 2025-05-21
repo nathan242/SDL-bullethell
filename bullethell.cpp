@@ -32,7 +32,6 @@
 #include <unordered_map>
 #include <string>
 #include <stdio.h>
-#include <unistd.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -913,6 +912,7 @@ void game_loop()
             if (fire) {
                 if (!paused && (!fired || ship_fire_timer->tick(eng->timer_now))) {
                     fired = true;
+                    ship_fire_timer->last = eng->timer_now;
                     ship_obj->fire();
                 }
             } else {
