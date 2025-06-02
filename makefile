@@ -10,6 +10,7 @@ anim_projectile_ball.o \
 anim_projectile_ball_invincible.o \
 anim_powerup_double_shot.o \
 anim_powerup_quad_spread_shot.o \
+anim_explosion.o \
 ship.o \
 shield.o \
 enemy.o \
@@ -28,7 +29,9 @@ powerup_quad_spread_shot.o \
 base_projectile.o \
 player_projectile.o \
 enemy_projectile.o \
-projectile_manager.o
+projectile_manager.o \
+explosion.o \
+explosion_manager.o
 	g++ -Wall -g -o bullethell \
 	bullethell.o \
 	engine.o \
@@ -42,6 +45,7 @@ projectile_manager.o
 	anim_projectile_ball_invincible.o \
 	anim_powerup_double_shot.o \
 	anim_powerup_quad_spread_shot.o \
+	anim_explosion.o \
 	ship.o \
 	shield.o \
 	enemy.o \
@@ -61,6 +65,8 @@ projectile_manager.o
 	player_projectile.o \
 	enemy_projectile.o \
 	projectile_manager.o \
+	explosion.o \
+	explosion_manager.o \
 	`sdl2-config --libs` -lSDL2_image
 
 bullethell.o: bullethell.cpp
@@ -98,6 +104,9 @@ anim_powerup_double_shot.o: anim_powerup_double_shot.cpp anim_powerup_double_sho
 
 anim_powerup_quad_spread_shot.o: anim_powerup_quad_spread_shot.cpp anim_powerup_quad_spread_shot.h
 	g++ -Wall -g `sdl2-config --cflags` -c anim_powerup_quad_spread_shot.cpp
+
+anim_explosion.o: anim_explosion.cpp anim_explosion.h
+	g++ -Wall -g `sdl2-config --cflags` -c anim_explosion.cpp
 
 ship.o: ship.cpp ship.h
 	g++ -Wall -g `sdl2-config --cflags` -c ship.cpp
@@ -155,3 +164,9 @@ enemy_projectile.o: enemy_projectile.cpp enemy_projectile.h
 
 projectile_manager.o: projectile_manager.cpp projectile_manager.h
 	g++ -Wall -g `sdl2-config --cflags` -c projectile_manager.cpp
+
+explosion.o: explosion.cpp explosion.h
+	g++ -Wall -g `sdl2-config --cflags` -c explosion.cpp
+
+explosion_manager.o: explosion_manager.cpp explosion_manager.h
+	g++ -Wall -g `sdl2-config --cflags` -c explosion_manager.cpp

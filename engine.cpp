@@ -60,9 +60,11 @@ void timer_obj::resume(timespec now)
 
 SDL_Texture* animation_obj::next(timespec now)
 {
-    if (timer->tick(now)) {
-        if (++curr == frames.size()) {
-            curr = 0;
+    if (frames[curr] != NULL) {
+        if (timer->tick(now)) {
+            if (++curr == frames.size()) {
+                curr = 0;
+            }
         }
     }
 

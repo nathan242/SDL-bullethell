@@ -28,10 +28,13 @@ anim_projectile_ball.cpp \
 anim_projectile_ball_invincible.cpp \
 anim_powerup_double_shot.cpp \
 anim_powerup_quad_spread_shot.cpp \
+anim_explosion.cpp \
 projectile_manager.cpp \
 ship.cpp \
 shield.cpp \
 game_ui.cpp \
+explosion.cpp \
+explosion_manager.cpp \
 -o bullethell.html \
 --preload-file background.png \
 --preload-file enemy_cargo_hit.png \
@@ -73,4 +76,8 @@ game_ui.cpp \
 --preload-file game_ui_bar.png \
 --preload-file powerup_single_shot.png \
 --preload-file green_bar.png \
---preload-file red_bar.png
+--preload-file red_bar.png \
+--preload-file explosion_1.png \
+--preload-file explosion_2.png \
+--preload-file explosion_3.png \
+--preload-file explosion_4.png

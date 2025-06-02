@@ -6,11 +6,12 @@
 
 extern bool game_over;
 
-base_enemy::base_enemy(engine *eng, projectile_manager *projectile_mngr)
+base_enemy::base_enemy(engine *eng, projectile_manager *projectile_mngr, explosion_manager *explosion_mngr)
 {
     initialized = false;
     i_eng = eng;
     p_mngr = projectile_mngr;
+    e_mngr = explosion_mngr;
 }
 
 void base_enemy::init()
@@ -40,11 +41,15 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
 
             damage(1);
 
-            if (draw_active == false && drop_powerup != NULL && ship_obj->active_weapon < (drop_powerup->type_id - 99)) {
-                drop_powerup->pos_x = pos_x;
-                drop_powerup->pos_y = pos_y;
-                drop_powerup->phys_active = true;
-                drop_powerup->draw_active = true;
+            if (draw_active == false) {
+                if (drop_powerup != NULL && ship_obj->active_weapon < (drop_powerup->type_id - 99)) {
+                    drop_powerup->pos_x = pos_x;
+                    drop_powerup->pos_y = pos_y;
+                    drop_powerup->phys_active = true;
+                    drop_powerup->draw_active = true;
+                }
+
+                e_mngr->explode(size_x, size_y, pos_x, pos_y);
             }
 
             return false;

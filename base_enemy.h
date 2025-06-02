@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "projectile_manager.h"
+#include "explosion_manager.h"
 #include "powerup.h"
 #include "ship.h"
 
@@ -12,6 +13,7 @@ class base_enemy : public engine_obj
         bool initialized;
         engine *i_eng;
         projectile_manager *p_mngr;
+        explosion_manager *e_mngr;
         SDL_Texture *default_shot_texture;
         animation_obj *default_shot_animation;
         timer_obj *shot_timer;
@@ -29,7 +31,7 @@ class base_enemy : public engine_obj
         bool ungroup;
         int ungroup_at_y;
 
-        base_enemy(engine *eng, projectile_manager *projectile_mngr);
+        base_enemy(engine *eng, projectile_manager *projectile_mngr, explosion_manager *explosion_mngr);
         virtual void init();
         virtual void fire();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
