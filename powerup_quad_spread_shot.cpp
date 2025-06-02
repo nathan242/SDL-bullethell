@@ -1,6 +1,5 @@
 #include "powerup_quad_spread_shot.h"
-
-extern int ID_POWERUP_QUAD_SPREAD_SHOT;
+#include "constants.h"
 
 void powerup_quad_spread_shot::init()
 {

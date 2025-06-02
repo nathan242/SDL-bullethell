@@ -1,11 +1,9 @@
 #include "enemy_diagonal_stationary.h"
 #include <SDL2/SDL_image.h>
+#include "constants.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
-#define SHOT_PHYS_DELAY 5000000
-
-extern int ID_ENEMY_SHIP;
-extern int HIT_FLASH_DELAY;
+#define ENEMY_SHOT_PHYS_DELAY 5000000
 
 void enemy_diagonal_stationary::init()
 {
@@ -77,8 +75,8 @@ void enemy_diagonal_stationary::fire()
                 fire_pos_y,
                 x,
                 y,
-                SHOT_PHYS_DELAY,
-                SHOT_PHYS_DELAY,
+                ENEMY_SHOT_PHYS_DELAY,
+                ENEMY_SHOT_PHYS_DELAY,
                 false
             );
         }

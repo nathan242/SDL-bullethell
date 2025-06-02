@@ -1,15 +1,8 @@
 #include "enemy.h"
 #include <SDL2/SDL_image.h>
+#include "constants.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
-
-extern int ID_ENEMY_SHIP;
-extern int ID_PLAYER_SHIP;
-extern int ID_PLAYER_SHOT;
-extern int ID_ENEMY_SHOT;
-extern int ID_PLAYER_SHIELD;
-extern int SHOT_PHYS_DELAY;
-extern int HIT_FLASH_DELAY;
 
 extern bool game_over;
 

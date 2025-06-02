@@ -1,11 +1,9 @@
 #include "ship.h"
 #include <SDL2/SDL_image.h>
+#include "constants.h"
 
 #define SHIP_MOVE_PHYS_DELAY 3000000
 #define SHIELD_CHARGE_MAX 10
-
-extern int ID_PLAYER_SHIP;
-extern int SHOT_PHYS_DELAY;
 
 ship::ship(engine *eng, projectile_manager *projectile_mngr)
 {

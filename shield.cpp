@@ -1,8 +1,6 @@
 #include "shield.h"
 #include <SDL2/SDL_image.h>
-
-extern int ID_PLAYER_SHIELD;
-extern int ID_ENEMY_SHOT;
+#include "constants.h"
 
 shield::shield(engine *eng)
 {

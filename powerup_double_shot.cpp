@@ -1,6 +1,5 @@
 #include "powerup_double_shot.h"
-
-extern int ID_POWERUP_DOUBLE_SHOT;
+#include "constants.h"
 
 void powerup_double_shot::init()
 {

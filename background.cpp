@@ -1,7 +1,6 @@
 #include "background.h"
 #include <SDL2/SDL_image.h>
-
-extern int ID_BACKGROUND;
+#include "constants.h"
 
 background::background(engine *eng)
 {

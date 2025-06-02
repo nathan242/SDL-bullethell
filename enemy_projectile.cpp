@@ -1,9 +1,5 @@
 #include "enemy_projectile.h"
-
-extern int ID_PLAYER_SHIP;
-extern int ID_ENEMY_SHIP;
-extern int ID_PLAYER_SHOT;
-extern int ID_ENEMY_SHOT;
+#include "constants.h"
 
 extern bool game_over;
 

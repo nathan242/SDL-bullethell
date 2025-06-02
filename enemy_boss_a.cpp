@@ -1,15 +1,12 @@
 #include "enemy_boss_a.h"
 #include <SDL2/SDL_image.h>
 #include <cmath>
+#include "constants.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
 #define SHOT_PHYS_DELAY_DEF 10000000
 #define SHOT_PHYS_DELAY_DIFF 20000000
 #define SHOT_PHYS_DELAY_DIFF_START 100000000
-
-extern int ID_ENEMY_SHIP;
-extern int SHOT_PHYS_DELAY;
-extern int HIT_FLASH_DELAY;
 
 void enemy_boss_a::init()
 {

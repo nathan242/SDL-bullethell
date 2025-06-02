@@ -1,7 +1,5 @@
 #include "player_projectile.h"
-
-extern int ID_PLAYER_SHOT;
-extern int ID_ENEMY_SHIP;
+#include "constants.h"
 
 void player_projectile::init()
 {

@@ -1,10 +1,8 @@
 #include "enemy_cargo.h"
 #include <SDL2/SDL_image.h>
+#include "constants.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 14000000
-
-extern int ID_ENEMY_SHIP;
-extern int HIT_FLASH_DELAY;
 
 void enemy_cargo::init()
 {

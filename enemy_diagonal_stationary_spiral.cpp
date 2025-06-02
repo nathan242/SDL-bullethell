@@ -1,8 +1,7 @@
 #include "enemy_diagonal_stationary_spiral.h"
 #include <SDL2/SDL_image.h>
 #include <cmath>
-
-extern int SHOT_PHYS_DELAY;
+#include "constants.h"
 
 void enemy_diagonal_stationary_spiral::init()
 {

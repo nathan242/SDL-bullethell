@@ -1,3 +1,4 @@
+#include "constants.h"
 #include "engine.h"
 #include "background.h"
 #include "menu_title.h"
@@ -54,18 +55,6 @@
 // Emscripten loop handling
 bool em_game_started = false;
 #endif
-
-int ID_PLAYER_SHIP = 1;
-int ID_ENEMY_SHIP = 2;
-int ID_POWERUP_DOUBLE_SHOT = 100;
-int ID_POWERUP_QUAD_SPREAD_SHOT = 101;
-int ID_PLAYER_SHIELD = 200;
-int ID_PLAYER_SHOT = 1000;
-int ID_ENEMY_SHOT = 1001;
-int ID_BACKGROUND = 2000;
-
-int SHOT_PHYS_DELAY = 2500000;
-int HIT_FLASH_DELAY = 100000000;
 
 // Inputs
 bool quit = false;
