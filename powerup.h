@@ -12,6 +12,7 @@ class powerup : public engine_obj
     public:
         powerup(engine *eng);
         virtual void init();
+        bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         ~powerup();
 };
 

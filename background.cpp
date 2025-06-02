@@ -20,7 +20,7 @@ void background::init()
     area_y_offset = 0;
     step_y = 1;
     move_x = add_timer(0);
-    move_y = add_timer(20000000);
+    move_y = add_timer(BACKGROUND_SCROLL_EVERY);
     bounce = 0;
     texture = (SDL_Texture*)i_eng->get_resource("background_tex");
     phys_active = true;
