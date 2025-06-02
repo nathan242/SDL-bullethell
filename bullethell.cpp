@@ -809,6 +809,13 @@ void init(bool fullscreen)
     game_ui_obj = new game_ui(eng);
     game_ui_obj->init();
     eng->add_object(game_ui_obj);
+
+    /**
+     * Draw initial frame so that SDL graphics can initailize properly
+     * otherwise there can be a delay that causes the physics to catch up
+     * when the game is lauched.
+    */
+    eng->draw();
 }
 
 #ifdef __EMSCRIPTEN__

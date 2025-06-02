@@ -30,8 +30,6 @@ void ship::init()
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
     shield_charge_timer = add_timer(1000000000);
 
-    reset();
-
     initialized = true;
 }
 
