@@ -57,6 +57,8 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
             obj2->phys_active = false;
             obj2->draw_active = false;
             game_over = true;
+
+            e_mngr->explode(obj2->size_x, obj2->size_y, obj2->pos_x, obj2->pos_y);
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
             return false;
         } else if (obj2->type_id >= 100 && obj2->type_id <= 199) {

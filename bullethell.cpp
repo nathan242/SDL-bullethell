@@ -807,7 +807,7 @@ void init(bool fullscreen)
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         // Shots
-        enemy_shots[enemy_shot_count] = new enemy_projectile();
+        enemy_shots[enemy_shot_count] = new enemy_projectile(explosion_mngr);
         enemy_shots[enemy_shot_count]->init();
         eng->add_object(enemy_shots[enemy_shot_count]);
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);

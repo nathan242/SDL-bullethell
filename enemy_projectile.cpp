@@ -3,6 +3,11 @@
 
 extern bool game_over;
 
+enemy_projectile::enemy_projectile(explosion_manager *explosion_mngr)
+{
+    e_mngr = explosion_mngr;
+}
+
 void enemy_projectile::init()
 {
     base_projectile::init();
@@ -26,6 +31,8 @@ bool enemy_projectile::collision_event(engine_obj *obj2, int collide_axis, int a
             obj2->phys_active = false;
             obj2->draw_active = false;
             game_over = true;
+
+            e_mngr->explode(obj2->size_x, obj2->size_y, obj2->pos_x, obj2->pos_y);
         }
     } else {
         phys_active = false;
