@@ -35,6 +35,9 @@ void enemy_boss_a::init()
 
     pos_mid = (size_x/2)-(ship_obj->size_x/2);
 
+    game_ui_obj = (game_ui*)i_eng->get_resource("game_ui_obj");
+    game_ui_obj->activate_boss_health(this);
+
     initialized = true;
 }
 

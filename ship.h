@@ -14,6 +14,7 @@ class ship : public engine_obj
         SDL_Texture *default_shot_texture;
         shield *shield_obj;
         timer_obj *shield_charge_timer;
+        bool shield_active;
 
     public:
         int active_weapon;

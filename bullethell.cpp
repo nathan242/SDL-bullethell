@@ -109,6 +109,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"game_over_tex", "game_over.png"},
     {"paused_tex", "paused.png"},
     {"game_ui_bar_tex", "game_ui_bar.png"},
+    {"boss_health_tex", "boss_health.png"},
     {"green_bar_tex", "green_bar.png"},
     {"red_bar_tex", "red_bar.png"},
     {"ship_tex", "ship.png"},
@@ -332,8 +333,8 @@ void activate_enemy_set(int set_id)
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_cargo(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
-            ((enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_double_shot_obj;
-            ((enemy*)enemy_slots[slot]->obj)->ungroup = true;
+            ((base_enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_double_shot_obj;
+            ((base_enemy*)enemy_slots[slot]->obj)->ungroup = true;
             enemy_slots[slot]->obj->pos_x = 650;
             enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
             enemy_slots[slot]->obj->step_x = 0;
@@ -829,6 +830,7 @@ void init(bool fullscreen)
     game_ui_obj = new game_ui(eng);
     game_ui_obj->init();
     eng->add_object(game_ui_obj);
+    eng->add_resource("game_ui_obj", game_ui_obj);
 
     /**
      * Draw initial frame so that SDL graphics can initailize properly

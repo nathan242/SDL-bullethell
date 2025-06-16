@@ -29,6 +29,7 @@ void ship::init()
 
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
     shield_charge_timer = add_timer(1000000000);
+    shield_active = false;
 
     initialized = true;
 }
@@ -62,8 +63,15 @@ bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int a
 
 void ship::pre_phys_event()
 {
-    if (shield_charge_level != SHIELD_CHARGE_MAX && shield_charge_timer->tick(i_eng->timer_now) && !shield_obj->draw_active) {
-        shield_charge_level++;
+    if (!shield_obj->draw_active) {
+        if (shield_active) {
+            shield_active = false;
+            shield_charge_timer->last = i_eng->timer_now;
+        }
+
+        if (shield_charge_level != SHIELD_CHARGE_MAX && shield_charge_timer->tick(i_eng->timer_now)) {
+            shield_charge_level++;
+        }
     }
 }
 
@@ -193,7 +201,7 @@ void ship::activate_shield()
     if (shield_charge_level == SHIELD_CHARGE_MAX) {
         shield_obj->activate(this);
         shield_charge_level = 0;
-        shield_charge_timer->last = i_eng->timer_now;
+        shield_active = true;
     }
 }
 

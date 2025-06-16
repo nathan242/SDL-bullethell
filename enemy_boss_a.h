@@ -2,6 +2,7 @@
 #define ENEMY_BOSS_A_H
 
 #include "base_enemy.h"
+#include "game_ui.h"
 
 class enemy_boss_a : public base_enemy
 {
@@ -17,6 +18,7 @@ class enemy_boss_a : public base_enemy
         timer_obj *ball_shot_timer;
         animation_obj *ball_shot_animation;
         animation_obj *ball_invincible_shot_animation;
+        game_ui *game_ui_obj;
         void update_fire_step();
         void init_projectile();
         void pre_phys_event();

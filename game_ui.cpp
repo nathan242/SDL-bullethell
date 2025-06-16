@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 
 #define SHIELD_CHARGE_MAX 10
+#define BOSS_HEALTH_SEGMENTS 20
 
 game_ui::game_ui(engine *eng)
 {
@@ -20,8 +21,11 @@ void game_ui::init()
     weapons.push_back((SDL_Texture*)i_eng->get_resource("powerup_single_shot_tex"));
     weapons.push_back((SDL_Texture*)i_eng->get_resource("powerup_double_shot_tex"));
     weapons.push_back((SDL_Texture*)i_eng->get_resource("powerup_quad_spread_shot_tex"));
+    boss_health = (SDL_Texture*)i_eng->get_resource("boss_health_tex");
     green_bar = (SDL_Texture*)i_eng->get_resource("green_bar_tex");
     red_bar = (SDL_Texture*)i_eng->get_resource("red_bar_tex");
+
+    boss_health_target = NULL;
 
     initialized = true;
 }
@@ -47,6 +51,39 @@ void game_ui::post_draw_event()
 
         SDL_RenderCopy(i_eng->renderer, bar_tex, NULL, &offset);
     }
+
+    if (boss_health_target != NULL) {
+        int health;
+        int divide_value;
+
+        offset.x = 258;
+        offset.y = 30;
+        offset.w = 285;
+        offset.h = 30;
+
+        SDL_RenderCopy(i_eng->renderer, boss_health, NULL, &offset);
+
+        divide_value = (((base_enemy*)boss_health_target)->default_health * 10)/BOSS_HEALTH_SEGMENTS;
+        health = (((base_enemy*)boss_health_target)->current_health * 10)/divide_value;
+
+        if (boss_health_target->draw_active == false) {
+            boss_health_target = NULL;
+        } else {
+            for (int i = 0; i < health; i++) {
+                offset.x = 335 + (i * 10);
+                offset.y = 36;
+                offset.w = 8;
+                offset.h = 18;
+
+                SDL_RenderCopy(i_eng->renderer, red_bar, NULL, &offset);
+            }
+        }
+    }
+}
+
+void game_ui::activate_boss_health(engine_obj *target_obj)
+{
+    boss_health_target = target_obj;
 }
 
 game_ui::~game_ui()

@@ -49,12 +49,14 @@ void timer_obj::resume(timespec now)
 
     suspended = false;
 
-    last.tv_nsec += (now.tv_nsec - suspend_time.tv_nsec);
-    last.tv_sec += (now.tv_sec - suspend_time.tv_sec);
+    if (last.tv_nsec != 0 && last.tv_sec != 0) {
+        last.tv_nsec += (now.tv_nsec - suspend_time.tv_nsec);
+        last.tv_sec += (now.tv_sec - suspend_time.tv_sec);
 
-    if (last.tv_nsec > 1000000000) {
-        last.tv_sec++;
-        last.tv_nsec -= 1000000000;
+        if (last.tv_nsec > 1000000000) {
+            last.tv_sec++;
+            last.tv_nsec -= 1000000000;
+        }
     }
 }
 

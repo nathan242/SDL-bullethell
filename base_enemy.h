@@ -17,8 +17,6 @@ class base_enemy : public engine_obj
         SDL_Texture *default_shot_texture;
         animation_obj *default_shot_animation;
         timer_obj *shot_timer;
-        int default_health;
-        int current_health;
         SDL_Texture *default_texture;
         SDL_Texture *hit_texture;
         timer_obj *last_hit_timer;
@@ -30,6 +28,8 @@ class base_enemy : public engine_obj
         powerup *drop_powerup;
         bool ungroup;
         int ungroup_at_y;
+        int default_health;
+        int current_health;
 
         base_enemy(engine *eng, projectile_manager *projectile_mngr, explosion_manager *explosion_mngr);
         virtual void init();
