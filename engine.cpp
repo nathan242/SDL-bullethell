@@ -68,6 +68,8 @@ SDL_Texture* animation_obj::next(timespec now)
                 curr = 0;
             }
         }
+    } else {
+        timer->last = now;
     }
 
     return frames[curr];
