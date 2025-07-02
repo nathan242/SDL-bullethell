@@ -881,7 +881,6 @@ int menu_loop()
 
 #ifdef __EMSCRIPTEN__
             em_game_started = true;
-            ship_obj->reset();
             game_ui_obj->draw_active = true;
 #else
 
