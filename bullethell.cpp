@@ -187,12 +187,13 @@ int get_enemy_slot()
 
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
         if (!enemy_slots[i]->obj->draw_active) {
-            delete enemy_slots[i]->obj;
             slot = i;
 
             break;
         }
     }
+
+    delete enemy_slots[slot]->obj;
 
     return slot;
 }
