@@ -11,7 +11,7 @@ class background : public engine_obj
 
     public:
         background(engine *eng);
-        virtual void init();
+        void init();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         void pre_phys_event();
         ~background();

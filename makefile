@@ -6,6 +6,7 @@ press_key.o \
 game_over.o \
 paused_img.o \
 game_ui.o \
+level_text.o \
 anim_projectile_ball.o \
 anim_projectile_ball_invincible.o \
 anim_powerup_double_shot.o \
@@ -41,6 +42,7 @@ explosion_manager.o
 	game_over.o \
 	paused_img.o \
 	game_ui.o \
+	level_text.o \
 	anim_projectile_ball.o \
 	anim_projectile_ball_invincible.o \
 	anim_powerup_double_shot.o \
@@ -92,6 +94,9 @@ paused_img.o: paused_img.cpp paused_img.h
 
 game_ui.o: game_ui.cpp game_ui.h
 	g++ -Wall -g `sdl2-config --cflags` -c game_ui.cpp
+
+level_text.o: level_text.cpp level_text.h
+	g++ -Wall -g `sdl2-config --cflags` -c level_text.cpp
 
 anim_projectile_ball.o: anim_projectile_ball.cpp anim_projectile_ball.h
 	g++ -Wall -g `sdl2-config --cflags` -c anim_projectile_ball.cpp

@@ -30,6 +30,8 @@ void ship::init()
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
     shield_charge_timer = add_timer(1000000000);
     shield_active = false;
+    active_weapon = 0;
+    shield_charge_level = 0;
 
     initialized = true;
 }
@@ -39,7 +41,6 @@ void ship::reset()
     pos_x = 390;
     pos_y = 550;
 
-    active_weapon = 0;
     shield_charge_level = 0;
     shield_charge_timer->last = i_eng->timer_now;
 

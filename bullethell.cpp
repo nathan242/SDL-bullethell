@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "background.h"
 #include "menu_title.h"
+#include "level_text.h"
 #include "press_key.h"
 #include "game_over.h"
 #include "paused_img.h"
@@ -47,7 +48,7 @@
 
 #define NUM_SHOTS 100
 #define NUM_SHOTS_ENEMY 500
-#define ENEMY_SET_COUNT 10
+#define ENEMY_SET_COUNT 11
 #define MAX_ENEMY_SLOTS 10
 #define AUTO_FIRE_DELAY 100000000
 #define NUM_EXPLOSIONS 10
@@ -105,6 +106,10 @@ explosion_manager *explosion_mngr;
 std::unordered_map<std::string, std::string> texture_map = {
     {"background_tex", "background.png"},
     {"menu_title_tex", "title.png"},
+    {"level_text_tex", "level_text.png"},
+    {"1_tex", "1.png"},
+    {"2_tex", "2.png"},
+    {"3_tex", "3.png"},
     {"press_key_tex", "press_a_key.png"},
     {"game_over_tex", "game_over.png"},
     {"paused_tex", "paused.png"},
@@ -205,6 +210,19 @@ void activate_enemy_set(int set_id)
     switch (set_id)
     {
         case 0:
+            ship_obj->draw_active = false;
+            ship_obj->phys_active = false;
+
+            slot = get_enemy_slot();
+            enemy_slots[slot]->obj = new level_text(eng);
+            enemy_slots[slot]->obj->init();
+            ((level_text*)enemy_slots[slot]->obj)->set(1);
+
+            break;
+
+        case 1:
+            ship_obj->reset();
+
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -237,7 +255,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 1:
+        case 2:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -300,7 +318,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 2:
+        case 3:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -345,7 +363,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 3:
+        case 4:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -422,7 +440,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 4:
+        case 5:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -455,7 +473,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 5:
+        case 6:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -488,7 +506,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 6:
+        case 7:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -521,7 +539,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 7:
+        case 8:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -564,7 +582,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 8:
+        case 9:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_boss_a(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -578,7 +596,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 9:
+        case 10:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -631,7 +649,7 @@ void activate_enemy_set(int set_id)
 
             break;
 
-        case 10:
+        case 11:
             slot = get_enemy_slot();
             enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
             enemy_slots[slot]->obj->init();
@@ -815,7 +833,6 @@ void init(bool fullscreen)
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);
     }
 
-    // Menu objects
     title_obj = new menu_title(eng);
     eng->add_object(title_obj);
     title_obj->init();
@@ -893,7 +910,6 @@ void game_loop()
     active_enemy_set = 0;
     activate_enemy_set(active_enemy_set);
 
-    ship_obj->reset();
     game_ui_obj->draw_active = true;
 
     while (quit == false) {
@@ -903,12 +919,28 @@ void game_loop()
         get_input();
 
         if (!game_over) {
-            ship_obj->step_x = 0;
-            ship_obj->step_y = 0;
-            if (left) { ship_obj->step_x = -1; }
-            if (right) { ship_obj->step_x = 1; }
-            if (up) { ship_obj->step_y = -1; }
-            if (down) { ship_obj->step_y = 1; }
+            if (ship_obj->draw_active) {
+                ship_obj->step_x = 0;
+                ship_obj->step_y = 0;
+                if (left) { ship_obj->step_x = -1; }
+                if (right) { ship_obj->step_x = 1; }
+                if (up) { ship_obj->step_y = -1; }
+                if (down) { ship_obj->step_y = 1; }
+
+                if (fire) {
+                    if (!paused && (!fired || ship_fire_timer->tick(eng->timer_now))) {
+                        fired = true;
+                        ship_fire_timer->last = eng->timer_now;
+                        ship_obj->fire();
+                    }
+                } else {
+                    fired = false;
+                }
+
+                if (!paused && shield_btn) {
+                    ship_obj->activate_shield();
+                }
+            }
 
             if (pause_btn) {
                 if (!pause_pressed) {
@@ -926,20 +958,6 @@ void game_loop()
                 }
             } else {
                 pause_pressed = false;
-            }
-
-            if (fire) {
-                if (!paused && (!fired || ship_fire_timer->tick(eng->timer_now))) {
-                    fired = true;
-                    ship_fire_timer->last = eng->timer_now;
-                    ship_obj->fire();
-                }
-            } else {
-                fired = false;
-            }
-
-            if (!paused && shield_btn) {
-                ship_obj->activate_shield();
             }
 
             init_enemy_set = true;

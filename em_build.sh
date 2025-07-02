@@ -35,6 +35,7 @@ shield.cpp \
 game_ui.cpp \
 explosion.cpp \
 explosion_manager.cpp \
+level_text.cpp \
 -o bullethell.html \
 --preload-file background.png \
 --preload-file enemy_cargo_hit.png \
@@ -80,4 +81,8 @@ explosion_manager.cpp \
 --preload-file explosion_1.png \
 --preload-file explosion_2.png \
 --preload-file explosion_3.png \
---preload-file explosion_4.png
+--preload-file explosion_4.png \
+--preload-file level_text.png \
+--preload-file 1.png \
+--preload-file 2.png \
+--preload-file 3.png
