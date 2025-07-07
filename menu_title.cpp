@@ -1,5 +1,4 @@
 #include "menu_title.h"
-#include <SDL2/SDL_image.h>
 
 menu_title::menu_title(engine *eng)
 {

@@ -1,5 +1,4 @@
 #include "enemy.h"
-#include <SDL2/SDL_image.h>
 #include "constants.h"
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000

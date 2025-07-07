@@ -1,5 +1,4 @@
 #include "anim_projectile_ball_invincible.h"
-#include <SDL2/SDL_image.h>
 
 anim_projectile_ball_invincible::anim_projectile_ball_invincible(timer_obj *timer_object, engine *eng)
 {

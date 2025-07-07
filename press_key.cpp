@@ -1,5 +1,4 @@
 #include "press_key.h"
-#include <SDL2/SDL_image.h>
 
 press_key::press_key(engine *eng)
 {

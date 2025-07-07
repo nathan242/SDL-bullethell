@@ -1,5 +1,4 @@
 #include "game_over.h"
-#include <SDL2/SDL_image.h>
 
 game_over::game_over(engine *eng)
 {

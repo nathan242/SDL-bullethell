@@ -1,5 +1,4 @@
 #include "enemy_diagonal_stationary_spiral.h"
-#include <SDL2/SDL_image.h>
 #include <cmath>
 #include "constants.h"
 

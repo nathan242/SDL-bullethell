@@ -1,5 +1,4 @@
 #include "enemy_boss_a.h"
-#include <SDL2/SDL_image.h>
 #include <cmath>
 #include "constants.h"
 

@@ -1,5 +1,4 @@
 #include "anim_powerup_quad_spread_shot.h"
-#include <SDL2/SDL_image.h>
 
 anim_powerup_quad_spread_shot::anim_powerup_quad_spread_shot(timer_obj *timer_object, engine *eng)
 {

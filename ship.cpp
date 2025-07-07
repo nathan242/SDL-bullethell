@@ -1,5 +1,4 @@
 #include "ship.h"
-#include <SDL2/SDL_image.h>
 #include "constants.h"
 
 #define SHIP_MOVE_PHYS_DELAY 3000000

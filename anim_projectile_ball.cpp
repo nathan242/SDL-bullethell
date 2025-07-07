@@ -1,5 +1,4 @@
 #include "anim_projectile_ball.h"
-#include <SDL2/SDL_image.h>
 
 anim_projectile_ball::anim_projectile_ball(timer_obj *timer_object, engine *eng)
 {

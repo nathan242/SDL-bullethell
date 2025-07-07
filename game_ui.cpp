@@ -1,5 +1,4 @@
 #include "game_ui.h"
-#include <SDL2/SDL_image.h>
 
 #define SHIELD_CHARGE_MAX 10
 #define BOSS_HEALTH_SEGMENTS 20

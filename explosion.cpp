@@ -1,5 +1,4 @@
 #include "explosion.h"
-#include <SDL2/SDL_image.h>
 
 explosion::explosion(engine *eng)
 {

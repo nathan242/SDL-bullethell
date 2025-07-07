@@ -1,5 +1,4 @@
 #include "shield.h"
-#include <SDL2/SDL_image.h>
 #include "constants.h"
 
 shield::shield(engine *eng)

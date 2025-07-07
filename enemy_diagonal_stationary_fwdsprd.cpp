@@ -1,5 +1,4 @@
 #include "enemy_diagonal_stationary_fwdsprd.h"
-#include <SDL2/SDL_image.h>
 
 #define SHOT_PHYS_DELAY 5000000
 

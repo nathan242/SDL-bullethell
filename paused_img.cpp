@@ -1,5 +1,4 @@
 #include "paused_img.h"
-#include <SDL2/SDL_image.h>
 
 paused_img::paused_img(engine *eng)
 {

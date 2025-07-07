@@ -1,5 +1,4 @@
 #include "anim_powerup_double_shot.h"
-#include <SDL2/SDL_image.h>
 
 anim_powerup_double_shot::anim_powerup_double_shot(timer_obj *timer_object, engine *eng)
 {
