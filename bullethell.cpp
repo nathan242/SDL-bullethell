@@ -90,8 +90,7 @@ game_ui *game_ui_obj;
 // Game objects
 projectile_manager *player_shot_mngr;
 projectile_manager *enemy_shot_mngr;
-background *background_a_obj;
-background *background_b_obj;
+background *background_obj;
 ship *ship_obj;
 shield *shield_obj;
 timer_obj *ship_fire_timer;
@@ -776,16 +775,13 @@ void init(bool fullscreen)
     player_shot_mngr = new projectile_manager();
     enemy_shot_mngr = new projectile_manager();
     explosion_mngr = new explosion_manager();
-    background_a_obj = new background(eng);
-    background_b_obj = new background(eng);
+    background_obj = new background(eng);
     shield_obj = new shield(eng);
     ship_obj = new ship(eng, player_shot_mngr);
 
-    eng->add_object(background_a_obj);
-    background_a_obj->init();
-    eng->add_object(background_b_obj);
-    background_b_obj->init();
-    background_b_obj->pos_y = background_b_obj->size_y*-1;
+    eng->add_object(background_obj);
+    background_obj->init(RES_Y);
+    background_obj->set((SDL_Texture*)eng->get_resource("background_tex"), 800, 2048);
 
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
         enemy_slots[i] = eng->add_object(new engine_obj());
@@ -994,8 +990,7 @@ void deinit()
 {
     SDL_Quit();
 
-    delete background_a_obj;
-    delete background_b_obj;
+    delete background_obj;
     delete title_obj;
     delete press_key_obj;
     delete game_over_obj;
