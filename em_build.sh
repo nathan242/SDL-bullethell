@@ -37,7 +37,8 @@ explosion.cpp \
 explosion_manager.cpp \
 level_text.cpp \
 -o bullethell.html \
---preload-file background.png \
+--preload-file background_1.png \
+--preload-file background_2.png \
 --preload-file enemy_cargo_hit.png \
 --preload-file enemy_cargo.png \
 --preload-file enemy_ship_adv_hit.png \
@@ -75,6 +76,7 @@ level_text.cpp \
 --preload-file title.png \
 --preload-file shield.png \
 --preload-file game_ui_bar.png \
+--preload-file boss_health.png \
 --preload-file powerup_single_shot.png \
 --preload-file green_bar.png \
 --preload-file red_bar.png \
