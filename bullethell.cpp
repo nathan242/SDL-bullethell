@@ -48,7 +48,6 @@
 
 #define NUM_SHOTS 100
 #define NUM_SHOTS_ENEMY 500
-#define ENEMY_SET_COUNT 11
 #define MAX_ENEMY_SLOTS 10
 #define AUTO_FIRE_DELAY 100000000
 #define NUM_EXPLOSIONS 10
@@ -75,6 +74,7 @@ bool game_over = false;
 bool fired = false;
 bool pause_pressed = false;
 bool paused = false;
+int active_level;
 int active_enemy_set;
 SDL_Event input;
 char *base_path;
@@ -103,7 +103,8 @@ explosion *explosions[NUM_EXPLOSIONS];
 explosion_manager *explosion_mngr;
 
 std::unordered_map<std::string, std::string> texture_map = {
-    {"background_tex", "background.png"},
+    {"background_1_tex", "background_1.png"},
+    {"background_2_tex", "background_2.png"},
     {"menu_title_tex", "title.png"},
     {"level_text_tex", "level_text.png"},
     {"1_tex", "1.png"},
@@ -202,493 +203,563 @@ int get_enemy_slot()
     return slot;
 }
 
-void activate_enemy_set(int set_id)
+void activate_enemy_set()
 {
     int slot;
 
-    switch (set_id)
+    switch (active_level)
     {
         case 0:
-            ship_obj->draw_active = false;
-            ship_obj->phys_active = false;
+            switch (active_enemy_set)
+            {
+                case 0:
+                    background_obj->set((SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new level_text(eng);
-            enemy_slots[slot]->obj->init();
-            ((level_text*)enemy_slots[slot]->obj)->set(1);
+                    ship_obj->draw_active = false;
+                    ship_obj->phys_active = false;
 
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new level_text(eng);
+                    enemy_slots[slot]->obj->init();
+                    ((level_text*)enemy_slots[slot]->obj)->set(1);
+
+                    break;
+
+                case 1:
+                    ship_obj->reset();
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 250;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = -1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 550;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 2:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 40;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 80;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 120;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 160;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 240;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-9;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 320;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-11;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 3:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 300;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
+                    enemy_slots[slot]->obj->step_x = -1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 100;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_cargo(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    ((base_enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_double_shot_obj;
+                    ((base_enemy*)enemy_slots[slot]->obj)->ungroup = true;
+                    enemy_slots[slot]->obj->pos_x = 650;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 4:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 160;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+                    ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 320;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+                    ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 480;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+                    ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 640;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+                    ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 300;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = -1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 100;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
+                    enemy_slots[slot]->obj->step_x = -1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 5:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 130;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 630;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 6:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 650;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 7:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 130;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 630;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 8:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 650;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-6;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 9:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_boss_a(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 350;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    ((enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_quad_spread_shot_obj;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 10:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 100;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 700;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 650;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 11:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 130;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 630;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 380;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 12:
+                    ++active_level;
+                    active_enemy_set = -1;
+                    break;
+            }
             break;
 
         case 1:
-            ship_obj->reset();
+            switch (active_enemy_set)
+            {
+                case 0:
+                    background_obj->set((SDL_Texture*)eng->get_resource("background_2_tex"), 1024, 1536);
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    ship_obj->draw_active = false;
+                    ship_obj->phys_active = false;
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 250;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = -1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new level_text(eng);
+                    enemy_slots[slot]->obj->init();
+                    ((level_text*)enemy_slots[slot]->obj)->set(2);
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 550;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    break;
 
-            break;
+                case 1:
+                    ship_obj->reset();
 
-        case 2:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 40;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 100;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 80;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 150;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
+                    enemy_slots[slot]->obj->step_x = -1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 120;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 200;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
+                    enemy_slots[slot]->obj->step_x = 1;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 160;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
+                    break;
 
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 240;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-9;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 320;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-11;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 3:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 300;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
-            enemy_slots[slot]->obj->step_x = -1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 100;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_cargo(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            ((base_enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_double_shot_obj;
-            ((base_enemy*)enemy_slots[slot]->obj)->ungroup = true;
-            enemy_slots[slot]->obj->pos_x = 650;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 4:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 160;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-            ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 320;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-            ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 480;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-            ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 640;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-14;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-            ((enemy*)enemy_slots[slot]->obj)->ungroup_at_y = 400;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 300;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = -1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 100;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
-            enemy_slots[slot]->obj->step_x = -1;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 5:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 130;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 630;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 6:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 650;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 7:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 130;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 630;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-8;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 8:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 650;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-6;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 9:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_boss_a(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 350;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            ((enemy*)enemy_slots[slot]->obj)->drop_powerup = powerup_quad_spread_shot_obj;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 10:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 100;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 150;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-2;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-3;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 700;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-4;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 650;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            break;
-
-        case 11:
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 130;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 630;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
-            slot = get_enemy_slot();
-            enemy_slots[slot]->obj = new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
-            enemy_slots[slot]->obj->init();
-            enemy_slots[slot]->obj->pos_x = 380;
-            enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-5;
-            enemy_slots[slot]->obj->step_x = 0;
-            enemy_slots[slot]->obj->step_y = 1;
-            enemy_slots[slot]->obj->draw_active = true;
-            enemy_slots[slot]->obj->phys_active = true;
-
+                case 3:
+                    active_level = 0;
+                    active_enemy_set = -1;
+                    break;
+            }
             break;
     }
 }
@@ -759,6 +830,7 @@ void init(bool fullscreen)
     base_path = SDL_GetBasePath();
 
 #ifdef __EMSCRIPTEN__
+    active_level = 0;
     active_enemy_set = -1;
 #endif
 
@@ -781,7 +853,7 @@ void init(bool fullscreen)
 
     eng->add_object(background_obj);
     background_obj->init(RES_Y);
-    background_obj->set((SDL_Texture*)eng->get_resource("background_tex"), 800, 2048);
+    background_obj->set((SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
 
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
         enemy_slots[i] = eng->add_object(new engine_obj());
@@ -902,8 +974,9 @@ void game_loop()
     bool init_enemy_set = false;
 
 #ifndef __EMSCRIPTEN__
+    active_level = 0;
     active_enemy_set = 0;
-    activate_enemy_set(active_enemy_set);
+    activate_enemy_set();
 
     game_ui_obj->draw_active = true;
 
@@ -963,13 +1036,9 @@ void game_loop()
                 }
             }
 
-            // Loop round enemy sets for now
-            if (init_enemy_set && ++active_enemy_set > ENEMY_SET_COUNT) {
-                active_enemy_set = 0;
-            }
-
             if (init_enemy_set) {
-                activate_enemy_set(active_enemy_set);
+                ++active_enemy_set;
+                activate_enemy_set();
             }
         } else {
             game_over_obj->draw_active = true;

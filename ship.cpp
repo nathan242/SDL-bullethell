@@ -44,6 +44,9 @@ void ship::reset()
     shield_charge_level = 0;
     shield_charge_timer->last = i_eng->timer_now;
 
+    move_x->last = i_eng->timer_now;
+    move_y->last = i_eng->timer_now;
+
     phys_active = true;
     draw_active = true;
 }
