@@ -20,6 +20,7 @@ class explosion_manager
         explosion_manager();
         void add_object(explosion *obj);
         void explode(int size_x, int size_y, int pos_x, int pos_y);
+        bool any_active();
         ~explosion_manager();
 };
 

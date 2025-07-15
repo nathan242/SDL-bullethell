@@ -47,6 +47,7 @@ class projectile_manager
             int move_y_every,
             bool invincible
         );
+        void disable_all();
         ~projectile_manager();
 };
 

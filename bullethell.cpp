@@ -76,6 +76,7 @@ bool pause_pressed = false;
 bool paused = false;
 int active_level;
 int active_enemy_set;
+bool enemy_set_hold = false;
 SDL_Event input;
 char *base_path;
 engine *eng;
@@ -203,6 +204,35 @@ int get_enemy_slot()
     return slot;
 }
 
+void init_level(int level, SDL_Texture *background_texture, int background_size_x, int background_size_y)
+{
+    int slot;
+
+    background_obj->set(background_texture, background_size_x, background_size_y);
+
+    slot = get_enemy_slot();
+    enemy_slots[slot]->obj = new level_text(eng);
+    enemy_slots[slot]->obj->init();
+    ((level_text*)enemy_slots[slot]->obj)->set(level);
+}
+
+void set_level(int level)
+{
+    if (explosion_mngr->any_active()) {
+        enemy_set_hold = true;
+        return;
+    }
+
+    enemy_set_hold = false;
+
+    active_level = level;
+    active_enemy_set = -1;
+    player_shot_mngr->disable_all();
+    enemy_shot_mngr->disable_all();
+    ship_obj->draw_active = false;
+    ship_obj->phys_active = false;
+}
+
 void activate_enemy_set()
 {
     int slot;
@@ -213,15 +243,7 @@ void activate_enemy_set()
             switch (active_enemy_set)
             {
                 case 0:
-                    background_obj->set((SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
-
-                    ship_obj->draw_active = false;
-                    ship_obj->phys_active = false;
-
-                    slot = get_enemy_slot();
-                    enemy_slots[slot]->obj = new level_text(eng);
-                    enemy_slots[slot]->obj->init();
-                    ((level_text*)enemy_slots[slot]->obj)->set(1);
+                    init_level(1, (SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
 
                     break;
 
@@ -698,8 +720,8 @@ void activate_enemy_set()
                     break;
 
                 case 12:
-                    ++active_level;
-                    active_enemy_set = -1;
+                    set_level(active_level+1);
+
                     break;
             }
             break;
@@ -708,15 +730,7 @@ void activate_enemy_set()
             switch (active_enemy_set)
             {
                 case 0:
-                    background_obj->set((SDL_Texture*)eng->get_resource("background_2_tex"), 1024, 1536);
-
-                    ship_obj->draw_active = false;
-                    ship_obj->phys_active = false;
-
-                    slot = get_enemy_slot();
-                    enemy_slots[slot]->obj = new level_text(eng);
-                    enemy_slots[slot]->obj->init();
-                    ((level_text*)enemy_slots[slot]->obj)->set(2);
+                    init_level(2, (SDL_Texture*)eng->get_resource("background_2_tex"), 1024, 1536);
 
                     break;
 
@@ -756,8 +770,8 @@ void activate_enemy_set()
                     break;
 
                 case 3:
-                    active_level = 0;
-                    active_enemy_set = -1;
+                    set_level(0);
+
                     break;
             }
             break;
@@ -1037,7 +1051,7 @@ void game_loop()
             }
 
             if (init_enemy_set) {
-                ++active_enemy_set;
+                if (!enemy_set_hold) ++active_enemy_set;
                 activate_enemy_set();
             }
         } else {

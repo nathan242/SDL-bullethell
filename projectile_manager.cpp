@@ -129,6 +129,22 @@ void projectile_manager::fire(
     }
 }
 
+void projectile_manager::disable_all()
+{
+    obj_list *list = NULL;
+    base_projectile *obj = NULL;
+
+    list = list_head;
+
+    while (list != NULL) {
+        obj = list->obj;
+        obj->draw_active = false;
+        obj->phys_active = false;
+
+        list = list->next;
+    }
+}
+
 projectile_manager::~projectile_manager()
 {
     if (list_head != NULL) {

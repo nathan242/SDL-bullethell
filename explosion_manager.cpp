@@ -52,6 +52,26 @@ void explosion_manager::explode(int size_x, int size_y, int pos_x, int pos_y)
     }
 }
 
+bool explosion_manager::any_active()
+{
+    obj_list *list = NULL;
+    explosion *obj = NULL;
+
+    list = list_head;
+
+    while (list != NULL) {
+        obj = list->obj;
+
+        if (obj->animation->frames[obj->animation->curr] != NULL) {
+            return true;
+        }
+
+        list = list->next;
+    }
+
+    return false;
+}
+
 explosion_manager::~explosion_manager()
 {
     if (list_head != NULL) {
