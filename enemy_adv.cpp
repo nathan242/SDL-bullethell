@@ -25,7 +25,6 @@ void enemy_adv::init()
     default_health = 12;
     current_health = 12;
 
-    // shot_delay = 400000000;
     shot_timer = add_timer(400000000);
 
     pos_mid = (size_x/2)-(ship_obj->size_x/2);

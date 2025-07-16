@@ -14,7 +14,7 @@ void enemy::init()
     size_y = 31;
     phys_size_x = 21;
     phys_size_y = 31;
-    area_y_offset = 21;
+    area_y_offset = 31;
     move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY*2);
     bounce = 1;

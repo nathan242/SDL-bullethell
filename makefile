@@ -24,6 +24,7 @@ enemy_diagonal_stationary_allsprd.o \
 enemy_diagonal_stationary_fwdsprd.o \
 enemy_cargo.o \
 enemy_boss_a.o \
+enemy_exploder.o \
 powerup.o \
 powerup_double_shot.o \
 powerup_quad_spread_shot.o \
@@ -60,6 +61,7 @@ explosion_manager.o
 	enemy_diagonal_stationary_fwdsprd.o \
 	enemy_cargo.o \
 	enemy_boss_a.o \
+	enemy_exploder.o \
 	powerup.o \
 	powerup_double_shot.o \
 	powerup_quad_spread_shot.o \
@@ -148,6 +150,9 @@ enemy_cargo.o: enemy_cargo.cpp enemy_cargo.h
 
 enemy_boss_a.o: enemy_boss_a.cpp enemy_boss_a.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_boss_a.cpp
+
+enemy_exploder.o: enemy_exploder.cpp enemy_exploder.h
+	g++ -Wall -g `sdl2-config --cflags` -c enemy_exploder.cpp
 
 powerup.o: powerup.cpp powerup.h
 	g++ -Wall -g `sdl2-config --cflags` -c powerup.cpp

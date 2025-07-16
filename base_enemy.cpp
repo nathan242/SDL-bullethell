@@ -31,6 +31,11 @@ void base_enemy::init_projectile()
     
 }
 
+void base_enemy::post_destroy()
+{
+
+}
+
 bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     if (obj2 != NULL) {
@@ -49,6 +54,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
                 }
 
                 e_mngr->explode(size_x, size_y, pos_x, pos_y);
+                post_destroy();
             }
 
             return false;
@@ -58,6 +64,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
             game_over = true;
 
             e_mngr->explode(obj2->size_x, obj2->size_y, obj2->pos_x, obj2->pos_y);
+            post_destroy();
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
             return false;
         } else if (obj2->type_id >= 100 && obj2->type_id <= 199) {

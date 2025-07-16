@@ -23,6 +23,7 @@ class base_enemy : public engine_obj
         ship *ship_obj;
 
         virtual void init_projectile();
+        virtual void post_destroy();
 
     public:
         powerup *drop_powerup;
