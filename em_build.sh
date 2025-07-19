@@ -8,6 +8,7 @@ base_enemy.cpp \
 background.cpp \
 base_projectile.cpp \
 enemy_adv.cpp \
+enemy_adv_spread.cpp \
 enemy_boss_a.cpp \
 enemy_cargo.cpp \
 enemy_diagonal.cpp \
@@ -44,6 +45,8 @@ level_text.cpp \
 --preload-file enemy_cargo.png \
 --preload-file enemy_ship_adv_hit.png \
 --preload-file enemy_ship_adv.png \
+--preload-file enemy_ship_adv_spread_hit.png \
+--preload-file enemy_ship_adv_spread.png \
 --preload-file enemy_ship_default_hit.png \
 --preload-file enemy_ship_default.png \
 --preload-file enemy_ship_diagonal_6_hit.png \

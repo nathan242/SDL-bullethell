@@ -17,6 +17,7 @@ shield.o \
 enemy.o \
 base_enemy.o \
 enemy_adv.o \
+enemy_adv_spread.o \
 enemy_diagonal.o \
 enemy_diagonal_stationary.o \
 enemy_diagonal_stationary_spiral.o \
@@ -54,6 +55,7 @@ explosion_manager.o
 	enemy.o \
 	base_enemy.o \
 	enemy_adv.o \
+	enemy_adv_spread.o \
 	enemy_diagonal.o \
 	enemy_diagonal_stationary.o \
 	enemy_diagonal_stationary_spiral.o \
@@ -129,6 +131,9 @@ enemy.o: enemy.cpp enemy.h
 
 enemy_adv.o: enemy_adv.cpp enemy_adv.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_adv.cpp
+
+enemy_adv_spread.o: enemy_adv_spread.cpp enemy_adv_spread.h
+	g++ -Wall -g `sdl2-config --cflags` -c enemy_adv_spread.cpp
 
 enemy_diagonal.o: enemy_diagonal.cpp enemy_diagonal.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_diagonal.cpp
