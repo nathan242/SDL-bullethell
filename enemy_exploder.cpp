@@ -37,6 +37,7 @@ void enemy_exploder::init_projectile()
 {
     default_shot_texture = NULL;
     default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
+    invincible_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_invincible_anim");
 }
 
 void enemy_exploder::post_destroy()
@@ -58,7 +59,7 @@ void enemy_exploder::post_destroy()
             }
 
             p_mngr->fire(
-                default_shot_animation,
+                invincible_shot_animation,
                 10,
                 10,
                 10,
@@ -67,9 +68,9 @@ void enemy_exploder::post_destroy()
                 fire_pos_y,
                 x,
                 y,
-                SHOT_PHYS_DELAY,
-                SHOT_PHYS_DELAY,
-                false
+                SHOT_PHYS_DELAY*2,
+                SHOT_PHYS_DELAY*2,
+                true
             );
         }
     }
