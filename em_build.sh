@@ -17,6 +17,7 @@ enemy_diagonal_stationary_spiral.cpp \
 enemy_diagonal_stationary_allsprd.cpp \
 enemy_diagonal_stationary_fwdsprd.cpp \
 enemy_exploder.cpp \
+enemy_allsprd_attacker.cpp \
 enemy_projectile.cpp \
 menu_title.cpp \
 player_projectile.cpp \
@@ -61,6 +62,8 @@ level_text.cpp \
 --preload-file powerup_quad_spread_shot_2.png \
 --preload-file enemy_ship_boss_a.png \
 --preload-file enemy_ship_boss_a_hit.png \
+--preload-file enemy_ship_allsprd_attacker.png \
+--preload-file enemy_ship_allsprd_attacker_hit.png \
 --preload-file enemy_ship_exploder.png \
 --preload-file enemy_ship_exploder_hit.png \
 --preload-file press_a_key.png \

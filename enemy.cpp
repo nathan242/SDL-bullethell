@@ -3,8 +3,6 @@
 
 #define ENEMY_SHIP_MOVE_PHYS_DELAY 8000000
 
-extern bool game_over;
-
 void enemy::init()
 {
     base_enemy::init();
