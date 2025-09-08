@@ -25,7 +25,7 @@ void enemy_allsprd_attacker::init()
     default_health = 20;
     current_health = 20;
 
-    shot_timer = add_timer(800000000);
+    shot_timer = add_timer(2000000000);
 
     initialized = true;
 }
