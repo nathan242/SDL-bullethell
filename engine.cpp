@@ -132,6 +132,37 @@ timer_obj* engine_obj::add_timer(time_t init_every)
     return timer;
 }
 
+proxy_engine_obj* engine_obj::add_proxy()
+{
+    proxy_engine_obj *proxy_obj = new proxy_engine_obj();
+
+    proxy_obj->init();
+    proxy_obj->linked_obj = this;
+
+    return proxy_obj;
+}
+
+bool proxy_engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
+{
+    bool result = linked_obj->collision_event(obj2, collide_axis, area_x, area_y);
+
+    if (obj2 == linked_obj) {
+        result = false;
+    }
+
+    return result;
+}
+
+void proxy_engine_obj::pre_phys_event()
+{
+    linked_obj->pre_phys_event();
+}
+
+void proxy_engine_obj::post_draw_event()
+{
+    linked_obj->post_draw_event();
+}
+
 bool engine_obj::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
 {
     return true;

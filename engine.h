@@ -42,6 +42,8 @@ class animation_obj
         ~animation_obj();
 };
 
+class proxy_engine_obj;
+
 class engine_obj
 {
     public:
@@ -82,10 +84,21 @@ class engine_obj
 
         virtual void init();
         virtual timer_obj* add_timer(time_t init_every);
+        virtual proxy_engine_obj* add_proxy();
         virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         virtual void pre_phys_event();
         virtual void post_draw_event();
         virtual ~engine_obj();
+};
+
+class proxy_engine_obj : public engine_obj
+{
+    public:
+        engine_obj *linked_obj;
+
+        virtual bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
+        virtual void pre_phys_event();
+        virtual void post_draw_event();
 };
 
 struct engine_obj_list

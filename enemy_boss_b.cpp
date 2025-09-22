@@ -7,6 +7,9 @@
 #define SHOT_PHYS_DELAY_DIFF 20000000
 #define SHOT_PHYS_DELAY_DIFF_START 100000000
 
+extern engine_obj_list *enemy_slots[];
+extern int get_enemy_slot(engine_obj *self = NULL);
+
 void enemy_boss_b::init()
 {
     base_enemy::init();
@@ -15,7 +18,8 @@ void enemy_boss_b::init()
     size_x = 150;
     size_y = 215;
     phys_size_x = 150;
-    phys_size_y = 215;
+    phys_size_y = 60;
+    phys_offset_y = 50;
     area_y_offset = 150;
     move_x = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(ENEMY_SHIP_MOVE_PHYS_DELAY*2);
@@ -40,6 +44,51 @@ void enemy_boss_b::init()
     game_ui_obj = (game_ui*)i_eng->get_resource("game_ui_obj");
     game_ui_obj->activate_boss_health(this);
 
+    rear_obj_a = add_proxy();
+    rear_obj_a->type_id = type_id;
+    rear_obj_a->pos_x = pos_x+15;
+    rear_obj_a->pos_y = pos_y+22;
+    rear_obj_a->phys_size_x = 120;
+    rear_obj_a->phys_size_y = 28;
+    rear_obj_a->phys_active = true;
+    enemy_slots[get_enemy_slot(this)]->obj = rear_obj_a;
+
+    rear_obj_b = add_proxy();
+    rear_obj_b->type_id = type_id;
+    rear_obj_b->pos_x = pos_x+65;
+    rear_obj_b->pos_y = pos_y;
+    rear_obj_b->phys_size_x = 20;
+    rear_obj_b->phys_size_y = 22;
+    rear_obj_b->phys_active = true;
+    enemy_slots[get_enemy_slot(this)]->obj = rear_obj_b;
+
+    front_left_gun_obj = add_proxy();
+    front_left_gun_obj->type_id = type_id;
+    front_left_gun_obj->pos_x = pos_x+12;
+    front_left_gun_obj->pos_y = pos_y+110;
+    front_left_gun_obj->phys_size_x = 18;
+    front_left_gun_obj->phys_size_y = 29;
+    front_left_gun_obj->phys_active = true;
+    enemy_slots[get_enemy_slot(this)]->obj = front_left_gun_obj;
+
+    front_right_gun_obj = add_proxy();
+    front_right_gun_obj->type_id = type_id;
+    front_right_gun_obj->pos_x = pos_x+120;
+    front_right_gun_obj->pos_y = pos_y+110;
+    front_right_gun_obj->phys_size_x = 18;
+    front_right_gun_obj->phys_size_y = 29;
+    front_right_gun_obj->phys_active = true;
+    enemy_slots[get_enemy_slot(this)]->obj = front_right_gun_obj;
+
+    front_obj = add_proxy();
+    front_obj->type_id = type_id;
+    front_obj->pos_x = pos_x+47;
+    front_obj->pos_y = pos_y+110;
+    front_obj->phys_size_x = 56;
+    front_obj->phys_size_y = 87;
+    front_obj->phys_active = true;
+    enemy_slots[get_enemy_slot(this)]->obj = front_obj;
+
     initialized = true;
 }
 
@@ -54,6 +103,17 @@ void enemy_boss_b::init_projectile()
     ball_shot_angle = 0;
     ball_shot_angle_diff = 10;
     shot_invincible = false;
+}
+
+bool enemy_boss_b::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
+{
+    bool result = base_enemy::collision_event(obj2, collide_axis, area_x, area_y);
+
+    if (obj2 == rear_obj_a || obj2 == rear_obj_b || obj2 == front_left_gun_obj || obj2 == front_right_gun_obj || obj2 == front_obj) {
+        result = false;
+    }
+
+    return result;
 }
 
 void enemy_boss_b::pre_phys_event()
@@ -87,6 +147,21 @@ void enemy_boss_b::pre_phys_event()
             fire_far_side();
         }
     }
+
+    rear_obj_a->pos_x = pos_x+15;
+    rear_obj_a->pos_y = pos_y+22;
+
+    rear_obj_b->pos_x = pos_x+65;
+    rear_obj_b->pos_y = pos_y;
+
+    front_left_gun_obj->pos_x = pos_x+12;
+    front_left_gun_obj->pos_y = pos_y+110;
+
+    front_right_gun_obj->pos_x = pos_x+120;
+    front_right_gun_obj->pos_y = pos_y+110;
+
+    front_obj->pos_x = pos_x+47;
+    front_obj->pos_y = pos_y+110;
 
     base_enemy::pre_phys_event();
 }
@@ -279,4 +354,13 @@ void enemy_boss_b::fire_far_side()
         SHOT_PHYS_DELAY,
         false
     );
+}
+
+void enemy_boss_b::post_destroy()
+{
+    rear_obj_a->phys_active = false;
+    rear_obj_b->phys_active = false;
+    front_left_gun_obj->phys_active = false;
+    front_right_gun_obj->phys_active = false;
+    front_obj->phys_active = false;
 }

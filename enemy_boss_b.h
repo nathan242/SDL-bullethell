@@ -22,12 +22,19 @@ class enemy_boss_b : public base_enemy
         animation_obj *ball_shot_animation;
         animation_obj *ball_invincible_shot_animation;
         game_ui *game_ui_obj;
+        proxy_engine_obj* rear_obj_a;
+        proxy_engine_obj* rear_obj_b;
+        proxy_engine_obj* front_left_gun_obj;
+        proxy_engine_obj* front_right_gun_obj;
+        proxy_engine_obj* front_obj;
         bool update_fire_step();
         void init_projectile();
         void pre_phys_event();
+        void post_destroy();
 
     public:
         void init();
+        bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         void ball_fire(int offset_y);
         void fire();
         void fire_side();

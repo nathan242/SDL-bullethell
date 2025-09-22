@@ -199,12 +199,12 @@ void free_resources()
     delete (animation_obj*)eng->get_resource("powerup_quad_spread_shot_anim");
 }
 
-int get_enemy_slot()
+int get_enemy_slot(engine_obj *self = NULL)
 {
     int slot = 0;
 
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
-        if (!enemy_slots[i]->obj->draw_active) {
+        if (!enemy_slots[i]->obj->draw_active && !enemy_slots[i]->obj->phys_active && (self == NULL || enemy_slots[i]->obj != self)) {
             slot = i;
 
             break;
