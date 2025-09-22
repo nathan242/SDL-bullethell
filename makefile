@@ -25,6 +25,7 @@ enemy_diagonal_stationary_allsprd.o \
 enemy_diagonal_stationary_fwdsprd.o \
 enemy_cargo.o \
 enemy_boss_a.o \
+enemy_boss_b.o \
 enemy_allsprd_attacker.o \
 enemy_exploder.o \
 powerup.o \
@@ -64,6 +65,7 @@ explosion_manager.o
 	enemy_diagonal_stationary_fwdsprd.o \
 	enemy_cargo.o \
 	enemy_boss_a.o \
+	enemy_boss_b.o \
 	enemy_allsprd_attacker.o \
 	enemy_exploder.o \
 	powerup.o \
@@ -157,6 +159,9 @@ enemy_cargo.o: enemy_cargo.cpp enemy_cargo.h
 
 enemy_boss_a.o: enemy_boss_a.cpp enemy_boss_a.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_boss_a.cpp
+
+enemy_boss_b.o: enemy_boss_b.cpp enemy_boss_b.h
+	g++ -Wall -g `sdl2-config --cflags` -c enemy_boss_b.cpp
 
 enemy_allsprd_attacker.o: enemy_allsprd_attacker.cpp enemy_allsprd_attacker.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_allsprd_attacker.cpp

@@ -24,6 +24,7 @@
 #include "enemy_diagonal_stationary_fwdsprd.h"
 #include "enemy_cargo.h"
 #include "enemy_boss_a.h"
+#include "enemy_boss_b.h"
 #include "enemy_allsprd_attacker.h"
 #include "enemy_exploder.h"
 #include "powerup_double_shot.h"
@@ -135,6 +136,8 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"enemy_ship_diagonal_hit_tex", "enemy_ship_diagonal_hit.png"},
     {"enemy_ship_boss_a_tex", "enemy_ship_boss_a.png"},
     {"enemy_ship_boss_a_hit_tex", "enemy_ship_boss_a_hit.png"},
+    {"enemy_ship_boss_b_tex", "enemy_ship_boss_b.png"},
+    {"enemy_ship_boss_b_hit_tex", "enemy_ship_boss_b_hit.png"},
     {"enemy_ship_allsprd_attacker_tex", "enemy_ship_allsprd_attacker.png"},
     {"enemy_ship_allsprd_attacker_hit_tex", "enemy_ship_allsprd_attacker_hit.png"},
     {"enemy_ship_exploder_tex", "enemy_ship_exploder.png"},
@@ -1067,6 +1070,19 @@ void activate_enemy_set()
                     break;
 
                 case 9:
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new enemy_boss_b(eng, enemy_shot_mngr, explosion_mngr);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->pos_x = 350;
+                    enemy_slots[slot]->obj->pos_y = enemy_slots[slot]->obj->size_y*-1;
+                    enemy_slots[slot]->obj->step_x = 0;
+                    enemy_slots[slot]->obj->step_y = 1;
+                    enemy_slots[slot]->obj->draw_active = true;
+                    enemy_slots[slot]->obj->phys_active = true;
+
+                    break;
+
+                case 10:
                     set_level(0);
 
                     break;
