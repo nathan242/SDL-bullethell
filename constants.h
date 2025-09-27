@@ -16,6 +16,6 @@
 
 #define BACKGROUND_SCROLL_EVERY 20000000
 
-#define NUM_LEVELS 2
+#define NUM_LEVELS 3
 
 #endif

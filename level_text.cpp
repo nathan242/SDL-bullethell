@@ -20,7 +20,7 @@ void level_text::init()
     texture = (SDL_Texture*)i_eng->get_resource("level_text_tex");
     numbers[0] = (SDL_Texture*)i_eng->get_resource("1_tex");
     numbers[1] = (SDL_Texture*)i_eng->get_resource("2_tex");
-    // numbers[2] = (SDL_Texture*)i_eng->get_resource("3_tex");
+    numbers[2] = (SDL_Texture*)i_eng->get_resource("3_tex");
 
     wait_timer = add_timer(2000000000);
     show_number = 0;
