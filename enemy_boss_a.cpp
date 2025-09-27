@@ -26,8 +26,8 @@ void enemy_boss_a::init()
 
     last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
-    default_health = 150;
-    current_health = 150;
+    default_health = 120;
+    current_health = 120;
 
     shot_timer = add_timer(400000000);
     ball_shot_timer = add_timer(50000000);

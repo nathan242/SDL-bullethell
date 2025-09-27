@@ -47,8 +47,8 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
 
             if (draw_active == false) {
                 if (drop_powerup != NULL && ship_obj->active_weapon < (drop_powerup->type_id - 99)) {
-                    drop_powerup->pos_x = pos_x;
-                    drop_powerup->pos_y = pos_y;
+                    drop_powerup->pos_x = pos_x+(size_x/2)-10;
+                    drop_powerup->pos_y = pos_y+(size_y/2)-10;
                     drop_powerup->phys_active = true;
                     drop_powerup->draw_active = true;
                 }

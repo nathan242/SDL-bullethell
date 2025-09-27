@@ -654,6 +654,7 @@ void activate_enemy_set()
             {
                 case 0:
                     init_level(2, (SDL_Texture*)eng->get_resource("background_2_tex"), 1024, 1536);
+
                     break;
 
                 case 1:
@@ -1099,6 +1100,7 @@ void activate_enemy_set()
             {
                 case 0:
                     init_level(3, (SDL_Texture*)eng->get_resource("background_3_tex"), 1024, 2048);
+
                     break;
 
                 case 1:

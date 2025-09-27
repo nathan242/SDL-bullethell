@@ -10,6 +10,8 @@ base_projectile.cpp \
 enemy_adv.cpp \
 enemy_adv_spread.cpp \
 enemy_boss_a.cpp \
+enemy_boss_b.cpp \
+enemy_boss_c.cpp \
 enemy_cargo.cpp \
 enemy_diagonal.cpp \
 enemy_diagonal_stationary.cpp \
@@ -27,6 +29,7 @@ powerup_quad_spread_shot.cpp \
 press_key.cpp \
 game_over.cpp \
 paused_img.cpp \
+complete.cpp \
 anim_projectile_ball.cpp \
 anim_projectile_ball_invincible.cpp \
 anim_powerup_double_shot.cpp \
@@ -42,6 +45,7 @@ level_text.cpp \
 -o bullethell.html \
 --preload-file background_1.png \
 --preload-file background_2.png \
+--preload-file background_3.png \
 --preload-file enemy_cargo_hit.png \
 --preload-file enemy_cargo.png \
 --preload-file enemy_ship_adv_hit.png \
@@ -62,6 +66,10 @@ level_text.cpp \
 --preload-file powerup_quad_spread_shot_2.png \
 --preload-file enemy_ship_boss_a.png \
 --preload-file enemy_ship_boss_a_hit.png \
+--preload-file enemy_ship_boss_b.png \
+--preload-file enemy_ship_boss_b_hit.png \
+--preload-file enemy_ship_boss_c.png \
+--preload-file enemy_ship_boss_c_hit.png \
 --preload-file enemy_ship_allsprd_attacker.png \
 --preload-file enemy_ship_allsprd_attacker_hit.png \
 --preload-file enemy_ship_exploder.png \
@@ -69,6 +77,7 @@ level_text.cpp \
 --preload-file press_a_key.png \
 --preload-file game_over.png \
 --preload-file paused.png \
+--preload-file complete.png \
 --preload-file projectile_ball_invincible.png \
 --preload-file projectile_ball_invincible_1.png \
 --preload-file projectile_ball_invincible_2.png \
