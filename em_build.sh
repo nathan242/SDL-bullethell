@@ -1,6 +1,6 @@
 #!/bin/bash
 
-em++ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS=["png"] \
+em++ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS=["png"] -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS=["ogg"] \
 bullethell.cpp \
 engine.cpp \
 enemy.cpp \
@@ -107,4 +107,5 @@ level_text.cpp \
 --preload-file level_text.png \
 --preload-file 1.png \
 --preload-file 2.png \
---preload-file 3.png
+--preload-file 3.png \
+--preload-file music

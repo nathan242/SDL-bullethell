@@ -1978,7 +1978,9 @@ int menu_loop()
     title_obj->draw_active = true;
     press_key_obj->draw_active = true;
 
+#ifndef __EMSCRIPTEN__
     set_music("cosmic_annihilation_mus");
+#endif
 
 #ifndef __EMSCRIPTEN__
     while (true) {
@@ -2180,6 +2182,8 @@ int main(int argc, char *argv[])
     init(fullscreen);
 
 #ifdef __EMSCRIPTEN__
+    // Menu music
+    set_music("cosmic_annihilation_mus");
     emscripten_set_main_loop(em_loop, 0, 1);
 #else
     switch(menu_loop()) {
