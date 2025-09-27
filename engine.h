@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 class timer_obj
 {
@@ -136,7 +137,7 @@ class engine
 
         timespec timer_now;
 
-        engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen = false);
+        engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen = false, bool audio = false);
         engine_obj_list* add_object(engine_obj *obj);
         void step();
         void draw();

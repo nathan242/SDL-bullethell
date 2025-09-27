@@ -38,6 +38,7 @@
 #include "explosion_manager.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <time.h>
 #include <unistd.h>
 #include <unordered_map>
@@ -77,6 +78,7 @@ bool shield_btn = false;
 bool pause_btn = false;
 
 bool game_over = false;
+bool game_over_set = false;
 bool fired = false;
 bool pause_pressed = false;
 bool paused = false;
@@ -177,14 +179,28 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"explosion_4_tex", "explosion_4.png"}
 };
 
+std::unordered_map<std::string, std::string> music_map = {
+    {"cosmic_annihilation_mus", "music/cosmic_annihilation.ogg"},
+    {"celestial_carnage_1_mus", "music/celestial_carnage_1.ogg"},
+    {"celestial_carnage_2_mus", "music/celestial_carnage_2.ogg"},
+    {"celestial_carnage_3_mus", "music/celestial_carnage_3.ogg"},
+    {"voidfire_descent_2_mus", "music/voidfire_descent_2.ogg"}
+};
+
 void init_resources()
 {
     SDL_Surface *temp_surface;
+    Mix_Music *temp_music;
 
     for (const auto& [name, texture] : texture_map) {
         temp_surface = IMG_Load(texture.c_str());
         eng->add_resource(name.c_str(), SDL_CreateTextureFromSurface(eng->renderer, temp_surface));
         SDL_FreeSurface(temp_surface);
+    }
+
+    for (const auto& [name, music] : music_map) {
+        temp_music = Mix_LoadMUS(music.c_str());
+        eng->add_resource(name.c_str(), temp_music);
     }
 
     eng->add_resource("projectile_ball_anim", new anim_projectile_ball(new timer_obj(0), eng));
@@ -197,6 +213,10 @@ void free_resources()
 {
     for (const auto& [name, texture] : texture_map) {
         SDL_DestroyTexture((SDL_Texture*)eng->get_resource(name.c_str()));
+    }
+
+    for (const auto& [name, music] : music_map) {
+        Mix_FreeMusic((Mix_Music*)eng->get_resource(name.c_str()));
     }
 
     delete (animation_obj*)eng->get_resource("projectile_ball_anim");
@@ -251,6 +271,12 @@ void set_level(int level)
     ship_obj->phys_active = false;
 }
 
+void set_music(const char *resource)
+{
+    Mix_HaltMusic();
+    Mix_PlayMusic((Mix_Music*)eng->get_resource(resource), -1);
+}
+
 void activate_enemy_set()
 {
     int slot;
@@ -262,6 +288,7 @@ void activate_enemy_set()
             {
                 case 0:
                     init_level(1, (SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
+                    set_music("celestial_carnage_1_mus");
 
                     break;
 
@@ -654,6 +681,7 @@ void activate_enemy_set()
             {
                 case 0:
                     init_level(2, (SDL_Texture*)eng->get_resource("background_2_tex"), 1024, 1536);
+                    set_music("celestial_carnage_2_mus");
 
                     break;
 
@@ -1100,6 +1128,7 @@ void activate_enemy_set()
             {
                 case 0:
                     init_level(3, (SDL_Texture*)eng->get_resource("background_3_tex"), 1024, 2048);
+                    set_music("celestial_carnage_3_mus");
 
                     break;
 
@@ -1848,7 +1877,7 @@ void init(bool fullscreen)
     chdir(base_path);
     free(base_path);
 
-    eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen);
+    eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen, true);
     eng->phys_max_iterations = 20;
     // eng->debug_draw_phys_area = true;
 
@@ -1948,6 +1977,8 @@ int menu_loop()
 
     title_obj->draw_active = true;
     press_key_obj->draw_active = true;
+
+    set_music("cosmic_annihilation_mus");
 
 #ifndef __EMSCRIPTEN__
     while (true) {
@@ -2051,8 +2082,10 @@ void game_loop()
                 if (!enemy_set_hold) ++active_enemy_set;
                 activate_enemy_set();
             }
-        } else {
+        } else if (!game_over_set) {
             game_over_obj->draw_active = true;
+            set_music("voidfire_descent_2_mus");
+            game_over_set = true;
         }
 
         // Redraw screen
@@ -2068,6 +2101,8 @@ void game_loop()
 
 void deinit()
 {
+    Mix_Quit();
+    IMG_Quit();
     SDL_Quit();
 
     delete background_obj;

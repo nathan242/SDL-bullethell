@@ -195,20 +195,25 @@ engine_obj::~engine_obj()
     }
 }
 
-engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen)
+engine::engine(const char* caption, int res_x, int res_y, int bpp, bool fullscreen, bool audio)
 {
+    Uint32 sdl_flags = audio ? SDL_INIT_VIDEO|SDL_INIT_AUDIO : SDL_INIT_VIDEO;
     Uint32 window_flags = fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
     area_x = res_x;
     area_y = res_y;
 
     // Initialize SDL
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(sdl_flags);
     window = SDL_CreateWindow(caption, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, res_x, res_y, window_flags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     if (fullscreen) {
         SDL_RenderSetLogicalSize(renderer, res_x, res_y);
+    }
+
+    if (audio) {
+        Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
