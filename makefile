@@ -5,6 +5,7 @@ menu_title.o \
 press_key.o \
 game_over.o \
 paused_img.o \
+complete.o \
 game_ui.o \
 level_text.o \
 anim_projectile_ball.o \
@@ -46,6 +47,7 @@ explosion_manager.o
 	press_key.o \
 	game_over.o \
 	paused_img.o \
+	complete.o \
 	game_ui.o \
 	level_text.o \
 	anim_projectile_ball.o \
@@ -101,6 +103,9 @@ game_over.o: game_over.cpp game_over.h
 
 paused_img.o: paused_img.cpp paused_img.h
 	g++ -Wall -g `sdl2-config --cflags` -c paused_img.cpp
+
+complete.o: complete.cpp complete.h
+	g++ -Wall -g `sdl2-config --cflags` -c complete.cpp
 
 game_ui.o: game_ui.cpp game_ui.h
 	g++ -Wall -g `sdl2-config --cflags` -c game_ui.cpp

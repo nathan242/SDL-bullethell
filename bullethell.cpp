@@ -6,6 +6,7 @@
 #include "press_key.h"
 #include "game_over.h"
 #include "paused_img.h"
+#include "complete.h"
 #include "game_ui.h"
 #include "anim_projectile_ball.h"
 #include "anim_projectile_ball_invincible.h"
@@ -120,6 +121,7 @@ std::unordered_map<std::string, std::string> texture_map = {
     {"press_key_tex", "press_a_key.png"},
     {"game_over_tex", "game_over.png"},
     {"paused_tex", "paused.png"},
+    {"complete_tex", "complete.png"},
     {"game_ui_bar_tex", "game_ui_bar.png"},
     {"boss_health_tex", "boss_health.png"},
     {"green_bar_tex", "green_bar.png"},
@@ -1760,7 +1762,10 @@ void activate_enemy_set()
                     break;
 
                 case 10:
-                    set_level(0);
+                    slot = get_enemy_slot();
+                    enemy_slots[slot]->obj = new complete(eng);
+                    enemy_slots[slot]->obj->init();
+                    enemy_slots[slot]->obj->draw_active = true;
 
                     break;
             }
