@@ -16,9 +16,11 @@ class base_enemy : public engine_obj
         explosion_manager *e_mngr;
         SDL_Texture *default_shot_texture;
         animation_obj *default_shot_animation;
+        Mix_Chunk *default_shot_sfx;
         timer_obj *shot_timer;
         SDL_Texture *default_texture;
         SDL_Texture *hit_texture;
+        Mix_Chunk *explosion_sfx;
         timer_obj *last_hit_timer;
         ship *ship_obj;
 

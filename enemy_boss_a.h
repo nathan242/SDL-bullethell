@@ -18,6 +18,7 @@ class enemy_boss_a : public base_enemy
         timer_obj *ball_shot_timer;
         animation_obj *ball_shot_animation;
         animation_obj *ball_invincible_shot_animation;
+        Mix_Chunk *ball_shot_sfx;
         game_ui *game_ui_obj;
         void update_fire_step();
         void init_projectile();

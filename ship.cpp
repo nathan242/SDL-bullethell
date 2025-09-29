@@ -25,6 +25,7 @@ void ship::init()
     texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
 
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
+    default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("default_player_shot_snd");
 
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
     shield_charge_timer = add_timer(1000000000);
@@ -197,6 +198,8 @@ void ship::fire()
                 false
             );
     }
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
 
 void ship::activate_shield()

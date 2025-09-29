@@ -35,6 +35,7 @@ void enemy_diagonal::init_projectile()
 {
     default_shot_texture = NULL;
     default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
+    default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("shot_ball_snd");
 }
 
 void enemy_diagonal::fire()
@@ -57,4 +58,6 @@ void enemy_diagonal::fire()
             );
         }
     }
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }

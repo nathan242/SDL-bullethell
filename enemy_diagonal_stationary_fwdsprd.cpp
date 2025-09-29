@@ -26,4 +26,6 @@ void enemy_diagonal_stationary_fwdsprd::fire()
             true
         );
     }
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }

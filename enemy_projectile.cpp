@@ -3,8 +3,9 @@
 
 extern bool game_over;
 
-enemy_projectile::enemy_projectile(explosion_manager *explosion_mngr)
+enemy_projectile::enemy_projectile(engine *eng, explosion_manager *explosion_mngr)
 {
+    i_eng = eng;
     e_mngr = explosion_mngr;
 }
 
@@ -17,6 +18,8 @@ void enemy_projectile::init()
 
     type_id = ID_ENEMY_SHOT;
     bounce = -1;
+
+    explosion_sfx = (Mix_Chunk*)i_eng->get_resource("explosion_snd");
 }
 
 bool enemy_projectile::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)
@@ -33,6 +36,7 @@ bool enemy_projectile::collision_event(engine_obj *obj2, int collide_axis, int a
             game_over = true;
 
             e_mngr->explode(obj2->size_x, obj2->size_y, obj2->pos_x, obj2->pos_y);
+            Mix_PlayChannel(-1, explosion_sfx, 0);
         }
     } else {
         phys_active = false;

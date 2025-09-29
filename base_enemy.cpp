@@ -22,6 +22,7 @@ void base_enemy::init()
     ungroup_at_y = 0;
 
     ship_obj = (ship*)i_eng->get_resource("ship_obj");
+    explosion_sfx = (Mix_Chunk*)i_eng->get_resource("explosion_snd");
 
     init_projectile();
 }
@@ -54,6 +55,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
                 }
 
                 e_mngr->explode(size_x, size_y, pos_x, pos_y);
+                Mix_PlayChannel(-1, explosion_sfx, 0);
                 post_destroy();
             }
 
@@ -64,6 +66,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
             game_over = true;
 
             e_mngr->explode(obj2->size_x, obj2->size_y, obj2->pos_x, obj2->pos_y);
+            Mix_PlayChannel(-1, explosion_sfx, 0);
         } else if (obj2->type_id == ID_ENEMY_SHOT) {
             return false;
         } else if (obj2->type_id >= 100 && obj2->type_id <= 199) {

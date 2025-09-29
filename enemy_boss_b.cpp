@@ -96,8 +96,10 @@ void enemy_boss_b::init_projectile()
 {
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
     default_shot_animation = NULL;
+    default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("default_player_shot_snd");
     ball_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
     ball_invincible_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_invincible_anim");
+    ball_shot_sfx = (Mix_Chunk*)i_eng->get_resource("shot_ball_snd");
     ball_fire_step_x = 1;
     ball_fire_step_y = 1;
     ball_shot_angle = 0;
@@ -201,6 +203,8 @@ void enemy_boss_b::ball_fire(int offset_y)
 
         shot_invincible = !shot_invincible;
     }
+
+    Mix_PlayChannel(-1, ball_shot_sfx, 0);
 }
 
 bool enemy_boss_b::update_fire_step()
@@ -252,6 +256,8 @@ void enemy_boss_b::fire()
         SHOT_PHYS_DELAY,
         false
     );
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
 
 void enemy_boss_b::fire_side()
@@ -287,6 +293,8 @@ void enemy_boss_b::fire_side()
         SHOT_PHYS_DELAY,
         false
     );
+
+    Mix_PlayChannel(-1, ball_shot_sfx, 0);
 }
 
 void enemy_boss_b::fire_far_side()
@@ -354,6 +362,8 @@ void enemy_boss_b::fire_far_side()
         SHOT_PHYS_DELAY,
         false
     );
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
 
 void enemy_boss_b::post_destroy()

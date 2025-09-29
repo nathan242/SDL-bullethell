@@ -12,6 +12,7 @@ class ship : public engine_obj
         engine *i_eng;
         projectile_manager *p_mngr;
         SDL_Texture *default_shot_texture;
+        Mix_Chunk *default_shot_sfx;
         shield *shield_obj;
         timer_obj *shield_charge_timer;
         bool shield_active;

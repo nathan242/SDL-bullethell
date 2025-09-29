@@ -187,10 +187,17 @@ std::unordered_map<std::string, std::string> music_map = {
     {"voidfire_descent_2_mus", "music/voidfire_descent_2.ogg"}
 };
 
+std::unordered_map<std::string, std::string> sfx_map = {
+    {"default_player_shot_snd", "sfx/default_player_shot.wav"},
+    {"shot_ball_snd", "sfx/shot_ball.wav"},
+    {"explosion_snd", "sfx/explosion_var3.wav"}
+};
+
 void init_resources()
 {
     SDL_Surface *temp_surface;
     Mix_Music *temp_music;
+    Mix_Chunk *temp_sfx;
 
     for (const auto& [name, texture] : texture_map) {
         temp_surface = IMG_Load(texture.c_str());
@@ -201,6 +208,11 @@ void init_resources()
     for (const auto& [name, music] : music_map) {
         temp_music = Mix_LoadMUS(music.c_str());
         eng->add_resource(name.c_str(), temp_music);
+    }
+
+    for (const auto& [name, sfx] : sfx_map) {
+        temp_sfx = Mix_LoadWAV(sfx.c_str());
+        eng->add_resource(name.c_str(), temp_sfx);
     }
 
     eng->add_resource("projectile_ball_anim", new anim_projectile_ball(new timer_obj(0), eng));
@@ -217,6 +229,10 @@ void free_resources()
 
     for (const auto& [name, music] : music_map) {
         Mix_FreeMusic((Mix_Music*)eng->get_resource(name.c_str()));
+    }
+
+    for (const auto& [name, sfx] : sfx_map) {
+        Mix_FreeChunk((Mix_Chunk*)eng->get_resource(name.c_str()));
     }
 
     delete (animation_obj*)eng->get_resource("projectile_ball_anim");
@@ -1881,6 +1897,8 @@ void init(bool fullscreen)
     eng->phys_max_iterations = 20;
     // eng->debug_draw_phys_area = true;
 
+    Mix_Volume(-1, MIX_MAX_VOLUME/4);
+
     init_resources();
 
     // Game objects
@@ -1935,7 +1953,7 @@ void init(bool fullscreen)
 
     for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
         // Shots
-        enemy_shots[enemy_shot_count] = new enemy_projectile(explosion_mngr);
+        enemy_shots[enemy_shot_count] = new enemy_projectile(eng, explosion_mngr);
         enemy_shots[enemy_shot_count]->init();
         eng->add_object(enemy_shots[enemy_shot_count]);
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);

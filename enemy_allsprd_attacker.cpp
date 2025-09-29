@@ -35,6 +35,7 @@ void enemy_allsprd_attacker::init_projectile()
     default_shot_texture = NULL;
     default_shot_animation = (animation_obj*)i_eng->get_resource("projectile_ball_anim");
     default_shot_invincible_animation = (animation_obj*)i_eng->get_resource("projectile_ball_invincible_anim");
+    default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("shot_ball_snd");
     ball_fire_step_x = 1;
     ball_fire_step_y = 1;
     ball_shot_angle = 0;
@@ -76,6 +77,8 @@ void enemy_allsprd_attacker::post_destroy()
             );
         }
     }
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
 
 void enemy_allsprd_attacker::fire()
@@ -113,6 +116,8 @@ void enemy_allsprd_attacker::fire()
 
         shot_invincible = !shot_invincible;
     }
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
 
 bool enemy_allsprd_attacker::update_fire_step()

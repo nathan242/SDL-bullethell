@@ -21,6 +21,7 @@ class enemy_boss_b : public base_enemy
         timer_obj *ball_shot_timer_back;
         animation_obj *ball_shot_animation;
         animation_obj *ball_invincible_shot_animation;
+        Mix_Chunk *ball_shot_sfx;
         game_ui *game_ui_obj;
         proxy_engine_obj* rear_obj_a;
         proxy_engine_obj* rear_obj_b;

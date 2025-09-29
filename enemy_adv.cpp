@@ -36,6 +36,7 @@ void enemy_adv::init_projectile()
 {
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_default_tex");
     default_shot_animation = NULL;
+    default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("default_player_shot_snd");
 }
 
 void enemy_adv::pre_phys_event()
@@ -82,4 +83,6 @@ void enemy_adv::fire()
         SHOT_PHYS_DELAY,
         false
     );
+
+    Mix_PlayChannel(-1, default_shot_sfx, 0);
 }
