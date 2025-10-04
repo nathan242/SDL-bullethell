@@ -25,6 +25,8 @@ void shield::init()
     activation_timer = add_timer(5000000000);
     target = NULL;
 
+    shield_sfx = (Mix_Chunk*)i_eng->get_resource("shield_snd");
+
     initialized = true;
 }
 
@@ -48,6 +50,8 @@ void shield::pre_phys_event()
             phys_active = false;
             draw_active = false;
 
+            Mix_HaltChannel(shield_sfx_channel);
+
             return;
         }
 
@@ -58,6 +62,8 @@ void shield::pre_phys_event()
             target = NULL;
             phys_active = false;
             draw_active = false;
+
+            Mix_HaltChannel(shield_sfx_channel);
         }
     }
 }
@@ -72,6 +78,8 @@ void shield::activate(engine_obj *target_obj, int offset_x, int offset_y)
         draw_active = true;
 
         activation_timer->last = i_eng->timer_now;
+
+        shield_sfx_channel = Mix_PlayChannel(-1, shield_sfx, -1);
     }
 }
 

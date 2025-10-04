@@ -23,6 +23,7 @@ void base_enemy::init()
 
     ship_obj = (ship*)i_eng->get_resource("ship_obj");
     explosion_sfx = (Mix_Chunk*)i_eng->get_resource("explosion_snd");
+    laser_hit_sfx = (Mix_Chunk*)i_eng->get_resource("laser_hit_snd");
 
     init_projectile();
 }
@@ -45,6 +46,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
             obj2->draw_active = false;
 
             damage(1);
+            Mix_PlayChannel(-1, laser_hit_sfx, 0);
 
             if (draw_active == false) {
                 if (drop_powerup != NULL && ship_obj->active_weapon < (drop_powerup->type_id - 99)) {

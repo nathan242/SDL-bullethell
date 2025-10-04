@@ -21,6 +21,7 @@ class base_enemy : public engine_obj
         SDL_Texture *default_texture;
         SDL_Texture *hit_texture;
         Mix_Chunk *explosion_sfx;
+        Mix_Chunk *laser_hit_sfx;
         timer_obj *last_hit_timer;
         ship *ship_obj;
 

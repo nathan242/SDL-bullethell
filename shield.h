@@ -10,6 +10,8 @@ class shield : public engine_obj
         engine *i_eng;
         timer_obj *activation_timer;
         engine_obj *target;
+        Mix_Chunk *shield_sfx;
+        int shield_sfx_channel;
         int target_offset_x;
         int target_offset_y;
 

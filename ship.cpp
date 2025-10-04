@@ -27,6 +27,8 @@ void ship::init()
     default_shot_texture = (SDL_Texture*)i_eng->get_resource("projectile_player_default_tex");
     default_shot_sfx = (Mix_Chunk*)i_eng->get_resource("default_player_shot_snd");
 
+    weapon_powerup_sfx = (Mix_Chunk*)i_eng->get_resource("weapon_powerup_snd");
+
     shield_obj = (shield*)i_eng->get_resource("shield_obj");
     shield_charge_timer = add_timer(1000000000);
     shield_active = false;
@@ -58,6 +60,7 @@ bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int a
         obj2->draw_active = false;
 
         active_weapon = obj2->type_id - 99;
+        Mix_PlayChannel(-1, weapon_powerup_sfx, 0);
 
         return false;
     }

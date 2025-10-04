@@ -190,7 +190,10 @@ std::unordered_map<std::string, std::string> music_map = {
 std::unordered_map<std::string, std::string> sfx_map = {
     {"default_player_shot_snd", "sfx/default_player_shot.wav"},
     {"shot_ball_snd", "sfx/shot_ball.wav"},
-    {"explosion_snd", "sfx/explosion_var3.wav"}
+    {"explosion_snd", "sfx/explosion.wav"},
+    {"weapon_powerup_snd", "sfx/weapon_powerup.wav"},
+    {"shield_snd", "sfx/shield.wav"},
+    {"laser_hit_snd", "sfx/laser_hit.wav"}
 };
 
 void init_resources()
@@ -1897,7 +1900,7 @@ void init(bool fullscreen)
     eng->phys_max_iterations = 20;
     // eng->debug_draw_phys_area = true;
 
-    Mix_Volume(-1, MIX_MAX_VOLUME/4);
+    Mix_Volume(-1, MIX_MAX_VOLUME/3);
 
     init_resources();
 
