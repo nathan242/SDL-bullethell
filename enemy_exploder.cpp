@@ -46,8 +46,8 @@ void enemy_exploder::post_destroy()
 
     for (int x = -1; x < 2; x++) {
         for (int y = -1; y < 2; y++) {
-            fire_pos_x = x == 1 ? pos_x+size_x : pos_x-20;
-            fire_pos_y = y == 1 ? pos_y+size_y : pos_y-20;
+            fire_pos_x = x == 1 ? pos_x+size_x : pos_x-18;
+            fire_pos_y = y == 1 ? pos_y+size_y : pos_y-15;
 
             if (x == 0 && y == 0) {
                 continue;

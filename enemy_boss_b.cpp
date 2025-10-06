@@ -30,8 +30,8 @@ void enemy_boss_b::init()
 
     last_hit_timer = add_timer(HIT_FLASH_DELAY);
 
-    default_health = 200;
-    current_health = 200;
+    default_health = 400;
+    current_health = 400;
 
     shot_timer = add_timer(700000000);
     side_shot_timer = add_timer(900000000);
