@@ -18,8 +18,10 @@ void ship::init()
     type_id = ID_PLAYER_SHIP;
     size_x = 21;
     size_y = 24;
-    phys_size_x = 21;
-    phys_size_y = 24;
+    phys_size_x = 9;
+    phys_size_y = 18;
+    phys_offset_x = 6;
+    phys_offset_y = 2;
     move_x = add_timer(SHIP_MOVE_PHYS_DELAY);
     move_y = add_timer(SHIP_MOVE_PHYS_DELAY);
     texture = (SDL_Texture*)i_eng->get_resource("ship_tex");
