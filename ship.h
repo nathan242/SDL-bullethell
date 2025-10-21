@@ -23,7 +23,7 @@ class ship : public engine_obj
         int shield_charge_level;
         ship(engine *eng, projectile_manager *projectile_mngr);
         void init();
-        void reset();
+        void reset(bool full = false);
         void fire();
         void activate_shield();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);

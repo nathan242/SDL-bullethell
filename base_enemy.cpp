@@ -54,6 +54,7 @@ bool base_enemy::collision_event(engine_obj *obj2, int collide_axis, int area_x,
                     drop_powerup->pos_y = pos_y+(size_y/2)-10;
                     drop_powerup->phys_active = true;
                     drop_powerup->draw_active = true;
+                    drop_powerup->move_y->last = i_eng->timer_now;
                 }
 
                 e_mngr->explode(size_x, size_y, pos_x, pos_y);

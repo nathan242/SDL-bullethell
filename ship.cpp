@@ -40,7 +40,7 @@ void ship::init()
     initialized = true;
 }
 
-void ship::reset()
+void ship::reset(bool full)
 {
     pos_x = 390;
     pos_y = 550;
@@ -53,6 +53,10 @@ void ship::reset()
 
     phys_active = true;
     draw_active = true;
+
+    if (full) {
+        active_weapon = 0;
+    }
 }
 
 bool ship::collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y)

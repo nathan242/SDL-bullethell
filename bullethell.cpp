@@ -76,6 +76,9 @@ bool down = false;
 bool fire = false;
 bool shield_btn = false;
 bool pause_btn = false;
+bool restart_btn = false;
+
+bool do_restart = false;
 
 bool game_over = false;
 bool game_over_set = false;
@@ -1850,6 +1853,9 @@ void get_input()
                     case SDLK_p:
                         pause_btn = true;
                         break;
+                    case SDLK_r:
+                        restart_btn = true;
+                        break;
                     case SDLK_q:
                         quit = true;
                         break;
@@ -1875,6 +1881,9 @@ void get_input()
                         break;
                     case SDLK_RSHIFT:
                         shield_btn = false;
+                        break;
+                    case SDLK_r:
+                        restart_btn = false;
                         break;
                     case SDLK_p:
                         pause_btn = false;
@@ -1996,6 +2005,8 @@ int menu_loop()
     ship_obj->phys_active = false;
     ship_obj->draw_active = false;
 
+    game_ui_obj->draw_active = false;
+
     title_obj->draw_active = true;
     press_key_obj->draw_active = true;
 
@@ -2050,6 +2061,42 @@ void game_loop()
     if (quit == false) {
 #endif
         get_input();
+
+        if (restart_btn) {
+            do_restart = true;
+
+            for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
+                enemy_slots[i]->obj->phys_active = false;
+                enemy_slots[i]->obj->draw_active = false;
+            }
+
+            active_level = 0;
+            active_enemy_set = 0;
+            player_shot_mngr->disable_all();
+            enemy_shot_mngr->disable_all();
+
+            paused_img_obj->draw_active = false;
+            pause_pressed = false;
+            paused = false;
+            eng->resume_timers();
+
+            game_over_obj->draw_active = false;
+            game_over_set = false;
+            game_over = false;
+
+            ship_obj->reset(true);
+
+            powerup_double_shot_obj->phys_active = false;
+            powerup_double_shot_obj->draw_active = false;
+            powerup_quad_spread_shot_obj->phys_active = false;
+            powerup_quad_spread_shot_obj->draw_active = false;
+
+#ifndef __EMSCRIPTEN__
+            return;
+#else
+            emscripten_cancel_main_loop();
+#endif
+        }
 
         if (!game_over) {
             if (ship_obj->draw_active) {
@@ -2202,17 +2249,22 @@ int main(int argc, char *argv[])
 
     init(fullscreen);
 
+    do_restart = true;
+
+    while (do_restart) {
+        do_restart = false;
 #ifdef __EMSCRIPTEN__
-    // Menu music
-    set_music("cosmic_annihilation_mus");
-    emscripten_set_main_loop(em_loop, 0, 1);
+        // Menu music
+        set_music("cosmic_annihilation_mus");
+        emscripten_set_main_loop(em_loop, 0, 1);
 #else
-    switch(menu_loop()) {
-        case MENU_START:
-            game_loop();
-            break;
-    }
+        switch(menu_loop()) {
+            case MENU_START:
+                game_loop();
+                break;
+        }
 #endif
+    }
 
     deinit();
 
