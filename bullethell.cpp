@@ -2071,7 +2071,11 @@ void game_loop()
             }
 
             active_level = 0;
+#ifdef __EMSCRIPTEN__
+            active_enemy_set = -1;
+#else
             active_enemy_set = 0;
+#endif
             player_shot_mngr->disable_all();
             enemy_shot_mngr->disable_all();
 
@@ -2091,11 +2095,12 @@ void game_loop()
             powerup_quad_spread_shot_obj->phys_active = false;
             powerup_quad_spread_shot_obj->draw_active = false;
 
-#ifndef __EMSCRIPTEN__
-            return;
-#else
-            emscripten_cancel_main_loop();
+#ifdef __EMSCRIPTEN__
+            set_music("cosmic_annihilation_mus");
+            em_game_started = false;
 #endif
+
+            return;
         }
 
         if (!game_over) {
