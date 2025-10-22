@@ -1906,7 +1906,7 @@ void init(bool fullscreen)
     free(base_path);
 
     eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen, true);
-    eng->phys_max_iterations = 20;
+    eng->phys_max_iterations = 100;
     // eng->debug_draw_phys_area = true;
 
     Mix_Volume(-1, MIX_MAX_VOLUME/3);
