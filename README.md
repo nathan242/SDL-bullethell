@@ -1,6 +1,6 @@
 # SDL-Bullethell
 
-WIP - Bullethell shooter game
+Bullethell shooter game
 
 ### Compiling
 
