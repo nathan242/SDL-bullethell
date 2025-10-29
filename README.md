@@ -14,5 +14,5 @@ Arrow keys - Move ship
 Space - Fire  
 Right Shift - Shield (when fully charged)  
 P - Pause  
-R - Restart 
+R - Restart  
 Q - Quit
