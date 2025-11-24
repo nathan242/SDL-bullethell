@@ -45,6 +45,12 @@
 #include <string>
 #include <stdio.h>
 
+extern "C" {
+    #include <lua5.4/lua.h>
+    #include <lua5.4/lauxlib.h>
+    #include <lua5.4/lualib.h>
+}
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -79,6 +85,8 @@ bool pause_btn = false;
 bool restart_btn = false;
 
 bool do_restart = false;
+
+char *script_path = NULL;
 
 bool game_over = false;
 bool game_over_set = false;
@@ -299,8 +307,182 @@ void set_music(const char *resource)
     Mix_PlayMusic((Mix_Music*)eng->get_resource(resource), -1);
 }
 
+int lua_init_level(lua_State *L)
+{
+    int level = luaL_checkinteger(L, 1);
+    const char *background = luaL_checkstring(L, 2);
+    int size_x = luaL_checkinteger(L, 3);
+    int size_y = luaL_checkinteger(L, 4);
+
+    init_level(level, (SDL_Texture*)eng->get_resource(background), size_x, size_y);
+
+    return 0;
+}
+
+int lua_set_music(lua_State *L)
+{
+    const char *music = luaL_checkstring(L, 1);
+
+    set_music(music);
+
+    return 0;
+}
+
+int lua_reset_ship(lua_State *L)
+{
+    bool full = lua_toboolean(L, 1);
+
+    ship_obj->reset(full);
+
+    return 0;
+}
+
+int lua_next_level(lua_State *L)
+{
+    set_level(active_level+1);
+
+    return 0;
+}
+
+int lua_complete(lua_State *L)
+{
+    int slot = get_enemy_slot();
+    enemy_slots[slot]->obj = new complete(eng);
+    enemy_slots[slot]->obj->init();
+    enemy_slots[slot]->obj->draw_active = true;
+
+    return 0;
+}
+
+base_enemy* create_enemy_by_type(const char *name)
+{
+    if (strcmp(name, "enemy") == 0) {
+        return new enemy(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal") == 0) {
+        return new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_adv") == 0) {
+        return new enemy_adv(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_adv_spread") == 0) {
+        return new enemy_adv_spread(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_allsprd_attacker") == 0) {
+        return new enemy_allsprd_attacker(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_boss_a") == 0) {
+        return new enemy_boss_a(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_boss_b") == 0) {
+        return new enemy_boss_b(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_boss_c") == 0) {
+        return new enemy_boss_c(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_cargo") == 0) {
+        return new enemy_cargo(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal") == 0) {
+        return new enemy_diagonal(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal_stationary_allsprd") == 0) {
+        return new enemy_diagonal_stationary_allsprd(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal_stationary") == 0) {
+        return new enemy_diagonal_stationary(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal_stationary_fwdsprd") == 0) {
+        return new enemy_diagonal_stationary_fwdsprd(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_diagonal_stationary_spiral") == 0) {
+        return new enemy_diagonal_stationary_spiral(eng, enemy_shot_mngr, explosion_mngr);
+    } else if (strcmp(name, "enemy_exploder") == 0) {
+        return new enemy_exploder(eng, enemy_shot_mngr, explosion_mngr);
+    }
+
+
+    return NULL;
+}
+
+powerup* get_powerup_by_name(const char *name)
+{
+    if (strcmp(name, "double_shot") == 0) {
+        return powerup_double_shot_obj;
+    } else if (strcmp(name, "quad_shot") == 0) {
+        return powerup_quad_spread_shot_obj;
+    }
+
+    return NULL;
+}
+
+int lua_create_enemy(lua_State *L)
+{
+    int slot;
+    base_enemy *obj;
+
+    const char *enemy_type = luaL_checkstring(L, 1);
+    int pos_x = luaL_checkinteger(L, 2);
+    int pos_y = luaL_checkinteger(L, 3);
+    int step_x = luaL_checkinteger(L, 4);
+    int step_y = luaL_checkinteger(L, 5);
+
+    const char *powerup = NULL;
+
+    if (!lua_isnil(L, 6)) {
+        powerup = luaL_checkstring(L, 6);
+    }
+
+    obj = create_enemy_by_type(enemy_type);
+
+    if (obj == NULL) {
+        fprintf(stderr, "Unrecognised enemy type: %s\n", enemy_type);
+        quit = true;
+        return 0;
+    }
+
+    slot = get_enemy_slot();
+    enemy_slots[slot]->obj = obj;
+    enemy_slots[slot]->obj->init();
+    enemy_slots[slot]->obj->pos_x = pos_x;
+    enemy_slots[slot]->obj->pos_y = pos_y;
+    enemy_slots[slot]->obj->step_x = step_x;
+    enemy_slots[slot]->obj->step_y = step_y;
+    enemy_slots[slot]->obj->draw_active = true;
+    enemy_slots[slot]->obj->phys_active = true;
+
+    if (powerup != NULL) {
+        ((base_enemy*)enemy_slots[slot]->obj)->drop_powerup = get_powerup_by_name(powerup);
+    }
+
+    return 0;
+}
+
+void lua_activate_enemy_set()
+{
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    lua_pushnumber(L, active_level);
+    lua_setglobal(L, "active_level");
+    lua_pushnumber(L, active_enemy_set);
+    lua_setglobal(L, "active_enemy_set");
+
+    lua_register(L, "create_enemy", lua_create_enemy);
+    lua_register(L, "init_level", lua_init_level);
+    lua_register(L, "set_music", lua_set_music);
+    lua_register(L, "reset_ship", lua_reset_ship);
+    lua_register(L, "next_level", lua_next_level);
+    lua_register(L, "complete", lua_complete);
+
+    if (luaL_dofile(L, script_path) != LUA_OK) {
+        fprintf(stderr, "Lua script error: %s\n", lua_tostring(L, -1));
+        quit = true;
+    }
+
+    lua_getglobal(L, "activate_enemy_set");
+
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        fprintf(stderr, "Error calling activate_enemy_set: %s\n", lua_tostring(L, -1));
+        quit = true;
+    }
+
+    lua_close(L);
+}
+
 void activate_enemy_set()
 {
+    if (script_path != NULL) {
+        return lua_activate_enemy_set();
+    }
+
     int slot;
 
     switch (active_level)
@@ -2221,6 +2403,7 @@ void help(char *name)
     printf("Usage: %s [OPTIONS]\n", name);
     puts(" -h - Show help");
     puts(" -f - Fullscreen mode");
+    puts(" -s - Load custom level from Lua script");
 }
 
 #ifdef __EMSCRIPTEN__
@@ -2239,7 +2422,7 @@ int main(int argc, char *argv[])
     int opt;
     bool fullscreen = false;
 
-    while ((opt = getopt(argc, argv, "hf")) != -1) {
+    while ((opt = getopt(argc, argv, "hfs:")) != -1) {
         switch (opt) {
             default:
             case 'h':
@@ -2248,6 +2431,10 @@ int main(int argc, char *argv[])
 
             case 'f':
                 fullscreen = true;
+                break;
+
+            case 's':
+                script_path = optarg;
                 break;
         }
     }

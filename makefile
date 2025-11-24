@@ -81,7 +81,7 @@ explosion_manager.o
 	projectile_manager.o \
 	explosion.o \
 	explosion_manager.o \
-	`sdl2-config --libs` -lSDL2_image -lSDL2_mixer
+	`sdl2-config --libs` -lSDL2_image -lSDL2_mixer -llua5.4
 
 bullethell.o: bullethell.cpp
 	g++ -Wall -g `sdl2-config --cflags` -c bullethell.cpp
