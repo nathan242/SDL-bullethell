@@ -87,6 +87,7 @@ bool restart_btn = false;
 bool do_restart = false;
 
 char *script_path = NULL;
+lua_State *L = NULL;
 
 bool game_over = false;
 bool game_over_set = false;
@@ -447,13 +448,20 @@ int lua_create_enemy(lua_State *L)
 
 void lua_activate_enemy_set()
 {
-    lua_State *L = luaL_newstate();
-    luaL_openlibs(L);
+    lua_getglobal(L, "activate_enemy_set");
+    lua_pushinteger(L, active_level);
+    lua_pushinteger(L, active_enemy_set);
 
-    lua_pushnumber(L, active_level);
-    lua_setglobal(L, "active_level");
-    lua_pushnumber(L, active_enemy_set);
-    lua_setglobal(L, "active_enemy_set");
+    if (lua_pcall(L, 2, 0, 0) != LUA_OK) {
+        fprintf(stderr, "Error calling activate_enemy_set: %s\n", lua_tostring(L, -1));
+        quit = true;
+    }
+}
+
+bool init_lua_script()
+{
+    L = luaL_newstate();
+    luaL_openlibs(L);
 
     lua_register(L, "create_enemy", lua_create_enemy);
     lua_register(L, "init_level", lua_init_level);
@@ -464,17 +472,10 @@ void lua_activate_enemy_set()
 
     if (luaL_dofile(L, script_path) != LUA_OK) {
         fprintf(stderr, "Lua script error: %s\n", lua_tostring(L, -1));
-        quit = true;
+        return false;
     }
 
-    lua_getglobal(L, "activate_enemy_set");
-
-    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-        fprintf(stderr, "Error calling activate_enemy_set: %s\n", lua_tostring(L, -1));
-        quit = true;
-    }
-
-    lua_close(L);
+    return true;
 }
 
 void activate_enemy_set()
@@ -2358,6 +2359,10 @@ void game_loop()
 
 void deinit()
 {
+    if (script_path != NULL) {
+        lua_close(L);
+    }
+
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();
@@ -2440,6 +2445,12 @@ int main(int argc, char *argv[])
     }
 
     init(fullscreen);
+
+    if (script_path != NULL && !init_lua_script()) {
+        deinit();
+
+        return 1;
+    }
 
     do_restart = true;
 

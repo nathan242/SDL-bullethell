@@ -43,7 +43,7 @@
         complete() - Show complete screen
 ]]
 
-function activate_enemy_set()
+function activate_enemy_set(active_level, active_enemy_set)
     if active_level == 0 then
         if active_enemy_set == 0 then
             init_level(1, "background_2_tex", 1024, 1536)
