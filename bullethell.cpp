@@ -29,6 +29,7 @@
 #include "enemy_boss_c.h"
 #include "enemy_allsprd_attacker.h"
 #include "enemy_exploder.h"
+#include "lua_enemy.h"
 #include "powerup_double_shot.h"
 #include "powerup_quad_spread_shot.h"
 #include "player_projectile.h"
@@ -446,6 +447,49 @@ int lua_create_enemy(lua_State *L)
     return 0;
 }
 
+int lua_create_custom_enemy(lua_State *L)
+{
+    int slot;
+    lua_enemy *obj;
+
+    const char *lua_obj_name = luaL_checkstring(L, 1);
+    int pos_x = luaL_checkinteger(L, 2);
+    int pos_y = luaL_checkinteger(L, 3);
+    int step_x = luaL_checkinteger(L, 4);
+    int step_y = luaL_checkinteger(L, 5);
+
+    const char *powerup = NULL;
+
+    if (!lua_isnil(L, 6)) {
+        powerup = luaL_checkstring(L, 6);
+    }
+
+    obj = new lua_enemy(eng, enemy_shot_mngr, explosion_mngr);
+    obj->lua_init(lua_obj_name);
+
+    if (obj == NULL) {
+        fprintf(stderr, "Failed to instantiate enemy: %s\n", lua_obj_name);
+        quit = true;
+        return 0;
+    }
+
+    slot = get_enemy_slot();
+    enemy_slots[slot]->obj = obj;
+    enemy_slots[slot]->obj->init();
+    enemy_slots[slot]->obj->pos_x = pos_x;
+    enemy_slots[slot]->obj->pos_y = pos_y;
+    enemy_slots[slot]->obj->step_x = step_x;
+    enemy_slots[slot]->obj->step_y = step_y;
+    enemy_slots[slot]->obj->draw_active = true;
+    enemy_slots[slot]->obj->phys_active = true;
+
+    if (powerup != NULL) {
+        ((base_enemy*)enemy_slots[slot]->obj)->drop_powerup = get_powerup_by_name(powerup);
+    }
+
+    return 0;
+}
+
 void lua_activate_enemy_set()
 {
     lua_getglobal(L, "activate_enemy_set");
@@ -464,6 +508,7 @@ bool init_lua_script()
     luaL_openlibs(L);
 
     lua_register(L, "create_enemy", lua_create_enemy);
+    lua_register(L, "create_custom_enemy", lua_create_custom_enemy);
     lua_register(L, "init_level", lua_init_level);
     lua_register(L, "set_music", lua_set_music);
     lua_register(L, "reset_ship", lua_reset_ship);

@@ -30,6 +30,7 @@ enemy_boss_b.o \
 enemy_boss_c.o \
 enemy_allsprd_attacker.o \
 enemy_exploder.o \
+lua_enemy.o \
 powerup.o \
 powerup_double_shot.o \
 powerup_quad_spread_shot.o \
@@ -72,6 +73,7 @@ explosion_manager.o
 	enemy_boss_c.o \
 	enemy_allsprd_attacker.o \
 	enemy_exploder.o \
+	lua_enemy.o \
 	powerup.o \
 	powerup_double_shot.o \
 	powerup_quad_spread_shot.o \
@@ -178,6 +180,9 @@ enemy_allsprd_attacker.o: enemy_allsprd_attacker.cpp enemy_allsprd_attacker.h
 
 enemy_exploder.o: enemy_exploder.cpp enemy_exploder.h
 	g++ -Wall -g `sdl2-config --cflags` -c enemy_exploder.cpp
+
+lua_enemy.o: lua_enemy.cpp lua_enemy.h
+	g++ -Wall -g `sdl2-config --cflags` -c lua_enemy.cpp
 
 powerup.o: powerup.cpp powerup.h
 	g++ -Wall -g `sdl2-config --cflags` -c powerup.cpp
