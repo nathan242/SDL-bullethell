@@ -2076,6 +2076,8 @@ void game_loop()
 #else
             active_enemy_set = 0;
 #endif
+            enemy_set_hold = false;
+
             player_shot_mngr->disable_all();
             enemy_shot_mngr->disable_all();
 
