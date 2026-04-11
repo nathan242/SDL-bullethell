@@ -60,6 +60,7 @@ function test:init()
     self.entity.size_y = 100
     self.entity.phys_size_x = 100
     self.entity.phys_size_y = 100
+    self.entity.area_y_offset = 100
     self.entity.bounce = 1
     self.entity.default_health = 5
     self.entity.current_health = 5

@@ -44,6 +44,16 @@ int lua_obj_getter(lua_State *L)
         return 1;
     }
 
+    if (strcmp(key, "area_x_offset") == 0) {
+        lua_pushnumber(L, lua_obj->area_x_offset);
+        return 1;
+    }
+
+    if (strcmp(key, "area_y_offset") == 0) {
+        lua_pushnumber(L, lua_obj->area_y_offset);
+        return 1;
+    }
+
     if (strcmp(key, "bounce") == 0) {
         lua_pushnumber(L, lua_obj->bounce);
         return 1;
@@ -99,6 +109,16 @@ int lua_obj_setter(lua_State *L)
 
     if (strcmp(key, "phys_size_y") == 0) {
         lua_obj->phys_size_y = value;
+        return 0;
+    }
+
+    if (strcmp(key, "area_x_offset") == 0) {
+        lua_obj->area_x_offset = value;
+        return 0;
+    }
+
+    if (strcmp(key, "area_y_offset") == 0) {
+        lua_obj->area_y_offset = value;
         return 0;
     }
 
