@@ -253,6 +253,8 @@ int lua_fire(lua_State *L)
         p_invincible
     );
 
+    // TODO: Shot sound
+
     return 0;
 }
 

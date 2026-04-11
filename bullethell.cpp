@@ -502,6 +502,27 @@ void lua_activate_enemy_set()
     }
 }
 
+int lua_add_texture(lua_State *L)
+{
+    texture_map[luaL_checkstring(L, 1)] = luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+int lua_add_music(lua_State *L)
+{
+    music_map[luaL_checkstring(L, 1)] = luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+int lua_add_sfx(lua_State *L)
+{
+    sfx_map[luaL_checkstring(L, 1)] = luaL_checkstring(L, 2);
+
+    return 0;
+}
+
 bool init_lua_script()
 {
     L = luaL_newstate();
@@ -514,9 +535,19 @@ bool init_lua_script()
     lua_register(L, "reset_ship", lua_reset_ship);
     lua_register(L, "next_level", lua_next_level);
     lua_register(L, "complete", lua_complete);
+    lua_register(L, "add_texture", lua_add_texture);
+    lua_register(L, "add_music", lua_add_music);
+    lua_register(L, "add_sfx", lua_add_sfx);
 
     if (luaL_dofile(L, script_path) != LUA_OK) {
         fprintf(stderr, "Lua script error: %s\n", lua_tostring(L, -1));
+        return false;
+    }
+
+    lua_getglobal(L, "init");
+
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        fprintf(stderr, "Error calling init: %s\n", lua_tostring(L, -1));
         return false;
     }
 
@@ -2491,13 +2522,13 @@ int main(int argc, char *argv[])
         }
     }
 
-    init(fullscreen);
-
     if (script_path != NULL && !init_lua_script()) {
-        deinit();
+        lua_close(L);
 
         return 1;
     }
+
+    init(fullscreen);
 
     do_restart = true;
 
