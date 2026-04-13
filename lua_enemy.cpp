@@ -253,7 +253,7 @@ int lua_fire(lua_State *L)
         p_invincible
     );
 
-    // TODO: Shot sound
+    Mix_PlayChannel(-1, lua_obj->get_shot_sfx(), 0);
 
     return 0;
 }
@@ -418,6 +418,11 @@ void lua_enemy::set_shot_texture(SDL_Texture *texture)
 SDL_Texture* lua_enemy::get_shot_texture()
 {
     return default_shot_texture;
+}
+
+Mix_Chunk* lua_enemy::get_shot_sfx()
+{
+    return default_shot_sfx;
 }
 
 void lua_enemy::set_default_shot_sfx(Mix_Chunk *sfx)

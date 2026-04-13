@@ -23,6 +23,7 @@ class lua_enemy : public base_enemy
         void set_hit_texture(SDL_Texture *texture);
         void set_shot_texture(SDL_Texture *texture);
         SDL_Texture* get_shot_texture();
+        Mix_Chunk* get_shot_sfx();
         void set_default_shot_sfx(Mix_Chunk *sfx);
         void init();
         void fire();
