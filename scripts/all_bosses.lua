@@ -19,3 +19,7 @@ function activate_enemy_set(active_level, active_enemy_set)
         end
     end
 end
+
+function init()
+    
+end

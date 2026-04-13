@@ -56,7 +56,6 @@ function test:new(entity)
 end
 
 function test:init()
-    -- print("In init")
     -- self.entity.pos_x = 200
     -- self.entity.pos_y = 300
     self.entity.size_x = 100
@@ -77,17 +76,14 @@ function test:init()
 end
 
 function test:fire()
-    -- print("In fire")
     self.entity:fire(10, 20, 10, 20, self.entity.pos_x+(self.entity.size_x/2)-2, self.entity.pos_y+self.entity.size_y+1, 0, 1, 2500000, 2500000, false)
 end
 
 function test:pre_phys_event()
-    -- print("In pre_phys_event")
     self.entity:default_pre_phys_event()
 end
 
 function test:init_projectile()
-    -- print("In init_projectile")
     self.entity:set_texture("projectile_default_tex", "default_shot_texture")
     self.entity:set_sfx("default_player_shot_snd", "default_shot_sfx")
 end
@@ -105,7 +101,6 @@ function test_custom:new(entity)
 end
 
 function test_custom:init()
-    -- print("In init")
     -- self.entity.pos_x = 200
     -- self.entity.pos_y = 300
     self.entity.size_x = 20
@@ -126,20 +121,98 @@ function test_custom:init()
 end
 
 function test_custom:fire()
-    -- print("In fire")
     self.entity:fire(5, 10, 5, 10, self.entity.pos_x+(self.entity.size_x/2)-6, self.entity.pos_y+self.entity.size_y+1, 0, 1, 2500000, 2500000, false)
     self.entity:fire(5, 10, 5, 10, self.entity.pos_x+(self.entity.size_x/2)+5, self.entity.pos_y+self.entity.size_y+1, 0, 1, 2500000, 2500000, false)
 end
 
 function test_custom:pre_phys_event()
-    -- print("In pre_phys_event")
     self.entity:default_pre_phys_event()
 end
 
 function test_custom:init_projectile()
-    -- print("In init_projectile")
     self.entity:set_texture("projectile_default_tex", "default_shot_texture")
     self.entity:set_sfx("default_player_shot_snd", "default_shot_sfx")
+end
+
+
+-- Test enemy with custom firing
+
+test_custom_fire = {}
+test_custom_fire.__index = test_custom_fire
+
+function test_custom_fire:new(entity)
+    local obj = {entity = entity}
+    setmetatable(obj, self)
+    return obj
+end
+
+function test_custom_fire:init()
+    -- self.entity.pos_x = 200
+    -- self.entity.pos_y = 300
+    self.entity.size_x = 20
+    self.entity.size_y = 20
+    self.entity.phys_size_x = 20
+    self.entity.phys_size_y = 20
+    self.entity.area_y_offset = 20
+    self.entity.bounce = 1
+    self.entity.default_health = 10
+    self.entity.current_health = 10
+
+    self.entity:add_timer(18000000, "move_x")
+    self.entity:add_timer(18000000, "move_y")
+    self.entity:add_timer(50000000, "shot_timer")
+
+    self.entity:set_texture("enemy_ship_test_tex", "default_texture")
+    self.entity:set_texture("enemy_ship_test_hit_tex", "hit_texture")
+end
+
+function test_custom_fire:fire()
+    move_shot_x_every = 5/math.cos(self.ball_shot_angle*(math.pi/180))*1000000
+    move_shot_y_every = 5/math.sin(self.ball_shot_angle*(math.pi/180))*1000000
+
+    self.ball_shot_angle = self.ball_shot_angle + self.ball_shot_angle_diff
+
+    if self.ball_shot_angle > 90 or self.ball_shot_angle < 0 then
+        self.ball_shot_angle_diff = self.ball_shot_angle_diff * -1
+        self.ball_shot_angle = self.ball_shot_angle + (self.ball_shot_angle_diff*2)
+
+        if self.ball_fire_step_x == 1 and self.ball_fire_step_y == 1 then
+            self.ball_fire_step_x = self.ball_fire_step_x*-1
+        elseif self.ball_fire_step_x == -1 and self.ball_fire_step_y == 1 then
+            self.ball_fire_step_y = self.ball_fire_step_y*-1
+        elseif self.ball_fire_step_x == -1 and self.ball_fire_step_y == -1 then
+            self.ball_fire_step_x = self.ball_fire_step_x*-1
+        elseif self.ball_fire_step_x == 1 and self.ball_fire_step_y == -1 then
+            self.ball_fire_step_y = self.ball_fire_step_y*-1
+        end
+    end
+
+    self.entity:fire(
+        20,
+        20,
+        20,
+        20,
+        self.entity.pos_x+(self.entity.size_x/2)-10,
+        self.entity.pos_y+(self.entity.size_y/2)-10,
+        self.ball_fire_step_x,
+        self.ball_fire_step_y,
+        math.floor(move_shot_x_every),
+        math.floor(move_shot_y_every),
+        false
+    )
+end
+
+function test_custom_fire:pre_phys_event()
+    self.entity:default_pre_phys_event()
+end
+
+function test_custom_fire:init_projectile()
+    self.entity:set_texture("projectile_default_tex", "default_shot_texture")
+    self.entity:set_sfx("default_player_shot_snd", "default_shot_sfx")
+    self.ball_fire_step_x = 1
+    self.ball_fire_step_y = 1
+    self.ball_shot_angle = 0
+    self.ball_shot_angle_diff = 10
 end
 
 
@@ -157,9 +230,11 @@ function activate_enemy_set(active_level, active_enemy_set)
         elseif active_enemy_set == 2 then
             create_custom_enemy("test_custom", 100, -20, 1, 1, nil)
         elseif active_enemy_set == 3 then
+            create_custom_enemy("test_custom_fire", 100, -20, 1, 1, "quad_shot")
+        elseif active_enemy_set == 4 then
             create_enemy("enemy_diagonal", 70, -50, 1, 1, nil)
             create_enemy("enemy_diagonal", 450, -80, 1, 1, nil)
-        elseif active_enemy_set == 4 then
+        elseif active_enemy_set == 5 then
             next_level()
         end
     elseif active_level == 1 then
