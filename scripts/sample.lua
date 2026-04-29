@@ -37,6 +37,10 @@
 
     Methods:
         set_res(x, y) - Set game resolution (from init function)
+        set_num_shots(x) - Set pool size for player shots
+        set_num_shots_enemy(x) - Set pool size for enemy shots
+        set_num_enemy_slots(x) - Set number of enemy slots
+        set_num_explosions(x) - Set pool size for explosions
         init_level(level_no, background_object, size_x, size_y) - Init level of number with specified background
         set_music(music_object) - Set BGM
         reset_ship([optional] bool) - Reset ship to starting position, pass optional param as true to do a full reset (remove powerups)
@@ -258,6 +262,10 @@ end
 
 function init()
     set_res(2560, 1600)
+    set_num_shots(1000)
+    set_num_shots_enemy(1000)
+    set_num_enemy_slots(50)
+    set_num_explosions(50)
     add_texture("enemy_ship_test_tex", "scripts/sample_textures/test_ship.png")
     add_texture("enemy_ship_test_hit_tex", "scripts/sample_textures/test_ship_hit.png")
 end

@@ -58,10 +58,6 @@ extern "C" {
 
 #define BPP 32
 
-#define NUM_SHOTS 100
-#define NUM_SHOTS_ENEMY 500
-#define MAX_ENEMY_SLOTS 20
-#define NUM_EXPLOSIONS 10
 #define AUTO_FIRE_DELAY 100000000
 
 #define MENU_QUIT 0
@@ -75,6 +71,12 @@ bool em_game_started = false;
 // Resolution
 int res_x = 800;
 int res_y = 600;
+
+// Resource pools
+int num_shots = 100;
+int num_shots_enemy = 500;
+int num_enemy_slots = 20;
+int num_explosions = 10;
 
 // Inputs
 bool quit = false;
@@ -118,12 +120,12 @@ background *background_obj;
 ship *ship_obj;
 shield *shield_obj;
 timer_obj *ship_fire_timer;
-player_projectile *shots[NUM_SHOTS];
-enemy_projectile *enemy_shots[NUM_SHOTS_ENEMY];
+std::vector<player_projectile*> shots;
+std::vector<enemy_projectile*> enemy_shots;
 powerup_double_shot *powerup_double_shot_obj;
 powerup_quad_spread_shot *powerup_quad_spread_shot_obj;
-engine_obj_list *enemy_slots[MAX_ENEMY_SLOTS];
-explosion *explosions[NUM_EXPLOSIONS];
+std::vector<engine_obj_list*> enemy_slots;
+std::vector<explosion*> explosions;
 explosion_manager *explosion_mngr;
 
 std::unordered_map<std::string, std::string> texture_map = {
@@ -263,7 +265,7 @@ int get_enemy_slot(engine_obj *self = NULL)
 {
     int slot = 0;
 
-    for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
+    for (int i = 0; i < num_enemy_slots; i++) {
         if (!enemy_slots[i]->obj->draw_active && !enemy_slots[i]->obj->phys_active && (self == NULL || enemy_slots[i]->obj != self)) {
             slot = i;
 
@@ -315,6 +317,34 @@ int lua_set_res(lua_State *L)
 {
     res_x = luaL_checkinteger(L, 1);
     res_y = luaL_checkinteger(L, 2);
+
+    return 0;
+}
+
+int lua_set_num_shots(lua_State *L)
+{
+    num_shots = luaL_checkinteger(L, 1);
+
+    return 0;
+}
+
+int lua_set_num_shots_enemy(lua_State *L)
+{
+    num_shots_enemy = luaL_checkinteger(L, 1);
+
+    return 0;
+}
+
+int lua_set_num_enemy_slots(lua_State *L)
+{
+    num_enemy_slots = luaL_checkinteger(L, 1);
+
+    return 0;
+}
+
+int lua_set_num_explosions(lua_State *L)
+{
+    num_explosions = luaL_checkinteger(L, 1);
 
     return 0;
 }
@@ -539,6 +569,10 @@ bool init_lua_script()
     luaL_openlibs(L);
 
     lua_register(L, "set_res", lua_set_res);
+    lua_register(L, "set_num_shots", lua_set_num_shots);
+    lua_register(L, "set_num_shots_enemy", lua_set_num_shots_enemy);
+    lua_register(L, "set_num_enemy_slots", lua_set_num_enemy_slots);
+    lua_register(L, "set_num_explosions", lua_set_num_explosions);
     lua_register(L, "create_enemy", lua_create_enemy);
     lua_register(L, "create_custom_enemy", lua_create_custom_enemy);
     lua_register(L, "init_level", lua_init_level);
@@ -2195,12 +2229,12 @@ void init(bool fullscreen)
     background_obj->init();
     background_obj->set((SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
 
-    for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
-        enemy_slots[i] = eng->add_object(new engine_obj());
+    for (int i = 0; i < num_enemy_slots; i++) {
+        enemy_slots.push_back(eng->add_object(new engine_obj()));
     }
 
-    for (int i = 0; i < NUM_EXPLOSIONS; i++) {
-        explosions[i] = new explosion(eng);
+    for (int i = 0; i < num_explosions; i++) {
+        explosions.push_back(new explosion(eng));
         explosions[i]->init();
         explosions[i]->animation = new anim_explosion(new timer_obj(0), eng);
 
@@ -2226,16 +2260,16 @@ void init(bool fullscreen)
 
     eng->add_resource("ship_obj", ship_obj);
 
-    for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
-        shots[shot_count] = new player_projectile();
+    for (int shot_count = 0; shot_count < num_shots; shot_count++) {
+        shots.push_back(new player_projectile());
         shots[shot_count]->init();
         eng->add_object(shots[shot_count]);
         player_shot_mngr->add_object(shots[shot_count]);
     }
 
-    for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
+    for (int enemy_shot_count = 0; enemy_shot_count < num_shots_enemy; enemy_shot_count++) {
         // Shots
-        enemy_shots[enemy_shot_count] = new enemy_projectile(eng, explosion_mngr);
+        enemy_shots.push_back(new enemy_projectile(eng, explosion_mngr));
         enemy_shots[enemy_shot_count]->init();
         eng->add_object(enemy_shots[enemy_shot_count]);
         enemy_shot_mngr->add_object(enemy_shots[enemy_shot_count]);
@@ -2335,7 +2369,7 @@ void game_loop()
         if (restart_btn) {
             do_restart = true;
 
-            for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
+            for (int i = 0; i < num_enemy_slots; i++) {
                 enemy_slots[i]->obj->phys_active = false;
                 enemy_slots[i]->obj->draw_active = false;
             }
@@ -2419,7 +2453,7 @@ void game_loop()
 
             init_enemy_set = true;
 
-            for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
+            for (int i = 0; i < num_enemy_slots; i++) {
                 if (enemy_slots[i]->obj->draw_active && !(enemy_slots[i]->obj->type_id == ID_ENEMY_SHIP && ((enemy*)enemy_slots[i]->obj)->ungroup)) {
                     init_enemy_set = false;
                 }
@@ -2470,19 +2504,19 @@ void deinit()
     delete game_ui_obj;
     delete explosion_mngr;
 
-    for (int shot_count = 0; shot_count < NUM_SHOTS; shot_count++) {
+    for (int shot_count = 0; shot_count < num_shots; shot_count++) {
         delete shots[shot_count];
     }
 
-    for (int enemy_shot_count = 0; enemy_shot_count < NUM_SHOTS_ENEMY; enemy_shot_count++) {
+    for (int enemy_shot_count = 0; enemy_shot_count < num_shots_enemy; enemy_shot_count++) {
         delete enemy_shots[enemy_shot_count];
     }
 
-    for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {
+    for (int i = 0; i < num_enemy_slots; i++) {
         delete enemy_slots[i]->obj;
     }
 
-    for (int i = 0; i < NUM_EXPLOSIONS; i++) {
+    for (int i = 0; i < num_explosions; i++) {
         delete explosions[i];
     }
 
