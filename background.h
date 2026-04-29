@@ -9,11 +9,10 @@ class background : public engine_obj
         bool initialized;
         engine *i_eng;
         SDL_Rect offset;
-        int res_y;
 
     public:
         background(engine *eng);
-        void init(int window_res_y);
+        void init();
         bool collision_event(engine_obj *obj2, int collide_axis, int area_x, int area_y);
         void pre_phys_event();
         void post_draw_event();

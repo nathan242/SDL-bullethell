@@ -56,15 +56,13 @@ extern "C" {
 #include <emscripten.h>
 #endif
 
-#define RES_X 800
-#define RES_Y 600
 #define BPP 32
 
 #define NUM_SHOTS 100
 #define NUM_SHOTS_ENEMY 500
 #define MAX_ENEMY_SLOTS 20
-#define AUTO_FIRE_DELAY 100000000
 #define NUM_EXPLOSIONS 10
+#define AUTO_FIRE_DELAY 100000000
 
 #define MENU_QUIT 0
 #define MENU_START 1
@@ -73,6 +71,10 @@ extern "C" {
 // Emscripten loop handling
 bool em_game_started = false;
 #endif
+
+// Resolution
+int res_x = 800;
+int res_y = 600;
 
 // Inputs
 bool quit = false;
@@ -309,6 +311,14 @@ void set_music(const char *resource)
     Mix_PlayMusic((Mix_Music*)eng->get_resource(resource), -1);
 }
 
+int lua_set_res(lua_State *L)
+{
+    res_x = luaL_checkinteger(L, 1);
+    res_y = luaL_checkinteger(L, 2);
+
+    return 0;
+}
+
 int lua_init_level(lua_State *L)
 {
     int level = luaL_checkinteger(L, 1);
@@ -528,6 +538,7 @@ bool init_lua_script()
     L = luaL_newstate();
     luaL_openlibs(L);
 
+    lua_register(L, "set_res", lua_set_res);
     lua_register(L, "create_enemy", lua_create_enemy);
     lua_register(L, "create_custom_enemy", lua_create_custom_enemy);
     lua_register(L, "init_level", lua_init_level);
@@ -2164,7 +2175,7 @@ void init(bool fullscreen)
     chdir(base_path);
     free(base_path);
 
-    eng = new engine("SDL BULLETHELL", RES_X, RES_Y, BPP, fullscreen, true);
+    eng = new engine("SDL BULLETHELL", res_x, res_y, BPP, fullscreen, true);
     eng->phys_max_iterations = 100;
     // eng->debug_draw_phys_area = true;
 
@@ -2181,7 +2192,7 @@ void init(bool fullscreen)
     ship_obj = new ship(eng, player_shot_mngr);
 
     eng->add_object(background_obj);
-    background_obj->init(RES_Y);
+    background_obj->init();
     background_obj->set((SDL_Texture*)eng->get_resource("background_1_tex"), 800, 2048);
 
     for (int i = 0; i < MAX_ENEMY_SLOTS; i++) {

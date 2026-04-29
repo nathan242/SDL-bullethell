@@ -119,13 +119,13 @@ class engine
         engine_obj_list *list_head;
         engine_obj_list *list_curr;
 
-        int area_x;
-        int area_y;
-
         std::unordered_map<std::string, void *> resource_map;
 
         void check_collide(engine_obj *obj, int id);
     public:
+        int area_x;
+        int area_y;
+
         SDL_Window *window;
         SDL_Renderer *renderer;
 

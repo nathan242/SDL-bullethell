@@ -15,6 +15,11 @@ void game_ui::init()
 
     size_x = 800;
     size_y = 30;
+
+    if (i_eng->area_x > 800) {
+        pos_x = (i_eng->area_x / 2) - 400;
+    }
+
     texture = (SDL_Texture*)i_eng->get_resource("game_ui_bar_tex");
     ship_obj = (ship*)i_eng->get_resource("ship_obj");
     weapons.push_back((SDL_Texture*)i_eng->get_resource("powerup_single_shot_tex"));
@@ -33,7 +38,7 @@ void game_ui::post_draw_event()
 {
     SDL_Texture *bar_tex;
 
-    offset.x = 102;
+    offset.x = 102 + pos_x;
     offset.y = 4;
     offset.w = 21;
     offset.h = 21;
@@ -43,7 +48,7 @@ void game_ui::post_draw_event()
     bar_tex = ship_obj->shield_charge_level == SHIELD_CHARGE_MAX ? green_bar : red_bar;
 
     for (int i = 0; i < ship_obj->shield_charge_level; i++) {
-        offset.x = 212 + (i * 10);
+        offset.x = 212 + (i * 10) + pos_x;
         offset.y = 6;
         offset.w = 8;
         offset.h = 18;
@@ -55,7 +60,7 @@ void game_ui::post_draw_event()
         int health;
         int divide_value;
 
-        offset.x = 258;
+        offset.x = 258 + pos_x;
         offset.y = 30;
         offset.w = 285;
         offset.h = 30;
@@ -69,7 +74,7 @@ void game_ui::post_draw_event()
             boss_health_target = NULL;
         } else {
             for (int i = 0; i < health; i++) {
-                offset.x = 335 + (i * 10);
+                offset.x = 335 + (i * 10) + pos_x;
                 offset.y = 36;
                 offset.w = 8;
                 offset.h = 18;

@@ -36,11 +36,17 @@
     -------
 
     Methods:
+        set_res(x, y) - Set game resolution (from init function)
         init_level(level_no, background_object, size_x, size_y) - Init level of number with specified background
         set_music(music_object) - Set BGM
         reset_ship([optional] bool) - Reset ship to starting position, pass optional param as true to do a full reset (remove powerups)
         next_level() - Move to next level (active_level+1)
         complete() - Show complete screen
+        create_enemy(type, pos_x, pos_y, step_x, step_y, powerup) - Create enemy
+        create_custom_enemy(class, pos_x, pos_y, step_x, step_y, powerup) - Create custom enemy from Lua class
+        add_texture(name, path) - Add custom texture
+        add_music(name, path) - Add custom music
+        add_sfx(name, path) - Add custom SFX
 ]]
 
 
@@ -251,6 +257,7 @@ function activate_enemy_set(active_level, active_enemy_set)
 end
 
 function init()
+    set_res(2560, 1600)
     add_texture("enemy_ship_test_tex", "scripts/sample_textures/test_ship.png")
     add_texture("enemy_ship_test_hit_tex", "scripts/sample_textures/test_ship_hit.png")
 end

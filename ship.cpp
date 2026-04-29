@@ -42,8 +42,8 @@ void ship::init()
 
 void ship::reset(bool full)
 {
-    pos_x = 390;
-    pos_y = 550;
+    pos_x = (i_eng->area_x / 2) - 10;
+    pos_y = i_eng->area_y - 50;
 
     shield_charge_level = 0;
     shield_charge_timer->last = i_eng->timer_now;

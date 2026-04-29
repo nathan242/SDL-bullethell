@@ -7,11 +7,9 @@ background::background(engine *eng)
     i_eng = eng;
 }
 
-void background::init(int window_res_y)
+void background::init()
 {
     engine_obj::init();
-
-    res_y = window_res_y;
 
     type_id = ID_BACKGROUND;
     step_y = 1;
@@ -28,7 +26,7 @@ void background::init(int window_res_y)
 void background::set(SDL_Texture *background_texture, int background_size_x, int background_size_y)
 {
     texture = background_texture;
-    size_x = phys_size_x = background_size_x;
+    size_x = phys_size_x = (background_size_x < i_eng->area_x) ? i_eng->area_x : background_size_x;
     size_y = phys_size_y = background_size_y;
 
     pos_x = 0;
@@ -42,8 +40,8 @@ bool background::collision_event(engine_obj *obj2, int collide_axis, int area_x,
 
 void background::pre_phys_event()
 {
-    if (pos_y >= res_y) {
-        pos_y = (size_y*-1) + res_y;
+    if (pos_y >= i_eng->area_y) {
+        pos_y = (size_y*-1) + i_eng->area_y;
     }
 }
 

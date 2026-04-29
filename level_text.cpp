@@ -12,7 +12,7 @@ void level_text::init()
     engine_obj::init();
 
     type_id = ID_LEVEL_TEXT;
-    pos_y = 291;
+    pos_y = (i_eng->area_y / 2) - 9;
     size_x = 65;
     size_y = 18;
     move_x = add_timer(2000000);
@@ -45,7 +45,7 @@ void level_text::pre_phys_event()
 {
     switch (step) {
         case 0:
-            if (pos_x == 358) {
+            if (pos_x == (i_eng->area_x / 2) - 42) {
                 step++;
 
                 wait_timer->last = i_eng->timer_now;
@@ -61,7 +61,7 @@ void level_text::pre_phys_event()
             break;
 
         case 2:
-            if (pos_x == 800) {
+            if (pos_x == i_eng->area_x) {
                 draw_active = false;
                 phys_active = false;
             }
