@@ -7,7 +7,7 @@
 #define SHOT_PHYS_DELAY_DIFF 20000000
 #define SHOT_PHYS_DELAY_DIFF_START 100000000
 
-extern engine_obj_list *enemy_slots[];
+extern std::vector<engine_obj_list*> enemy_slots;
 extern int get_enemy_slot(engine_obj *self = NULL);
 
 void enemy_boss_c::init()
