@@ -266,6 +266,27 @@ function init()
     set_num_shots_enemy(1000)
     set_num_enemy_slots(50)
     set_num_explosions(50)
+    -- clear_texture_map();
+    -- clear_music_map();
+    -- clear_sfx_map();
+    -- clear_animation_map();
     add_texture("enemy_ship_test_tex", "scripts/sample_textures/test_ship.png")
     add_texture("enemy_ship_test_hit_tex", "scripts/sample_textures/test_ship_hit.png")
+    add_texture("blue_explosion_1_tex", "scripts/sample_textures/explosion_1.png")
+    add_texture("blue_explosion_2_tex", "scripts/sample_textures/explosion_2.png")
+    add_texture("blue_explosion_3_tex", "scripts/sample_textures/explosion_3.png")
+    add_texture("blue_explosion_4_tex", "scripts/sample_textures/explosion_4.png")
+
+    add_animation(
+        "explosion_anim",
+        150000000,
+        {
+            "",
+            "blue_explosion_1_tex",
+            "blue_explosion_2_tex",
+            "blue_explosion_3_tex",
+            "blue_explosion_4_tex",
+            "blue_explosion_1_tex"
+        }
+    )
 end

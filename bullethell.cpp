@@ -8,11 +8,6 @@
 #include "paused_img.h"
 #include "complete.h"
 #include "game_ui.h"
-#include "anim_projectile_ball.h"
-#include "anim_projectile_ball_invincible.h"
-#include "anim_powerup_double_shot.h"
-#include "anim_powerup_quad_spread_shot.h"
-#include "anim_explosion.h"
 #include "ship.h"
 #include "shield.h"
 #include "enemy.h"
@@ -213,32 +208,152 @@ std::unordered_map<std::string, std::string> sfx_map = {
     {"laser_hit_snd", "sfx/laser_hit.wav"}
 };
 
+struct animation_def
+{
+    time_t every;
+    std::vector<std::string> frames;
+};
+
+std::unordered_map<std::string, animation_def> animation_map {
+    {
+        "projectile_ball_anim",
+        {
+            250000000,
+            {
+                "projectile_ball_tex",
+                "projectile_ball_frame_1_tex",
+                "projectile_ball_frame_2_tex",
+                "projectile_ball_frame_3_tex",
+                "projectile_ball_frame_4_tex",
+                "projectile_ball_frame_5_tex",
+                "projectile_ball_frame_4_tex",
+                "projectile_ball_frame_3_tex",
+                "projectile_ball_frame_2_tex",
+                "projectile_ball_frame_1_tex"
+            }
+        }
+    },
+    {
+        "projectile_ball_invincible_anim",
+        {
+            250000000,
+            {
+                "projectile_ball_invincible_tex",
+                "projectile_ball_invincible_frame_1_tex",
+                "projectile_ball_invincible_frame_2_tex",
+                "projectile_ball_invincible_frame_3_tex",
+                "projectile_ball_invincible_frame_4_tex",
+                "projectile_ball_invincible_frame_5_tex",
+                "projectile_ball_invincible_frame_4_tex",
+                "projectile_ball_invincible_frame_3_tex",
+                "projectile_ball_invincible_frame_2_tex",
+                "projectile_ball_invincible_frame_1_tex"
+            }
+        }
+    },
+    {
+        "powerup_double_shot_anim",
+        {
+            100000000,
+            {
+                "powerup_double_shot_tex",
+                "powerup_double_shot_frame_1_tex",
+                "powerup_double_shot_frame_2_tex",
+                "powerup_double_shot_frame_1_tex"
+            }
+        }
+    },
+    {
+        "powerup_quad_spread_shot_anim",
+        {
+            100000000,
+            {
+                "powerup_quad_spread_shot_tex",
+                "powerup_quad_spread_shot_frame_1_tex",
+                "powerup_quad_spread_shot_frame_2_tex",
+                "powerup_quad_spread_shot_frame_1_tex"
+            }
+        }
+    },
+    {
+        "explosion_anim",
+        {
+            100000000,
+            {
+                "",
+                "explosion_1_tex",
+                "explosion_2_tex",
+                "explosion_3_tex",
+                "explosion_4_tex",
+                "explosion_1_tex"
+            }
+        }
+    }
+};
+
+SDL_Texture* get_texture_resource(const char *name)
+{
+    std::string file = texture_map.at(name);
+
+    SDL_Surface *temp_surface = IMG_Load(file.c_str());
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(eng->renderer, temp_surface);
+    SDL_FreeSurface(temp_surface);
+
+    return texture;
+}
+
+Mix_Music* get_music_resource(const char *name)
+{
+    std::string file = music_map.at(name);
+
+    return Mix_LoadMUS(file.c_str());
+}
+
+Mix_Chunk* get_sfx_resource(const char *name)
+{
+    std::string file = sfx_map.at(name);
+
+    return Mix_LoadWAV(file.c_str());
+}
+
+animation_obj* get_anim_resource(const char *name)
+{
+    animation_def config = animation_map.at(name);
+
+    SDL_Texture *temp_frame;
+    animation_obj *anim = new animation_obj();
+    anim->timer = new timer_obj(config.every);
+    anim->curr = 0;
+
+    for (const std::string& frame : config.frames) {
+        temp_frame = NULL;
+        if (strcmp(frame.c_str(), "") != 0) {
+            temp_frame = (SDL_Texture*)eng->get_resource(frame.c_str());
+        }
+
+        anim->frames.push_back(temp_frame);
+    }
+
+    return anim;
+}
+
 void init_resources()
 {
-    SDL_Surface *temp_surface;
-    Mix_Music *temp_music;
-    Mix_Chunk *temp_sfx;
-
     for (const auto& [name, texture] : texture_map) {
-        temp_surface = IMG_Load(texture.c_str());
-        eng->add_resource(name.c_str(), SDL_CreateTextureFromSurface(eng->renderer, temp_surface));
-        SDL_FreeSurface(temp_surface);
+        eng->add_resource(name.c_str(), get_texture_resource(name.c_str()));
     }
 
     for (const auto& [name, music] : music_map) {
-        temp_music = Mix_LoadMUS(music.c_str());
-        eng->add_resource(name.c_str(), temp_music);
+        eng->add_resource(name.c_str(), get_music_resource(name.c_str()));
     }
 
     for (const auto& [name, sfx] : sfx_map) {
-        temp_sfx = Mix_LoadWAV(sfx.c_str());
-        eng->add_resource(name.c_str(), temp_sfx);
+        eng->add_resource(name.c_str(), get_sfx_resource(name.c_str()));
     }
 
-    eng->add_resource("projectile_ball_anim", new anim_projectile_ball(new timer_obj(0), eng));
-    eng->add_resource("projectile_ball_invincible_anim", new anim_projectile_ball_invincible(new timer_obj(0), eng));
-    eng->add_resource("powerup_double_shot_anim", new anim_powerup_double_shot(new timer_obj(0), eng));
-    eng->add_resource("powerup_quad_spread_shot_anim", new anim_powerup_quad_spread_shot(new timer_obj(0), eng));
+    for (const auto& [name, anim] : animation_map) {
+        eng->add_resource(name.c_str(), get_anim_resource(name.c_str()));
+    }
 }
 
 void free_resources()
@@ -255,10 +370,9 @@ void free_resources()
         Mix_FreeChunk((Mix_Chunk*)eng->get_resource(name.c_str()));
     }
 
-    delete (animation_obj*)eng->get_resource("projectile_ball_anim");
-    delete (animation_obj*)eng->get_resource("projectile_ball_invincible_anim");
-    delete (animation_obj*)eng->get_resource("powerup_double_shot_anim");
-    delete (animation_obj*)eng->get_resource("powerup_quad_spread_shot_anim");
+    for (const auto& [name, anim] : animation_map) {
+        delete (animation_obj*)eng->get_resource(name.c_str());
+    }
 }
 
 int get_enemy_slot(engine_obj *self = NULL)
@@ -563,6 +677,85 @@ int lua_add_sfx(lua_State *L)
     return 0;
 }
 
+int lua_add_animation(lua_State *L)
+{
+    const char *name = luaL_checkstring(L, 1);
+    int every = luaL_checkinteger(L, 2);
+
+    if (lua_istable(L, 3) == 0) {
+        return 0;
+    }
+
+    unsigned int size = lua_rawlen(L, 3);
+
+    animation_map[name].every = every;
+    animation_map[name].frames.clear();
+
+    for (unsigned int i = 0; i < size; i++) {
+        lua_rawgeti(L, 3, i + 1);
+        animation_map[name].frames.push_back(lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+
+    return 0;
+}
+
+int lua_remove_texture(lua_State *L)
+{
+    texture_map.erase(luaL_checkstring(L, 1));
+
+    return 0;
+}
+
+int lua_remove_music(lua_State *L)
+{
+    music_map.erase(luaL_checkstring(L, 1));
+
+    return 0;
+}
+
+int lua_remove_sfx(lua_State *L)
+{
+    sfx_map.erase(luaL_checkstring(L, 1));
+
+    return 0;
+}
+
+int lua_remove_animation(lua_State *L)
+{
+    animation_map.erase(luaL_checkstring(L, 1));
+
+    return 0;
+}
+
+int lua_clear_texture_map(lua_State *L)
+{
+    texture_map.clear();
+
+    return 0;
+}
+
+int lua_clear_music_map(lua_State *L)
+{
+    music_map.clear();
+
+    return 0;
+}
+
+int lua_clear_sfx_map(lua_State *L)
+{
+    sfx_map.clear();
+
+    return 0;
+}
+
+int lua_clear_animation_map(lua_State *L)
+{
+    animation_map.clear();
+
+    return 0;
+}
+
 bool init_lua_script()
 {
     L = luaL_newstate();
@@ -583,6 +776,15 @@ bool init_lua_script()
     lua_register(L, "add_texture", lua_add_texture);
     lua_register(L, "add_music", lua_add_music);
     lua_register(L, "add_sfx", lua_add_sfx);
+    lua_register(L, "add_animation", lua_add_animation);
+    lua_register(L, "remove_texture", lua_remove_texture);
+    lua_register(L, "remove_music", lua_remove_music);
+    lua_register(L, "remove_sfx", lua_remove_sfx);
+    lua_register(L, "remove_animation", lua_remove_animation);
+    lua_register(L, "clear_texture_map", lua_clear_texture_map);
+    lua_register(L, "clear_music_map", lua_clear_music_map);
+    lua_register(L, "clear_sfx_map", lua_clear_sfx_map);
+    lua_register(L, "clear_animation_map", lua_clear_animation_map);
 
     if (luaL_dofile(L, script_path) != LUA_OK) {
         fprintf(stderr, "Lua script error: %s\n", lua_tostring(L, -1));
@@ -2236,7 +2438,7 @@ void init(bool fullscreen)
     for (int i = 0; i < num_explosions; i++) {
         explosions.push_back(new explosion(eng));
         explosions[i]->init();
-        explosions[i]->animation = new anim_explosion(new timer_obj(0), eng);
+        explosions[i]->animation = get_anim_resource("explosion_anim");
 
         eng->add_object(explosions[i]);
         explosion_mngr->add_object(explosions[i]);

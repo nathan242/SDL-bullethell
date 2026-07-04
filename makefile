@@ -8,11 +8,6 @@ paused_img.o \
 complete.o \
 game_ui.o \
 level_text.o \
-anim_projectile_ball.o \
-anim_projectile_ball_invincible.o \
-anim_powerup_double_shot.o \
-anim_powerup_quad_spread_shot.o \
-anim_explosion.o \
 ship.o \
 shield.o \
 enemy.o \
@@ -51,11 +46,6 @@ explosion_manager.o
 	complete.o \
 	game_ui.o \
 	level_text.o \
-	anim_projectile_ball.o \
-	anim_projectile_ball_invincible.o \
-	anim_powerup_double_shot.o \
-	anim_powerup_quad_spread_shot.o \
-	anim_explosion.o \
 	ship.o \
 	shield.o \
 	enemy.o \
@@ -114,21 +104,6 @@ game_ui.o: game_ui.cpp game_ui.h
 
 level_text.o: level_text.cpp level_text.h
 	g++ -Wall -g `sdl2-config --cflags` -c level_text.cpp
-
-anim_projectile_ball.o: anim_projectile_ball.cpp anim_projectile_ball.h
-	g++ -Wall -g `sdl2-config --cflags` -c anim_projectile_ball.cpp
-
-anim_projectile_ball_invincible.o: anim_projectile_ball_invincible.cpp anim_projectile_ball_invincible.h
-	g++ -Wall -g `sdl2-config --cflags` -c anim_projectile_ball_invincible.cpp
-
-anim_powerup_double_shot.o: anim_powerup_double_shot.cpp anim_powerup_double_shot.h
-	g++ -Wall -g `sdl2-config --cflags` -c anim_powerup_double_shot.cpp
-
-anim_powerup_quad_spread_shot.o: anim_powerup_quad_spread_shot.cpp anim_powerup_quad_spread_shot.h
-	g++ -Wall -g `sdl2-config --cflags` -c anim_powerup_quad_spread_shot.cpp
-
-anim_explosion.o: anim_explosion.cpp anim_explosion.h
-	g++ -Wall -g `sdl2-config --cflags` -c anim_explosion.cpp
 
 ship.o: ship.cpp ship.h
 	g++ -Wall -g `sdl2-config --cflags` -c ship.cpp
